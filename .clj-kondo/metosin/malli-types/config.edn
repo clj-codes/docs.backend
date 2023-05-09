@@ -1,5 +1,5 @@
 {:linters {:unresolved-symbol {:exclude [(malli.core/=>)]},
-           :type-mismatch {:namespaces {microservice-boilerplate.logics {can-withdrawal? {:arities {2 {:args [:neg-int
+           :type-mismatch {:namespaces {codes.clj.docs.backend.logics {can-withdrawal? {:arities {2 {:args [:neg-int
                                                                                                               :pos-int],
                                                                                                        :ret :boolean}}},
                                                                          uuid-from-string {:arities {1 {:args [:string],
@@ -14,7 +14,7 @@
                                                                          uuid-from-date-amount {:arities {2 {:args [:any
                                                                                                                     :double],
                                                                                                              :ret :any}}}},
-                                        microservice-boilerplate.adapters {->wallet-history {:arities {2 {:args [:pos-int
+                                        codes.clj.docs.backend.adapters {->wallet-history {:arities {2 {:args [:pos-int
                                                                                                                  :vector],
                                                                                                           :ret {:op :keys,
                                                                                                                 :req {:entries :vector,
@@ -61,7 +61,7 @@
                                                                                                              :spec :any}],
                                                                                                      :ret :any,
                                                                                                      :min-arity 1}}}},
-                                        microservice-boilerplate.db {insert-wallet-transaction {:arities {2 {:args [{:op :keys,
+                                        codes.clj.docs.backend.db {insert-wallet-transaction {:arities {2 {:args [{:op :keys,
                                                                                                                      :req {:wallet/id :any,
                                                                                                                            :wallet/btc_amount :double,
                                                                                                                            :wallet/usd_amount_at :double}}
@@ -71,9 +71,9 @@
                                                                                                     :ret :number}}},
                                                                      get-wallet-all-transactions {:arities {1 {:args [:any],
                                                                                                                :ret :vector}}}},
-                                        microservice-boilerplate.ports.http-out {get-btc-usd-price {:arities {1 {:args [:any],
+                                        codes.clj.docs.backend.ports.http-out {get-btc-usd-price {:arities {1 {:args [:any],
                                                                                                                  :ret :number}}}},
-                                        microservice-boilerplate.controllers {do-withdrawal! {:arities {2 {:args [:neg-int
+                                        codes.clj.docs.backend.controllers {do-withdrawal! {:arities {2 {:args [:neg-int
                                                                                                                   {:op :keys,
                                                                                                                    :req {:config :any,
                                                                                                                          :http :any,

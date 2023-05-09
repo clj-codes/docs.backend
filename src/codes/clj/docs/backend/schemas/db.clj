@@ -1,4 +1,4 @@
-(ns microservice-boilerplate.schemas.db
+(ns codes.clj.docs.backend.schemas.db
   (:require [malli.util :as mu]))
 
 (def wallet

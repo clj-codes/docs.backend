@@ -1,6 +1,6 @@
-(ns microservice-boilerplate.ports.http-in
-  (:require [microservice-boilerplate.adapters :as adapters]
-            [microservice-boilerplate.controllers :as controllers]))
+(ns codes.clj.docs.backend.ports.http-in
+  (:require [codes.clj.docs.backend.adapters :as adapters]
+            [codes.clj.docs.backend.controllers :as controllers]))
 
 (defn get-history
   [{components :components}]

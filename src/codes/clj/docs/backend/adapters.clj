@@ -1,8 +1,8 @@
-(ns microservice-boilerplate.adapters
-  (:require [microservice-boilerplate.schemas.db :as schemas.db]
-            [microservice-boilerplate.schemas.types :as schemas.types]
-            [microservice-boilerplate.schemas.wire-in :as schemas.wire-in]
-            [microservice-boilerplate.schemas.wire-out :as schemas.wire-out])
+(ns codes.clj.docs.backend.adapters
+  (:require [codes.clj.docs.backend.schemas.db :as schemas.db]
+            [codes.clj.docs.backend.schemas.types :as schemas.types]
+            [codes.clj.docs.backend.schemas.wire-in :as schemas.wire-in]
+            [codes.clj.docs.backend.schemas.wire-out :as schemas.wire-out])
   (:import [java.time ZoneId]
            [java.time.format DateTimeFormatter]))
 

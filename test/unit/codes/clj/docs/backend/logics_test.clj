@@ -1,12 +1,12 @@
-(ns unit.microservice-boilerplate.logics-test
+(ns unit.codes.clj.docs.backend.logics-test
   (:require [clojure.test :refer [are deftest is testing use-fixtures]]
             [clojure.test.check.clojure-test :refer [defspec]]
             [clojure.test.check.properties :as properties]
+            [codes.clj.docs.backend.adapters :as adapters]
+            [codes.clj.docs.backend.logics :as logics]
+            [codes.clj.docs.backend.schemas.db :as schemas.db]
             [malli.core :as m]
             [malli.generator :as mg]
-            [microservice-boilerplate.adapters :as adapters]
-            [microservice-boilerplate.logics :as logics]
-            [microservice-boilerplate.schemas.db :as schemas.db]
             [parenthesin.helpers.malli :as helpers.malli]))
 
 (use-fixtures :once helpers.malli/with-intrumentation)

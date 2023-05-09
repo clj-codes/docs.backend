@@ -1,18 +1,5 @@
-# microservice-boilerplate-malli
-Clojure Microservice Boilerplate: Components, Reitit, Pedestal, Malli, Postgresql and Tests.
-
-## About this example
- - **microservice-boilerplate**: An example of how use the boilerplate, it's a simple btc wallet
-that fetch the current btc price in USD and you can check your transaction history, do deposits and withdrawals.
-
-- [parenthesin/components](https://github.com/parenthesin/components): Helpers and component wrappers to give a foundation to create new services in clojure,
-you can find components for database, http, webserver and tools for db migrations.
-
-Verb | URL                | Description
------| ------------------ | ------------------------------------------------
-GET  | /wallet/history    | get all wallet entries and current total
-POST | /wallet/deposit    | do a deposit in btc in the wallet
-POST | /wallet/withdrawal | do a withdrawal in btc in the wallet if possible
+# codes.clj.docs.backend-malli
+Backend Service for [docs.clj.codes](https://docs.clj.codes).
 
 ## Repl
 To open a nrepl
@@ -106,58 +93,6 @@ clj -T:build uberjar
 # execute it via java
 java -jar target/service.jar
 ```
-
-## Features
-
-### System
-- [malli](https://github.com/metosin/malli) Types, Schemas and generators.
-- [component](https://github.com/stuartsierra/component) System Lifecycle and Dependencies
-- [pedestal](https://github.com/pedestal/pedestal) Http Server
-- [reitit](https://github.com/metosin/reitit) Http Routes System 
-- [clj-http](https://github.com/dakrone/clj-http) Http Client
-- [cheshire](https://github.com/dakrone/cheshire) JSON encoding
-- [aero](https://github.com/juxt/aero) Configuration file and enviroment variables manager
-- [timbre](https://github.com/ptaoussanis/timbre) Logging library
-- [next-jdbc](https://github.com/seancorfield/next-jdbc) JDBC-based layer to access databases
-- [hikaricp](https://github.com/brettwooldridge/HikariCP) A solid, high-performance, JDBC connection pool at last
-- [tools.build](https://github.com/clojure/tools.build) Clojure builds as Clojure programs
-
-### Tests & Checks
-- [kaocha](https://github.com/lambdaisland/kaocha) Test runner
-- [kaocha-cloverage](https://github.com/lambdaisland/kaocha-cloverage) Kaocha plugin for code coverage reports
-- [state-flow](https://github.com/nubank/state-flow) Testing framework for integration tests
-- [matcher-combinators](https://github.com/nubank/matcher-combinators) Assertions in data structures
-- [pg-embedded-clj](https://github.com/Bigsy/pg-embedded-clj) Embedded PostgreSQL for integration tests
-- [clojure-lsp](https://github.com/clojure-lsp/clojure-lsp/) Code Format, Namespace Check and Diagnosis
-
-## Directory Structure
-```
-./
-├── .clj-kondo -- clj-kondo configuration and classes
-├── .lsp -- clojure-lsp configuration
-├── .github
-│   └── workflows -- Github workflows folder.
-├── docker -- docker and docker-compose files for the database
-├── resources -- Application resources assets folder and configuration files.
-│   └── migrations -- Current database schemas, synced on service startup.
-├── src -- Library source code and headers.
-│   └── microservice_boilerplate -- Source for the service example (wallet).
-└── test -- Test source code.
-    ├── integration -- Integration tests source (uses state-flow).
-    │   └── microservice_boilerplate -- Tests for service example (wallet).
-    └── unit -- Unity tests source (uses clojure.test).
-        └── microservice_boilerplate -- Tests for service example (wallet).
-```
-
-## Related
-
-Based on [this](https://github.com/parenthesin/microservice-boilerplate) template, the work here tries to show what need to be refactored to move from Schema to Malli without loosing some key features like "typing", schema definition, coercion, generative testing and more. 
-
-### Similar Projects
-- [vloth/ts-microservice-boilerplate](https://github.com/vloth/ts-microservice-boilerplate)
-
-### Using this Template
-- [rafaeldelboni/super-dice-roll-clj](https://github.com/rafaeldelboni/super-dice-roll-clj)
 
 ## License
 This is free and unencumbered software released into the public domain.  

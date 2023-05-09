@@ -1,9 +1,9 @@
-(ns microservice-boilerplate.controllers
-  (:require [microservice-boilerplate.db :as db]
-            [microservice-boilerplate.logics :as logics]
-            [microservice-boilerplate.ports.http-out :as http-out]
-            [microservice-boilerplate.schemas.db :as schemas.db]
-            [microservice-boilerplate.schemas.types :as schemas.types]))
+(ns codes.clj.docs.backend.controllers
+  (:require [codes.clj.docs.backend.db :as db]
+            [codes.clj.docs.backend.logics :as logics]
+            [codes.clj.docs.backend.ports.http-out :as http-out]
+            [codes.clj.docs.backend.schemas.db :as schemas.db]
+            [codes.clj.docs.backend.schemas.types :as schemas.types]))
 
 (defn- instant-now [] (java.util.Date/from (java.time.Instant/now)))
 

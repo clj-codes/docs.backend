@@ -1,9 +1,9 @@
-(ns integration.microservice-boilerplate.wallet-test
+(ns integration.codes.clj.docs.backend.wallet-test
   (:require [clojure.test :refer [use-fixtures]]
+            [codes.clj.docs.backend.routes :as routes]
             [com.stuartsierra.component :as component]
-            [integration.microservice-boilerplate.util :as util]
+            [integration.codes.clj.docs.backend.util :as util]
             [matcher-combinators.matchers :as matchers]
-            [microservice-boilerplate.routes :as routes]
             [parenthesin.components.config.aero :as components.config]
             [parenthesin.components.db.jdbc-hikari :as components.database]
             [parenthesin.components.http.clj-http :as components.http]
