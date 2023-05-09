@@ -2,7 +2,7 @@
                 "nubank/state-flow"
                 "marick/midje"
                 "metosin/malli-types"]
- :hooks {:analyze-call {integration.microservice-boilerplate.aux/init-flow nubank.state-flow/defflow
+ :hooks {:analyze-call {integration.codes.clj.docs.backend.aux/init-flow nubank.state-flow/defflow
                         state-flow.api/defflow nubank.state-flow/defflow}}
  :linters {:unsorted-required-namespaces {:level :warning}
            :unresolved-var {:exclude [honeysql.helpers/select

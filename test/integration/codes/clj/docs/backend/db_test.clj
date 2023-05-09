@@ -1,8 +1,8 @@
-(ns integration.microservice-boilerplate.db-test
+(ns integration.codes.clj.docs.backend.db-test
   (:require [clojure.test :refer [use-fixtures]]
+            [codes.clj.docs.backend.db :as db]
             [com.stuartsierra.component :as component]
-            [integration.microservice-boilerplate.util :as util]
-            [microservice-boilerplate.db :as db]
+            [integration.codes.clj.docs.backend.util :as util]
             [parenthesin.components.config.aero :as components.config]
             [parenthesin.components.db.jdbc-hikari :as components.database]
             [parenthesin.helpers.malli :as helpers.malli]

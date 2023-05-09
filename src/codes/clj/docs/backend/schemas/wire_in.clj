@@ -1,4 +1,4 @@
-(ns microservice-boilerplate.schemas.wire-in)
+(ns codes.clj.docs.backend.schemas.wire-in)
 
 (def WalletDeposit
   [:map

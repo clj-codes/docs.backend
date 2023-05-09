@@ -1,4 +1,4 @@
-(ns microservice-boilerplate.schemas.wire-out)
+(ns codes.clj.docs.backend.schemas.wire-out)
 
 (def RateFloat
   [:map

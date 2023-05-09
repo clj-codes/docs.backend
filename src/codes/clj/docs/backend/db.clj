@@ -1,8 +1,8 @@
-(ns microservice-boilerplate.db
-  (:require [honey.sql :as sql]
+(ns codes.clj.docs.backend.db
+  (:require [codes.clj.docs.backend.schemas.db :as schemas.db]
+            [codes.clj.docs.backend.schemas.types :as schemas.types]
+            [honey.sql :as sql]
             [honey.sql.helpers :as sql.helpers]
-            [microservice-boilerplate.schemas.db :as schemas.db]
-            [microservice-boilerplate.schemas.types :as schemas.types]
             [parenthesin.components.db.jdbc-hikari :as components.database]))
 
 (defn insert-wallet-transaction

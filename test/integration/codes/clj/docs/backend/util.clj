@@ -1,4 +1,4 @@
-(ns integration.microservice-boilerplate.util
+(ns integration.codes.clj.docs.backend.util
   (:require [com.stuartsierra.component :as component]
             [parenthesin.helpers.logs :as logs]
             [parenthesin.helpers.migrations :as migrations]

@@ -1,6 +1,6 @@
-(ns microservice-boilerplate.logics
-  (:require [microservice-boilerplate.adapters :as adapters]
-            [microservice-boilerplate.schemas.db :as schemas.db])
+(ns codes.clj.docs.backend.logics
+  (:require [codes.clj.docs.backend.adapters :as adapters]
+            [codes.clj.docs.backend.schemas.db :as schemas.db])
   (:import [java.util UUID]))
 
 (defn uuid-from-string
