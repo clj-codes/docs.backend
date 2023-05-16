@@ -1,7 +1,6 @@
-(ns codes.clj.docs.backend.components.datalevin
+(ns codes.clj.docs.backend.components.db-docs
   (:require [clojure.java.io :as io]
             [codes.clj.docs.backend.schemas.types :as schemas.types]
-            [datalevin.util :as util]
             [parenthesin.components.http.clj-http :as http])
   (:import [java.io File]))
 
@@ -28,11 +27,11 @@
     (loop [file-data (.getNextEntry stream)]
       (when file-data
         (let [file-path (str dir File/separatorChar (.getName file-data))
-              saveFile (File. file-path)]
+              saveFile (io/file file-path)]
           (if (.isDirectory file-data)
             (when-not (.exists saveFile)
               (.mkdirs saveFile))
-            (let [parentDir (File. (.substring file-path 0 (.lastIndexOf file-path (int File/separatorChar))))]
+            (let [parentDir (io/file (.substring file-path 0 (.lastIndexOf file-path (int File/separatorChar))))]
               (when-not (.exists parentDir)
                 (.mkdirs parentDir))
               (io/copy stream saveFile))))
@@ -41,10 +40,15 @@
 (defn download-db!
   {:malli/schema [:=> [:cat schemas.types/GenericComponent schemas.types/HttpComponent] :nil]}
   [config http]
-  (let [{:keys [dir version]} (-> config :config :db-docs :dir)
+  (let [{:keys [dir version]} (-> config :config :db-docs)
         db-path (str dir File/separatorChar version)]
-    (when (util/empty-dir? (File. db-path))
-      (-> config
-          get-db-download-url
-          (download-input-stream! http)
-          (unzip-stream! db-path)))))
+    (-> config
+        get-db-download-url
+        (download-input-stream! http)
+        (unzip-stream! db-path))))
+
+(defprotocol DbDocs
+  (db [component]
+    "Returns a database snapshot")
+  (conn [component]
+    "Returns a database connection"))

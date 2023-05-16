@@ -8,14 +8,14 @@
         org.postgresql/postgresql {:mvn/version "42.6.0"}
         datalevin/datalevin {:mvn/version "0.8.14"}}
  :aliases
- {:dev {:extra-paths ["test" "dev"]}
-  :test {:extra-paths ["test"]
-         :extra-deps  {org.clojars.bigsy/pg-embedded-clj {:mvn/version "1.0.0"}
-                       lambdaisland/kaocha {:mvn/version "1.82.1306"}
-                       lambdaisland/kaocha-cloverage {:mvn/version "1.1.89"}
-                       nubank/matcher-combinators {:mvn/version "3.8.5"}
-                       nubank/state-flow {:mvn/version "5.14.4"}}
-         :main-opts   ["-m" "kaocha.runner"]}
+ {:dev {:extra-paths ["test" "dev" "test/resources"]
+        :extra-deps  {org.clojars.bigsy/pg-embedded-clj {:mvn/version "1.0.0"}
+                      lambdaisland/kaocha {:mvn/version "1.82.1306"}
+                      lambdaisland/kaocha-cloverage {:mvn/version "1.1.89"}
+                      nubank/matcher-combinators {:mvn/version "3.8.5"}
+                      nubank/state-flow {:mvn/version "5.14.4"}}}
+  :test {:main-opts ["-m" "kaocha.runner"]
+         :jvm-opts  ["-Xms3g" "-Xmx3g"]}
 
   :clojure-lsp {:replace-deps {com.github.clojure-lsp/clojure-lsp-standalone {:mvn/version "2023.04.19-12.43.29"}}
                 :main-opts ["-m" "clojure-lsp.main"]}
