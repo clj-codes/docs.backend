@@ -5,7 +5,8 @@
         com.github.seancorfield/honeysql {:mvn/version "2.4.1026"}
         metosin/malli {:mvn/version "0.11.0"}
         metosin/reitit-swagger {:mvn/version "0.6.0"}
-        org.postgresql/postgresql {:mvn/version "42.6.0"}}
+        org.postgresql/postgresql {:mvn/version "42.6.0"}
+        datalevin/datalevin {:mvn/version "0.8.14"}}
  :aliases
  {:dev {:extra-paths ["test" "dev"]}
   :test {:extra-paths ["test"]
