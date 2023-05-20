@@ -4,6 +4,7 @@
             [codes.clj.docs.backend.components.db-docs :as component.db-docs]
             [com.stuartsierra.component :as component]
             [datalevin.util :as util]
+            [matcher-combinators.matchers :as m]
             [matcher-combinators.test :refer [match?]]
             [parenthesin.components.config.aero :as component.config]
             [parenthesin.components.http.clj-http :as component.http]))
@@ -36,10 +37,11 @@
                   (component.db-docs/new-db-docs {})
                   [:config :http])})
 
-      (is (match? ["target/tmp/v0.0.1"
-                   "target/tmp/v0.0.1/lock.mdb"
-                   "target/tmp/v0.0.1/test.file"
-                   "target/tmp/v0.0.1/data.mdb"]
+      (is (match? (m/in-any-order
+                   ["target/tmp/v0.0.1"
+                    "target/tmp/v0.0.1/lock.mdb"
+                    "target/tmp/v0.0.1/test.file"
+                    "target/tmp/v0.0.1/data.mdb"])
                   (-> db-path
                       io/file
                       file-seq
