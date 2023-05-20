@@ -6,7 +6,9 @@
             [datalevin.util :as util]
             [parenthesin.components.http.clj-http :as http]
             [parenthesin.helpers.logs :as logs])
-  (:import [java.io File]))
+  (:import [java.io File]
+           [java.nio.file Files]
+           [java.nio.file.attribute FileAttribute]))
 
 (defn ^:private get-db-download-url
   {:malli/schema [:=> [:cat schemas.types/GenericComponent] :string]}
@@ -86,19 +88,24 @@
 (defn new-db-docs [schema]
   (map->DbDocs {:schema schema}))
 
-(defrecord DbDocsMock [schema conn]
+(defrecord DbDocsMock [schema conn db-path]
   component/Lifecycle
   (start [this]
     (logs/log :info :datalevin :start)
-    (let [db-path (str (File/createTempFile "db-docs" "datalevin"))]
+    (let [db-path (str (Files/createTempDirectory
+                        "db-docs"
+                        (into-array FileAttribute [])))]
       (if conn
         this
-        (assoc this :conn (d/get-conn db-path schema)))))
+        (assoc this
+               :conn (d/get-conn db-path schema)
+               :db-path db-path))))
   (stop [this]
     (logs/log :info :datalevin :stop)
     (if conn
       (do
         (d/close conn)
+        (util/delete-files db-path)
         (assoc this :conn nil))
       this))
 
