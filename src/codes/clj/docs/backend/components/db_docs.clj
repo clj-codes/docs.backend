@@ -1,7 +1,11 @@
 (ns codes.clj.docs.backend.components.db-docs
   (:require [clojure.java.io :as io]
             [codes.clj.docs.backend.schemas.types :as schemas.types]
-            [parenthesin.components.http.clj-http :as http])
+            [com.stuartsierra.component :as component]
+            [datalevin.core :as d]
+            [datalevin.util :as util]
+            [parenthesin.components.http.clj-http :as http]
+            [parenthesin.helpers.logs :as logs])
   (:import [java.io File]))
 
 (defn ^:private get-db-download-url
@@ -39,16 +43,71 @@
 
 (defn download-db!
   {:malli/schema [:=> [:cat schemas.types/GenericComponent schemas.types/HttpComponent] :nil]}
-  [config http]
-  (let [{:keys [dir version]} (-> config :config :db-docs)
-        db-path (str dir File/separatorChar version)]
-    (-> config
-        get-db-download-url
-        (download-input-stream! http)
-        (unzip-stream! db-path))))
+  [db-path config http]
+  (-> config
+      get-db-download-url
+      (download-input-stream! http)
+      (unzip-stream! db-path)))
 
-(defprotocol DbDocs
+(defprotocol DbDocsProvider
   (db [component]
     "Returns a database snapshot")
   (conn [component]
     "Returns a database connection"))
+
+(defrecord DbDocs [schema config http conn]
+  component/Lifecycle
+  (start [this]
+    (logs/log :info :datalevin :start)
+    (let [{:keys [dir version]} (-> config :config :db-docs)
+          db-path (str dir File/separatorChar version)]
+      (when-not (util/file-exists db-path)
+        (logs/log :info :datalevin :db-not-found :downloading :start)
+        (download-db! db-path config http)
+        (logs/log :info :datalevin :db-not-found :downloading :end)
+        (if conn
+          this
+          (assoc this :conn (d/get-conn db-path schema))))))
+  (stop [this]
+    (logs/log :info :datalevin :stop)
+    (if conn
+      (do
+        (d/close conn)
+        (assoc this :conn nil))
+      this))
+
+  DbDocsProvider
+  (db [this]
+    (d/db (:conn this)))
+
+  (conn [this]
+    (:conn this)))
+
+(defn new-db-docs [schema]
+  (map->DbDocs {:schema schema}))
+
+(defrecord DbDocsMock [schema conn]
+  component/Lifecycle
+  (start [this]
+    (logs/log :info :datalevin :start)
+    (let [db-path (str (File/createTempFile "db-docs" "datalevin"))]
+      (if conn
+        this
+        (assoc this :conn (d/get-conn db-path schema)))))
+  (stop [this]
+    (logs/log :info :datalevin :stop)
+    (if conn
+      (do
+        (d/close conn)
+        (assoc this :conn nil))
+      this))
+
+  DbDocsProvider
+  (db [this]
+    (d/db (:conn this)))
+
+  (conn [this]
+    (:conn this)))
+
+(defn new-db-docs-mock [schema]
+  (map->DbDocsMock {:schema schema}))
