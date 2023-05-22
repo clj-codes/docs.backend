@@ -43,7 +43,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Execute clojure code
-        run: clojure -M:test ${{ matrix.namespace }}
+        run: clojure -M:dev:test ${{ matrix.namespace }}
 
   check-lint:
 

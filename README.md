@@ -8,13 +8,7 @@ clj -M:nrepl
 ```
 To open a nrepl with all test extra-deps on it
 ```bash
-clj -M:test:nrepl
-```
-## Run dev
-To open a dev nrepl
-```bash
 clj -M:dev:nrepl
-
 ```
 
 Then, eval for instrument malli.
@@ -26,19 +20,19 @@ Malli instrumentation enables input/output validation and clj-kondo lint annotat
 ## Run Tests
 To run unit tests inside `./test/unit`
 ```bash
-clj -M:test :unit
+clj -M:dev:test :unit
 ```
 To run integration tests inside `./test/integration`
 ```bash
-clj -M:test :integration
+clj -M:dev:test :integration
 ```
 To run all tests inside `./test`
 ```bash
-clj -M:test
+clj -M:dev:test
 ```
 To generate a coverage report 
 ```bash
-clj -M:test --plugin kaocha.plugin/cloverage
+clj -M:dev:test --plugin kaocha.plugin/cloverage
 ```
 
 ## Lint fix and format
