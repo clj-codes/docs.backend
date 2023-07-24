@@ -1,20 +1,22 @@
 (ns codes.clj.docs.backend.schemas.db
   (:require [malli.util :as mu]))
 
-(def wallet
+(def author
   [:map
-   [:wallet/id :uuid]
-   [:wallet/btc_amount [number? {:gen/schema [:double {:gen/NaN? false :gen/infinite? false}]}]]
-   [:wallet/usd_amount_at [number? {:gen/schema [:double {:gen/NaN? false :gen/infinite? false}]}]]
-   [:wallet/created_at inst?]])
+   [:authors/author_id :uuid]
+   [:authors/login :string]
+   [:authors/account_source [:enum "github"]]
+   [:authors/avatar_url :string]
+   [:authors/created_at inst?]])
 
-(def WalletTransaction
-  (mu/select-keys wallet [:wallet/id
-                          :wallet/btc_amount
-                          :wallet/usd_amount_at]))
+(def NewAuthor
+  (mu/select-keys author [:authors/login
+                          :authors/account_source
+                          :authors/avatar_url]))
 
-(def WalletEntry
-  (mu/select-keys wallet [:wallet/id
-                          :wallet/btc_amount
-                          :wallet/usd_amount_at
-                          :wallet/created_at]))
+(def Author
+  (mu/select-keys author [:authors/author_id
+                          :authors/login
+                          :authors/account_source
+                          :authors/avatar_url
+                          :authors/created_at]))

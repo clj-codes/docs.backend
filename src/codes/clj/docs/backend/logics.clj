@@ -18,15 +18,15 @@
       (str amount)
       uuid-from-string))
 
-(defn ->wallet-transaction
-  {:malli/schema [:=> [:cat inst? number? number?] schemas.db/WalletTransaction]}
-  [date amount current-usd-price]
-  {:wallet/id (uuid-from-date-amount date amount)
-   :wallet/btc_amount amount
-   :wallet/usd_amount_at (* current-usd-price amount)})
+;(defn ->wallet-transaction
+  ;{:malli/schema [:=> [:cat inst? number? number?] schemas.db/WalletTransaction]}
+  ;[date amount current-usd-price]
+  ;{:wallet/id (uuid-from-date-amount date amount)
+   ;:wallet/btc_amount amount
+   ;:wallet/usd_amount_at (* current-usd-price amount)})
 
-(defn can-withdrawal?
-  {:malli/schema [:=> [:cat neg? pos?] :boolean]}
-  [withdrawal-amount current-total]
-  (-> (+ current-total withdrawal-amount)
-      (>= 0)))
+;(defn can-withdrawal?
+  ;{:malli/schema [:=> [:cat neg? pos?] :boolean]}
+  ;[withdrawal-amount current-total]
+  ;(-> (+ current-total withdrawal-amount)
+      ;(>= 0)))

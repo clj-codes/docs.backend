@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 --;;
 
 CREATE TABLE IF NOT EXISTS authors (
-  author_id uuid UNIQUE NOT NULL PRIMARY KEY,
+  author_id uuid UNIQUE NOT NULL PRIMARY KEY DEFAULT gen_random_uuid (),
   login VARCHAR(150) NOT NULL,
   account_source VARCHAR(150) NOT NULL,
   avatar_url VARCHAR(500) NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS authors (
 --;;
 
 CREATE TABLE IF NOT EXISTS see_alsos (
-  see_also_id uuid UNIQUE NOT NULL PRIMARY KEY,
+  see_also_id uuid UNIQUE NOT NULL PRIMARY KEY DEFAULT gen_random_uuid (),
   author_id uuid NOT NULL,
   definition_id VARCHAR(500) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS see_alsos (
 --;;
 
 CREATE TABLE IF NOT EXISTS examples (
-  example_id uuid UNIQUE NOT NULL PRIMARY KEY,
+  example_id uuid UNIQUE NOT NULL PRIMARY KEY DEFAULT gen_random_uuid (),
   definition_id VARCHAR(500) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE
@@ -44,7 +44,7 @@ CREATE TABLE examples_authors (
 --;;
 
 CREATE TABLE IF NOT EXISTS notes (
-  note_id uuid UNIQUE NOT NULL PRIMARY KEY,
+  note_id uuid UNIQUE NOT NULL PRIMARY KEY DEFAULT gen_random_uuid (),
   author_id uuid NOT NULL,
   definition_id VARCHAR(500) NOT NULL,
   body TEXT NOT NULL,

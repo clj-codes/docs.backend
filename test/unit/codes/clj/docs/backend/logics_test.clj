@@ -40,15 +40,15 @@
     (is (= #uuid "67272ecc-b839-37e3-9656-2895d1f0fda2"
            (logics/uuid-from-date-amount #inst "2020-10-23T22:30:34" -123.00M)))))
 
-(defspec wallet-entry-test 50
-  (properties/for-all [date (mg/generator inst?)
-                       pos-num (mg/generator [:double])
-                       neg-num (mg/generator [:double])]
-                      (m/validate schemas.db/WalletTransaction (logics/->wallet-transaction date neg-num pos-num))))
+;(defspec wallet-entry-test 50
+  ;(properties/for-all [date (mg/generator inst?)
+                       ;pos-num (mg/generator [:double])
+                       ;neg-num (mg/generator [:double])]
+                      ;(m/validate schemas.db/WalletTransaction (logics/->wallet-transaction date neg-num pos-num))))
 
-(deftest can-withdrawal-test
-  (testing "checks can-withdrawal? logic"
-    (are [x y] (= x y)
-      true (logics/can-withdrawal? -0.9M 1.0M)
-      true (logics/can-withdrawal? -1.0M 1.0M)
-      false (logics/can-withdrawal? -1.1M 1.0M))))
+;(deftest can-withdrawal-test
+  ;(testing "checks can-withdrawal? logic"
+    ;(are [x y] (= x y)
+      ;true (logics/can-withdrawal? -0.9M 1.0M)
+      ;true (logics/can-withdrawal? -1.0M 1.0M)
+      ;false (logics/can-withdrawal? -1.1M 1.0M))))

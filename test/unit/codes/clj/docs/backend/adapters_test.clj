@@ -36,21 +36,21 @@
           :description "British Pound Sterling"
           :rate_float 22573.9582}}})
 
-(deftest wire->usd-price-test
-  (testing "should adapt coindesk response into a number"
-    (is (match? 31343.9261M
-                (adapters/wire->usd-price coindesk-response-fixture)))))
+;(deftest wire->usd-price-test
+  ;(testing "should adapt coindesk response into a number"
+    ;(is (match? 31343.9261M
+                ;(adapters/wire->usd-price coindesk-response-fixture)))))
 
-(defspec wire-in-db-test 50
-  (properties/for-all [id (mg/generator :uuid)
-                       pos-num (mg/generator [:double {:min 1 :max 999999}])
-                       neg-num (mg/generator [:double {:min -9999 :max -1}])]
-                      (m/validate schemas.db/WalletTransaction (adapters/withdrawal->db id neg-num pos-num))
-                      (m/validate schemas.db/WalletTransaction (adapters/deposit->db id pos-num pos-num))))
+;(defspec wire-in-db-test 50
+  ;(properties/for-all [id (mg/generator :uuid)
+                       ;pos-num (mg/generator [:double {:min 1 :max 999999}])
+                       ;neg-num (mg/generator [:double {:min -9999 :max -1}])]
+                      ;(m/validate schemas.db/WalletTransaction (adapters/withdrawal->db id neg-num pos-num))
+                      ;(m/validate schemas.db/WalletTransaction (adapters/deposit->db id pos-num pos-num))))
 
-(defspec db-wire-in-test 50
-  (properties/for-all [wallet-db (mg/generator schemas.db/WalletEntry {:gen/infinite? false})]
-                      (m/validate schemas.wire-in/WalletEntry (adapters/db->wire-in wallet-db))))
+;(defspec db-wire-in-test 50
+  ;(properties/for-all [wallet-db (mg/generator schemas.db/WalletEntry {:gen/infinite? false})]
+                      ;(m/validate schemas.wire-in/WalletEntry (adapters/db->wire-in wallet-db))))
 
 (def wallet-entry-1
   #:wallet{:id #uuid "ecdcf860-0c2a-3abf-9af1-a70e770cea9a"
@@ -78,12 +78,12 @@
 
 (def wallet-entries [wallet-entry-1 wallet-entry-2 wallet-entry-3 wallet-entry-4])
 
-(deftest ->wallet-history-test
-  (testing "should reduce and get totals for wallet entries and current usd"
-    (is (match? {:entries (matchers/embeds [{:id uuid?
-                                             :btc-amount number?
-                                             :usd-amount-at number?
-                                             :created-at inst?}])
-                 :total-btc 2M
-                 :total-current-usd 60000M}
-                (adapters/->wallet-history 30000M wallet-entries)))))
+;(deftest ->wallet-history-test
+  ;(testing "should reduce and get totals for wallet entries and current usd"
+    ;(is (match? {:entries (matchers/embeds [{:id uuid?
+                                             ;:btc-amount number?
+                                             ;:usd-amount-at number?
+                                             ;:created-at inst?}])
+                 ;:total-btc 2M
+                 ;:total-current-usd 60000M}
+                ;(adapters/->wallet-history 30000M wallet-entries)))))

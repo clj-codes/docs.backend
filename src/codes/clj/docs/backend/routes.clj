@@ -10,7 +10,9 @@
                             :description "small sample using the codes.clj.docs.backend"}}
            :handler (swagger/create-swagger-handler)}}]
 
-   ["/wallet"
+   ])
+
+   #_["/wallet"
     {:swagger {:tags ["wallet"]}}
 
     ["/history"
@@ -32,4 +34,4 @@
              :responses {201 {:body schemas.wire-in/WalletEntry}
                          400 {:body :string}
                          500 {:body :string}}
-             :handler ports.http-in/do-withdrawal!}}]]])
+             :handler ports.http-in/do-withdrawal!}}]]
