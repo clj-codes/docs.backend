@@ -37,7 +37,7 @@
 (defn insert-author
   {:malli/schema [:=> [:cat schemas.db/NewAuthor schemas.types/DatabaseComponent] :any]}
   [transaction db]
-  (->> (-> (sql.helpers/insert-into :authors)
+  (->> (-> (sql.helpers/insert-into :author)
            (sql.helpers/values [transaction])
            (sql.helpers/returning :*)
            sql/format)
@@ -48,7 +48,7 @@
   {:malli/schema [:=> [:cat :string :keyword schemas.types/DatabaseComponent] schemas.db/Author]}
   [login source db]
   (->> (-> (sql.helpers/select :*)
-           (sql.helpers/from :authors)
+           (sql.helpers/from :author)
            (sql.helpers/where :and
                               [:= :login login]
                               [:= :account_source (name source)])

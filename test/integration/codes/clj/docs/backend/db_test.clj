@@ -29,15 +29,15 @@
     [database (state-flow.api/get-state :database)]
 
     (state/invoke
-     #(db/insert-author {:authors/login "delboni"
-                         :authors/account_source "github"
-                         :authors/avatar_url "https://my.pic.com/me.jpg"}
+     #(db/insert-author {:author/login "delboni"
+                         :author/account_source "github"
+                         :author/avatar_url "https://my.pic.com/me.jpg"}
                         database))
 
     (flow "check transaction was inserted in db"
-      (match? {:authors/author_id uuid?
-               :authors/login "delboni"
-               :authors/account_source "github"
-               :authors/avatar_url "https://my.pic.com/me.jpg"
-               :authors/created_at inst?}
+      (match? {:author/author_id uuid?
+               :author/login "delboni"
+               :author/account_source "github"
+               :author/avatar_url "https://my.pic.com/me.jpg"
+               :author/created_at inst?}
               (db/get-author "delboni" :github database)))))

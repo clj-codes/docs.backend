@@ -1,8 +1,5 @@
 (ns codes.clj.docs.backend.adapters
-  (:require [codes.clj.docs.backend.schemas.db :as schemas.db]
-            [codes.clj.docs.backend.schemas.types :as schemas.types]
-            [codes.clj.docs.backend.schemas.wire-in :as schemas.wire-in]
-            [codes.clj.docs.backend.schemas.wire-out :as schemas.wire-out])
+  (:require [codes.clj.docs.backend.schemas.types :as schemas.types])
   (:import [java.time ZoneId]
            [java.time.format DateTimeFormatter]))
 

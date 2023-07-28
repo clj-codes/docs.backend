@@ -1,6 +1,5 @@
 (ns codes.clj.docs.backend.logics
-  (:require [codes.clj.docs.backend.adapters :as adapters]
-            [codes.clj.docs.backend.schemas.db :as schemas.db])
+  (:require [codes.clj.docs.backend.adapters :as adapters])
   (:import [java.util UUID]))
 
 (defn uuid-from-string
