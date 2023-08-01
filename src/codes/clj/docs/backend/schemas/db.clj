@@ -3,57 +3,77 @@
 
 (def author
   [:map
-   [:author/author_id :uuid]
+   [:author/author-id :uuid]
    [:author/login :string]
-   [:author/account_source [:enum "github"]]
-   [:author/avatar_url :string]
-   [:author/created_at inst?]])
+   [:author/account-source [:enum "github"]]
+   [:author/avatar-url :string]
+   [:author/created-at inst?]])
 
 (def NewAuthor
   (mu/select-keys author [:author/login
-                          :author/account_source
-                          :author/avatar_url]))
+                          :author/account-source
+                          :author/avatar-url]))
 
 (def Author
-  (mu/select-keys author [:author/author_id
+  (mu/select-keys author [:author/author-id
                           :author/login
-                          :author/account_source
-                          :author/avatar_url
-                          :author/created_at]))
+                          :author/account-source
+                          :author/avatar-url
+                          :author/created-at]))
 
 (def see-also
   [:map
-   [:see_also/see_also_id :uuid]
-   [:see_also/author_id :uuid]
-   [:see_also/definition_id :string]
-   [:see_also/created_at inst?]])
+   [:see-also/see-also-id :uuid]
+   [:see-also/author-id :uuid]
+   [:see-also/definition-id :string]
+   [:see-also/created-at inst?]])
 
 (def NewSeeAlso
-  (mu/select-keys author [:see_also/author_id
-                          :see_also/definition_id]))
+  (mu/select-keys see-also [:see-also/author-id
+                            :see-also/definition-id]))
 
 (def SeeAlso
-  (mu/select-keys author [:see_also/see_also_id
-                          :see_also/author_id
-                          :see_also/definition_id
-                          :see_also/created_at]))
+  (mu/select-keys see-also [:see-also/see-also-id
+                            :see-also/author-id
+                            :see-also/definition-id
+                            :see-also/created-at]))
+
+(def example
+  [:map
+   [:example/example-id :uuid]
+   [:example/author-id :uuid]
+   [:example/definition-id :string]
+   [:example/body :string]
+   [:example/created-at inst?]])
+
+(def NewExample
+  (mu/select-keys example [:example/author-id
+                           :example/definition-id
+                           :example/body]))
+
+(def Example
+  (mu/select-keys example [:example/see-also-id
+                           :example/author-id
+                           :example/definition-id
+                           :example/created-at]))
 
 (def note
   [:map
-   [:note/note_id :uuid]
-   [:note/author_id :uuid]
-   [:note/definition_id :string]
+   [:note/note-id :uuid]
+   [:note/author-id :uuid]
+   [:note/definition-id :string]
    [:note/body :string]
-   [:note/created_at inst?]
-   [:note/updated_at inst?]])
+   [:note/created-at inst?]
+   [:note/updated-at inst?]])
 
 (def NewNote
-  (mu/select-keys author [:note/author_id
-                          :note/definition_id
-                          :note/body]))
+  (mu/select-keys note [:note/author-id
+                        :note/definition-id
+                        :note/body]))
 
 (def Note
-  (mu/select-keys author [:note/see_also_id
-                          :note/author_id
-                          :note/definition_id
-                          :note/created_at]))
+  (mu/select-keys note [:note/see-also-id
+                        :note/author-id
+                        :note/definition-id
+                        :note/created-at
+                        :note/updated-at]))

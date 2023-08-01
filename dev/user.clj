@@ -3,6 +3,8 @@
             [malli.dev :as dev]
             [malli.dev.pretty :as pretty]))
 
+(defn tap [args] (println :tap args) args)
+
 (defn start
   []
   (dev/start! {:report (pretty/thrower)}))
