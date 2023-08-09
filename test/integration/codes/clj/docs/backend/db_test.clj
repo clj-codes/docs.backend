@@ -29,6 +29,22 @@
                          :author/avatar-url "https://my.pic.com/me.jpg"}
                         database))))
 
+(defn create-example
+  [example]
+  (flow "insert new example"
+    [database (state-flow.api/get-state :database)]
+    (->> database
+         (db/insert-example example)
+         state-flow.api/return)))
+
+(defn update-example
+  [example]
+  (flow "update example"
+    [database (state-flow.api/get-state :database)]
+    (->> database
+         (db/update-example example)
+         state-flow.api/return)))
+
 (defflow author-db-test
   {:init (util/start-system! create-and-start-components!)
    :cleanup util/stop-system!
@@ -89,3 +105,35 @@
               :note/body "my note about this function."
               :note/created-at inst?}]
             (db/get-notes "clojure.core/disj" database))))
+
+(defflow example-db-test
+  {:init (util/start-system! create-and-start-components!)
+   :cleanup util/stop-system!
+   :fail-fast? true}
+
+  [database (state-flow.api/get-state :database)
+   author (create-author "delboni" "github" database)
+   :let [author-id (:author/author-id author)]
+   example-1 (create-example {:example/author-id author-id
+                              :example/definition-id "clojure.core/disj"
+                              :example/body "my example about this function."})
+   example-2 (create-example  {:example/author-id author-id
+                               :example/definition-id "clojure.core/disj"
+                               :example/body "another example about this function."})]
+
+  (flow "check transaction was inserted in db"
+    (match? [example-1 example-2]
+            (db/get-examples "clojure.core/disj" database)))
+
+  (update-example {:example/example-id (:example/example-id example-1)
+                   :example/author-id author-id
+                   :example/body "my example about this function. edit 1"})
+
+  (update-example {:example/example-id (:example/example-id example-1)
+                   :example/author-id author-id
+                   :example/body "my example about this function. edit 2"})
+
+  (flow "check transaction was inserted in db"
+    (match? [(assoc example-1 :example/body "my example about this function. edit 2")
+             example-2]
+            (db/get-examples "clojure.core/disj" database))))

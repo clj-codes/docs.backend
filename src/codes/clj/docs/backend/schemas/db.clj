@@ -51,10 +51,16 @@
                            :example/definition-id
                            :example/body]))
 
+(def UpdateExample
+  (mu/select-keys example [:example/example-id
+                           :example/author-id
+                           :example/body]))
+
 (def Example
-  (mu/select-keys example [:example/see-also-id
+  (mu/select-keys example [:example/example-id
                            :example/author-id
                            :example/definition-id
+                           :example/body
                            :example/created-at]))
 
 (def note

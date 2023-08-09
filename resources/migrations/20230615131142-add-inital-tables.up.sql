@@ -35,7 +35,8 @@ CREATE TABLE IF NOT EXISTS see_also (
 
 CREATE TABLE IF NOT EXISTS example (
   example_id uuid UNIQUE NOT NULL PRIMARY KEY DEFAULT gen_random_uuid (),
-  definition_id VARCHAR(500) NOT NULL
+  definition_id VARCHAR(500) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 --;;

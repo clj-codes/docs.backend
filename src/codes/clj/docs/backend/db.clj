@@ -81,8 +81,59 @@
            sql/format)
        (execute! db)))
 
-; todo examples
-; https://github.com/seancorfield/next-jdbc/blob/develop/doc/transactions.md#automatic-commit--rollback
+(defn insert-example
+  {:malli/schema [:=> [:cat schemas.db/NewExample schemas.types/DatabaseComponent] :any]}
+  [transaction db]
+  (jdbc/with-transaction [datasource (:datasource db)]
+    (let [execute-tx! (fn [db sql] (jdbc/execute! db sql jdbc/snake-kebab-opts))
+          new-example (select-keys transaction [:example/definition-id])
+          example-id (->> (-> (sql.helpers/insert-into :example)
+                              (sql.helpers/values [new-example])
+                              (sql.helpers/returning :example/example-id)
+                              sql/format)
+                          (execute-tx! datasource)
+                          first
+                          :example/example-id)
+          example (-> transaction
+                      (assoc :example/example-id example-id))]
+      (->> (-> (sql.helpers/insert-into :example-edit)
+               (sql.helpers/values [(dissoc example :example/definition-id)])
+               sql/format)
+           (execute-tx! datasource))
+      example)))
+
+(defn update-example
+  {:malli/schema [:=> [:cat schemas.db/UpdateExample schemas.types/DatabaseComponent] :any]}
+  [transaction db]
+  (->> (-> (sql.helpers/insert-into :example-edit)
+           (sql.helpers/values [transaction])
+           (sql.helpers/returning :*)
+           sql/format)
+       (execute! db)
+       first))
+
+(defn get-examples
+  {:malli/schema [:=> [:cat :string schemas.types/DatabaseComponent] [:vector schemas.db/Example]]}
+  [definition-id db]
+  (->> (-> (sql.helpers/select-distinct-on [:example/created-at :example/example-id]
+                                           :example/*
+                                           :example-edit/*)
+           (sql.helpers/from :example)
+           (sql.helpers/join :example-edit
+                             [:= :example/example-id :example-edit/example-id])
+           (sql.helpers/where [:= :example/definition-id definition-id])
+           (sql.helpers/order-by [:example/created-at :asc])
+           (sql.helpers/order-by [:example/example-id])
+           (sql.helpers/order-by [:example-edit/created-at :desc])
+           sql/format)
+       (execute! db)
+       (mapv (fn [{:example/keys [example-id definition-id]
+                   :example-edit/keys [author-id body created-at]}]
+               #:example{:example-id example-id
+                         :definition-id definition-id
+                         :author-id author-id
+                         :body body
+                         :created-at created-at}))))
 
 (defn insert-note
   {:malli/schema [:=> [:cat schemas.db/NewNote schemas.types/DatabaseComponent] :any]}
