@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS see_also (
   see_also_id uuid UNIQUE NOT NULL PRIMARY KEY DEFAULT gen_random_uuid (),
   author_id uuid NOT NULL,
   definition_id VARCHAR(500) NOT NULL,
+  definition_id_to VARCHAR(500) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT author_see_also_fk FOREIGN KEY(author_id) REFERENCES author(author_id)
 );

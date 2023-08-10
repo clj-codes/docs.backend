@@ -25,23 +25,28 @@
   [:map
    [:see-also/see-also-id :uuid]
    [:see-also/author-id :uuid]
+   [:see-also/author Author]
    [:see-also/definition-id :string]
+   [:see-also/definition-id-to :string]
    [:see-also/created-at inst?]])
 
 (def NewSeeAlso
   (mu/select-keys see-also [:see-also/author-id
-                            :see-also/definition-id]))
+                            :see-also/definition-id
+                            :see-also/definition-id-to]))
 
 (def SeeAlso
   (mu/select-keys see-also [:see-also/see-also-id
-                            :see-also/author-id
+                            :see-also/author
                             :see-also/definition-id
+                            :see-also/definition-id-to
                             :see-also/created-at]))
 
 (def example
   [:map
    [:example/example-id :uuid]
    [:example/author-id :uuid]
+   [:example/author Author]
    [:example/definition-id :string]
    [:example/body :string]
    [:example/created-at inst?]])
@@ -58,7 +63,7 @@
 
 (def Example
   (mu/select-keys example [:example/example-id
-                           :example/author-id
+                           :example/author
                            :example/definition-id
                            :example/body
                            :example/created-at]))
@@ -67,6 +72,7 @@
   [:map
    [:note/note-id :uuid]
    [:note/author-id :uuid]
+   [:note/author Author]
    [:note/definition-id :string]
    [:note/body :string]
    [:note/created-at inst?]
@@ -76,10 +82,15 @@
   (mu/select-keys note [:note/author-id
                         :note/definition-id
                         :note/body]))
+(def UpdateNote
+  (mu/select-keys note [:note/note-id
+                        :note/author-id
+                        :note/definition-id
+                        :note/body]))
 
 (def Note
-  (mu/select-keys note [:note/see-also-id
-                        :note/author-id
+  (mu/select-keys note [:note/note-id
+                        :note/author
                         :note/definition-id
                         :note/created-at
                         :note/updated-at]))
