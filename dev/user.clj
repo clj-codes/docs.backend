@@ -3,7 +3,7 @@
             [malli.dev :as dev]
             [malli.dev.pretty :as pretty]))
 
-(defn tap [args] (println :tap args) args)
+(defn tap [args] (prn :tap args) args)
 
 (defn start
   []

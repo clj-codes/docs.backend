@@ -45,6 +45,23 @@
        (execute! db)
        first))
 
+; TODO: move to adapter & schema & test
+(defn db->see-alsos
+  [db-data]
+  (map (fn [{:author/keys [author-id login account-source avatar-url]
+             :see-also/keys [see-also-id definition-id definition-id-to created-at]
+             :as see-also}]
+         #:see-also{:see-also-id see-also-id
+                    :definition-id definition-id
+                    :definition-id-to definition-id-to
+                    :created-at created-at
+                    :author {:author/author-id author-id
+                             :author/login login
+                             :author/account-source account-source
+                             :author/avatar-url avatar-url
+                             :author/created-at (:author/created-at see-also)}})
+       db-data))
+
 (defn get-see-alsos
   {:malli/schema [:=> [:cat :string schemas.types/DatabaseComponent] [:sequential schemas.db/SeeAlso]]}
   [definition-id db]
@@ -55,18 +72,7 @@
            (sql.helpers/where [:= :definition-id definition-id])
            sql/format)
        (execute! db)
-       (map (fn [{:author/keys [author-id login account-source avatar-url]
-                  :see-also/keys [see-also-id definition-id definition-id-to created-at]
-                  :as see-also}]
-              #:see-also{:see-also-id see-also-id
-                         :definition-id definition-id
-                         :definition-id-to definition-id-to
-                         :created-at created-at
-                         :author {:author/author-id author-id
-                                  :author/login login
-                                  :author/account-source account-source
-                                  :author/avatar-url avatar-url
-                                  :author/created-at (:author/created-at see-also)}}))))
+       db->see-alsos))
 
 (defn insert-example
   {:malli/schema [:=> [:cat schemas.db/NewExample schemas.types/DatabaseComponent] :any]}
@@ -99,6 +105,24 @@
        (execute! db)
        first))
 
+; TODO: move to adapter & schema & test
+(defn db->examples
+  [db-data]
+  (map (fn [{:author/keys [author-id login account-source avatar-url]
+             :example/keys [example-id definition-id]
+             :example-edit/keys [body created-at]
+             :as example}]
+         #:example{:example-id example-id
+                   :definition-id definition-id
+                   :body body
+                   :created-at created-at
+                   :author {:author/author-id author-id
+                            :author/login login
+                            :author/account-source account-source
+                            :author/avatar-url avatar-url
+                            :author/created-at (:author/created-at example)}})
+       db-data))
+
 (defn get-examples
   {:malli/schema [:=> [:cat :string schemas.types/DatabaseComponent] [:sequential schemas.db/Example]]}
   [definition-id db]
@@ -117,19 +141,7 @@
            (sql.helpers/order-by [:example-edit/created-at :desc])
            sql/format)
        (execute! db)
-       (map (fn [{:author/keys [author-id login account-source avatar-url]
-                  :example/keys [example-id definition-id]
-                  :example-edit/keys [body created-at]
-                  :as example}]
-              #:example{:example-id example-id
-                        :definition-id definition-id
-                        :body body
-                        :created-at created-at
-                        :author {:author/author-id author-id
-                                 :author/login login
-                                 :author/account-source account-source
-                                 :author/avatar-url avatar-url
-                                 :author/created-at (:author/created-at example)}}))))
+       db->examples))
 
 (defn insert-note
   {:malli/schema [:=> [:cat schemas.db/NewNote schemas.types/DatabaseComponent] :any]}
@@ -152,6 +164,24 @@
        (execute! db)
        first))
 
+; TODO: move to adapter & schema & test
+(defn db->notes
+  [db-data]
+  (map (fn [{:author/keys [author-id login account-source avatar-url]
+             :note/keys [note-id definition-id body created-at updated-at]
+             :as note}]
+         #:note{:note-id note-id
+                :definition-id definition-id
+                :body body
+                :created-at created-at
+                :updated-at updated-at
+                :author {:author/author-id author-id
+                         :author/login login
+                         :author/account-source account-source
+                         :author/avatar-url avatar-url
+                         :author/created-at (:author/created-at note)}})
+       db-data))
+
 (defn get-notes
   {:malli/schema [:=> [:cat :string schemas.types/DatabaseComponent] [:sequential schemas.db/Note]]}
   [definition-id db]
@@ -162,16 +192,47 @@
            (sql.helpers/where [:= :definition-id definition-id])
            sql/format)
        (execute! db)
-       (map (fn [{:author/keys [author-id login account-source avatar-url]
-                  :note/keys [note-id definition-id body created-at updated-at]
-                  :as note}]
-              #:note{:note-id note-id
-                     :definition-id definition-id
-                     :body body
-                     :created-at created-at
-                     :updated-at updated-at
-                     :author {:author/author-id author-id
-                              :author/login login
-                              :author/account-source account-source
-                              :author/avatar-url avatar-url
-                              :author/created-at (:author/created-at note)}}))))
+       db->notes))
+
+(defn get-all
+  [definition-id db]
+  (->> (-> (sql.helpers/union-all
+            (-> (sql.helpers/select
+                 [:note/note-id :id]
+                 ["note" :type]
+                 :note/definition-id
+                 :note/body
+                 :note/created-at
+                 :author-note/*)
+                (sql.helpers/from :note)
+                (sql.helpers/join [:author :author-note]
+                                  [:= :note/author-id :author-note/author-id])
+                (sql.helpers/where [:= :note/definition-id definition-id]))
+
+            (-> (sql.helpers/select
+                 [:example/example-id :id]
+                 ["example" :type]
+                 :example/definition-id
+                 :example-edit/body
+                 :example-edit/created-at
+                 :author-example-edit/*)
+                (sql.helpers/from :example)
+                (sql.helpers/join :example-edit
+                                  [:= :example/example-id :example-edit/example-id])
+                (sql.helpers/join [:author :author-example-edit]
+                                  [:= :example-edit/author-id :author-example-edit/author-id])
+                (sql.helpers/where [:= :example/definition-id definition-id]))
+
+            (-> (sql.helpers/select
+                 [:see-also/see-also-id :id]
+                 ["see-also" :type]
+                 :see-also/definition-id
+                 :see-also/definition-id-to
+                 :see-also/created-at
+                 :author-see-also/*)
+                (sql.helpers/from :see-also)
+                (sql.helpers/join [:author :author-see-also]
+                                  [:= :see-also/author-id :author-see-also/author-id])
+                (sql.helpers/where [:= :see-also/definition-id definition-id])))
+           sql/format)
+       (execute! db)))

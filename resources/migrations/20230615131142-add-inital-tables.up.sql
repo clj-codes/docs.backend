@@ -34,11 +34,19 @@ CREATE TABLE IF NOT EXISTS see_also (
 
 --;;
 
+CREATE INDEX see_also_definition_id_idx ON see_also (definition_id);
+
+--;;
+
 CREATE TABLE IF NOT EXISTS example (
   example_id uuid UNIQUE NOT NULL PRIMARY KEY DEFAULT gen_random_uuid (),
   definition_id VARCHAR(500) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+--;;
+
+CREATE INDEX example_definition_id_idx ON example (definition_id);
 
 --;;
 
@@ -62,6 +70,10 @@ CREATE TABLE IF NOT EXISTS note (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT author_note_fk FOREIGN KEY(author_id) REFERENCES author(author_id)
 );
+
+--;;
+
+CREATE INDEX note_definition_id_idx ON note (definition_id);
 
 --;;
 

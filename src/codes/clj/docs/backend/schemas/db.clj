@@ -76,7 +76,7 @@
    [:note/definition-id :string]
    [:note/body :string]
    [:note/created-at inst?]
-   [:note/updated-at inst?]])
+   [:note/updated-at {:optional true} inst?]])
 
 (def NewNote
   (mu/select-keys note [:note/author-id
