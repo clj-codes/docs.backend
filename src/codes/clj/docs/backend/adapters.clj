@@ -18,43 +18,79 @@
       (date->localdatetime (ZoneId/of "UTC"))
       (.format (DateTimeFormatter/ofPattern str-format))))
 
-;(defn wire->usd-price
-  ;{:malli/schema [:=> [:cat schemas.wire-out/CoinDeskResponse] number?]}
-  ;[wire]
-  ;(-> wire
-      ;(get-in [:bpi :USD :rate_float])
-      ;bigdec))
+; TODO: schema & test
+(defn db->author
+  [{:keys [author-id login account-source avatar-url created-at]}]
+  {:author/author-id author-id
+   :author/login login
+   :author/account-source account-source
+   :author/avatar-url avatar-url
+   :author/created-at created-at})
 
-;(defn ^:private wire-in->db
-  ;{:malli/schema [:=> [:cat :uuid number? pos?] schemas.db/WalletTransaction]}
-  ;[id btc usd]
-  ;{:wallet/id id
-   ;:wallet/btc_amount btc
-   ;:wallet/usd_amount_at usd})
+; TODO: schema & test
+(defn db->note
+  [{:keys [id definition-id body created] :as note}]
+  {:note/note-id id
+   :note/definition-id definition-id
+   :note/body body
+   :note/created-at created
+   :note/author (db->author note)})
 
-;(defn deposit->db
-  ;{:malli/schema [:=> [:cat :uuid pos? pos?] schemas.db/WalletTransaction]}
-  ;[id btc usd]
-  ;(wire-in->db id btc usd))
+; TODO: schema & test
+(defn db->notes
+  [db-rows]
+  (->> db-rows
+       (filter #(= (:type %) "note"))
+       (map db->note)))
 
-;(defn withdrawal->db
-  ;{:malli/schema [:=> [:cat :uuid neg? pos?] schemas.db/WalletTransaction]}
-  ;[id btc usd]
-  ;(wire-in->db id btc usd))
+; TODO: schema & test
+(defn db->example
+  [{:keys [id definition-id body created] :as example}
+   editors]
+  {:example/example-id id
+   :example/definition-id definition-id
+   :example/body body
+   :example/created-at created
+   :example/author (db->author example)
+   :example/editors editors})
 
-;(defn db->wire-in
-  ;{:malli/schema [:=> [:cat schemas.db/WalletEntry] schemas.wire-in/WalletEntry]}
-  ;[{:wallet/keys [id btc_amount usd_amount_at created_at]}]
-  ;{:id id
-   ;:btc-amount (bigdec btc_amount)
-   ;:usd-amount-at (bigdec usd_amount_at)
-   ;:created-at created_at})
+; TODO: schema & test
+(defn db->examples
+  [db-rows]
+  (->> db-rows
+       (filter #(= (:type %) "example"))
+       (group-by :id)
+       (map (fn [[_ examples]]
+              (let [sorted-examples (sort-by :created examples)
+                    editors (map db->author sorted-examples)
+                    example (last sorted-examples)]
+                (db->example example editors))))))
 
-;(defn ->wallet-history
-  ;{:malli/schema [:=> [:cat pos? [:vector schemas.db/WalletEntry]] schemas.wire-in/WalletHistory]}
-  ;[current-usd-price wallet-entries]
-  ;(let [total-btc (reduce #(+ (:wallet/btc_amount %2) %1) 0M wallet-entries)]
-    ;{:entries (mapv db->wire-in wallet-entries)
-     ;:total-btc (bigdec total-btc)
-     ;:total-current-usd (bigdec (* current-usd-price total-btc))}))
+; TODO: schema & test
+(defn db->see-also
+  [{:keys [id definition-id body created] :as see-also}]
+  {:see-also/see-also-id id
+   :see-also/definition-id definition-id
+   :see-also/definition-id-to body
+   :see-also/created-at created
+   :see-also/author (db->author see-also)})
 
+; TODO: schema & test
+(defn db->see-alsos
+  [db-rows]
+  (->> db-rows
+       (filter #(= (:type %) "see-also"))
+       (map db->see-also)))
+
+; TODO: schema
+(defn db->definitions [db-rows]
+  (->> db-rows
+       (group-by :definition-id)
+       (map (fn [[definition-id items]]
+              (let [notes (db->notes items)
+                    examples (db->examples items)
+                    see-alsos (db->see-alsos items)]
+                {:definition/definition-id definition-id
+                 :definition/notes notes
+                 :definition/examples examples
+                 :definition/see-alsos see-alsos})))))
