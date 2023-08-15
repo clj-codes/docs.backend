@@ -98,8 +98,8 @@
        (execute! db)
        first))
 
-; TODO schema
-(defn get-all
+(defn get-by-definition
+  {:malli/schema [:=> [:cat :string schemas.types/DatabaseComponent] [:sequential schemas.db/Definition]]}
   [definition-id db]
   (->> (-> (sql.helpers/union-all
             (-> (sql.helpers/select

@@ -114,7 +114,7 @@
                                       :see-also/definition-id "clojure.core/disj"
                                       :see-also/definition-id-to "clojure.core/dissoc"
                                       :see-also/created-at inst?}]}]
-            (db/get-all "clojure.core/disj" database))))
+            (db/get-by-definition "clojure.core/disj" database))))
 
 (defflow note-db-test
   {:init (util/start-system! create-and-start-components!)
@@ -134,7 +134,7 @@
                                   :note/definition-id "clojure.core/disj"
                                   :note/body "my note about this function."
                                   :note/created-at inst?}]}]
-            (db/get-all "clojure.core/disj" database)))
+            (db/get-by-definition "clojure.core/disj" database)))
 
   (update-note {:note/note-id (:note/note-id note)
                 :note/author-id author-id
@@ -149,7 +149,7 @@
                                   :note/created-at inst?
                                   ;todo: :note/updated-at inst?
                                   }]}]
-            (db/get-all "clojure.core/disj" database))))
+            (db/get-by-definition "clojure.core/disj" database))))
 
 (defflow example-db-test
   {:init (util/start-system! create-and-start-components!)
@@ -175,7 +175,7 @@
   (flow "check transaction was inserted in db"
     (match? [{:definition/examples [example-full-1
                                     example-full-2]}]
-            (db/get-all "clojure.core/disj" database)))
+            (db/get-by-definition "clojure.core/disj" database)))
 
   (update-example {:example/example-id (:example/example-id example-1)
                    :example/author-id author-id
@@ -188,7 +188,7 @@
   (flow "check transaction was inserted in db"
     (match? [{:definition/examples [(assoc example-full-1 :example/body "my example about this function. edit 2")
                                     example-full-2]}]
-            (db/get-all "clojure.core/disj" database))))
+            (db/get-by-definition "clojure.core/disj" database))))
 
 (defflow all-db-test
   {:init (util/start-system! create-and-start-components!)
@@ -274,4 +274,4 @@
                                                                   :account-source "github"
                                                                   :avatar-url "https://my.pic.com/me.jpg"
                                                                   :created-at inst?}}]}])
-            (db/get-all "clojure.core/disj" database))))
+            (db/get-by-definition "clojure.core/disj" database))))

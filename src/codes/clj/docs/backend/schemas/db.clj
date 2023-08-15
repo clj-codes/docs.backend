@@ -94,3 +94,10 @@
                         :note/definition-id
                         :note/created-at
                         :note/updated-at]))
+
+(def Definition
+  [:map
+   [:definition/definition-id :string]
+   [:definition/notes [:sequential Note]]
+   [:definition/examples [:sequential Example]]
+   [:definition/see-alsos [:sequential SeeAlso]]])
