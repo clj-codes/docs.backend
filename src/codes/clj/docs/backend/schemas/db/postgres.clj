@@ -1,4 +1,4 @@
-(ns codes.clj.docs.backend.schemas.db
+(ns codes.clj.docs.backend.schemas.db.postgres
   (:require [malli.util :as mu]))
 
 (def author
