@@ -1,19 +1,19 @@
 (ns codes.clj.docs.backend.db.postgres
   (:require [codes.clj.docs.backend.adapters.db.postgres :as adapters]
-            [codes.clj.docs.backend.schemas.db.postgres :as schemas.db]
+            [codes.clj.docs.backend.schemas.model.social :as schemas.model.social]
             [codes.clj.docs.backend.schemas.types :as schemas.types]
             [honey.sql :as sql]
             [honey.sql.helpers :as sql.helpers]
             [next.jdbc :as jdbc]
             [parenthesin.components.db.jdbc-hikari :as components.database]))
 
-(defn execute!
+(defn ^:private execute!
   {:malli/schema [:=> [:cat schemas.types/DatabaseComponent :any] :any]}
   [db sql-params]
   (components.database/execute db sql-params jdbc/snake-kebab-opts))
 
 (defn upsert-author
-  {:malli/schema [:=> [:cat schemas.db/NewAuthor schemas.types/DatabaseComponent] :any]}
+  {:malli/schema [:=> [:cat schemas.model.social/NewAuthor schemas.types/DatabaseComponent] :any]}
   [transaction db]
   (->> (-> (sql.helpers/insert-into :author)
            (sql.helpers/values [transaction])
@@ -25,7 +25,7 @@
        first))
 
 (defn get-author
-  {:malli/schema [:=> [:cat :string :keyword schemas.types/DatabaseComponent] schemas.db/Author]}
+  {:malli/schema [:=> [:cat :string :keyword schemas.types/DatabaseComponent] schemas.model.social/Author]}
   [login source db]
   (->> (-> (sql.helpers/select :*)
            (sql.helpers/from :author)
@@ -37,7 +37,7 @@
        first))
 
 (defn insert-see-also
-  {:malli/schema [:=> [:cat schemas.db/NewSeeAlso schemas.types/DatabaseComponent] :any]}
+  {:malli/schema [:=> [:cat schemas.model.social/NewSeeAlso schemas.types/DatabaseComponent] :any]}
   [transaction db]
   (->> (-> (sql.helpers/insert-into :see-also)
            (sql.helpers/values [transaction])
@@ -47,7 +47,7 @@
        first))
 
 (defn insert-example
-  {:malli/schema [:=> [:cat schemas.db/NewExample schemas.types/DatabaseComponent] :any]}
+  {:malli/schema [:=> [:cat schemas.model.social/NewExample schemas.types/DatabaseComponent] :any]}
   [transaction db]
   (jdbc/with-transaction [datasource (:datasource db)]
     (let [execute-tx! (fn [db sql] (jdbc/execute! db sql jdbc/snake-kebab-opts))
@@ -68,7 +68,7 @@
       example)))
 
 (defn update-example
-  {:malli/schema [:=> [:cat schemas.db/UpdateExample schemas.types/DatabaseComponent] :any]}
+  {:malli/schema [:=> [:cat schemas.model.social/UpdateExample schemas.types/DatabaseComponent] :any]}
   [transaction db]
   (->> (-> (sql.helpers/insert-into :example-edit)
            (sql.helpers/values [transaction])
@@ -78,7 +78,7 @@
        first))
 
 (defn insert-note
-  {:malli/schema [:=> [:cat schemas.db/NewNote schemas.types/DatabaseComponent] :any]}
+  {:malli/schema [:=> [:cat schemas.model.social/NewNote schemas.types/DatabaseComponent] :any]}
   [transaction db]
   (->> (-> (sql.helpers/insert-into :note)
            (sql.helpers/values [transaction])
@@ -88,7 +88,7 @@
        first))
 
 (defn update-note
-  {:malli/schema [:=> [:cat schemas.db/UpdateNote schemas.types/DatabaseComponent] :any]}
+  {:malli/schema [:=> [:cat schemas.model.social/UpdateNote schemas.types/DatabaseComponent] :any]}
   [transaction db]
   (->> (-> (sql.helpers/update :note)
            (sql.helpers/set transaction)
@@ -99,7 +99,7 @@
        first))
 
 (defn get-by-definition
-  {:malli/schema [:=> [:cat :string schemas.types/DatabaseComponent] [:sequential schemas.db/Definition]]}
+  {:malli/schema [:=> [:cat :string schemas.types/DatabaseComponent] [:sequential schemas.model.social/Definition]]}
   [definition-id db]
   (->> (-> (sql.helpers/union-all
             (-> (sql.helpers/select

@@ -4,8 +4,8 @@
 (def routes
   [["/swagger.json"
     {:get {:no-doc true
-           :swagger {:info {:title "btc-wallet"
-                            :description "small sample using the codes.clj.docs.backend"}}
+           :swagger {:info {:title "clj.docs"
+                            :description "codes.clj.docs.backend"}}
            :handler (swagger/create-swagger-handler)}}]])
 
 #_["/wallet"
