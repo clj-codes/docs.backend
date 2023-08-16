@@ -1,7 +1,42 @@
 (ns unit.codes.clj.docs.backend.adapters.db.postgres-test
   (:require [clojure.test :refer [deftest is testing]]
+            [clojure.test.check.clojure-test :refer [defspec]]
+            [clojure.test.check.properties :as properties]
             [codes.clj.docs.backend.adapters.db.postgres :as adapters]
+            [codes.clj.docs.backend.schemas.db.postgres :as schemas.db]
+            [malli.core :as m]
+            [malli.generator :as mg]
+            [malli.util :as mu]
             [matcher-combinators.test :refer [match?]]))
+
+(defspec db->author-test 50
+  (properties/for-all [row (mg/generator schemas.db/UnionRow)]
+                      (m/validate schemas.db/Author (adapters/db->author row))))
+
+(defspec db->note-test 50
+  (properties/for-all [row (mg/generator (mu/assoc schemas.db/UnionRow :type [:enum "note"]))]
+                      (m/validate schemas.db/Note (adapters/db->note row))))
+
+(defspec db->notes-test 50
+  (properties/for-all [rows (mg/generator (mu/assoc [:sequential schemas.db/UnionRow] :type [:enum "note"]))]
+                      (m/validate [:sequential schemas.db/Note] (adapters/db->notes rows))))
+
+(defspec db->example-test 50
+  (properties/for-all [row (mg/generator (mu/assoc schemas.db/UnionRow :type [:enum "example"]))
+                       editors (mg/generator [:sequential schemas.db/Author])]
+                      (m/validate schemas.db/Example (adapters/db->example row editors))))
+
+(defspec db->examples-test 50
+  (properties/for-all [rows (mg/generator (mu/assoc schemas.db/UnionRow :type [:enum "example"]))]
+                      (m/validate [:sequential schemas.db/Example] (adapters/db->examples rows))))
+
+(defspec db->see-also-test 50
+  (properties/for-all [row (mg/generator (mu/assoc schemas.db/UnionRow :type [:enum "see-also"]))]
+                      (m/validate schemas.db/SeeAlso (adapters/db->see-also row))))
+
+(defspec db->see-alsos-test 50
+  (properties/for-all [rows (mg/generator (mu/assoc schemas.db/UnionRow :type [:enum "see-also"]))]
+                      (m/validate [:sequential schemas.db/SeeAlso] (adapters/db->see-alsos rows))))
 
 (def db-rows
   [{:account-source "github"

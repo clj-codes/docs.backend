@@ -1,13 +1,29 @@
 (ns codes.clj.docs.backend.schemas.db.postgres
-  (:require [malli.util :as mu]))
+  (:require [codes.clj.docs.backend.schemas.types :refer [TimeInstant]]
+            [malli.util :as mu]))
+
+(def account-source [:enum "github"])
+
+(def UnionRow
+  [:map
+   [:id :uuid]
+   [:type [:enum "note" "example" "see-also"]]
+   [:definition-id :string]
+   [:body :string]
+   [:created TimeInstant]
+   [:author-id :uuid]
+   [:login :string]
+   [:account-source account-source]
+   [:avatar-url :string]
+   [:created-at TimeInstant]])
 
 (def author
   [:map
    [:author/author-id :uuid]
    [:author/login :string]
-   [:author/account-source [:enum "github"]]
+   [:author/account-source account-source]
    [:author/avatar-url :string]
-   [:author/created-at inst?]])
+   [:author/created-at TimeInstant]])
 
 (def NewAuthor
   (mu/select-keys author [:author/login
@@ -28,7 +44,7 @@
    [:see-also/author Author]
    [:see-also/definition-id :string]
    [:see-also/definition-id-to :string]
-   [:see-also/created-at inst?]])
+   [:see-also/created-at TimeInstant]])
 
 (def NewSeeAlso
   (mu/select-keys see-also [:see-also/author-id
@@ -49,7 +65,7 @@
    [:example/author Author]
    [:example/definition-id :string]
    [:example/body :string]
-   [:example/created-at inst?]])
+   [:example/created-at TimeInstant]])
 
 (def NewExample
   (mu/select-keys example [:example/author-id
@@ -75,8 +91,8 @@
    [:note/author Author]
    [:note/definition-id :string]
    [:note/body :string]
-   [:note/created-at inst?]
-   [:note/updated-at {:optional true} inst?]])
+   [:note/created-at TimeInstant]
+   [:note/updated-at {:optional true} TimeInstant]])
 
 (def NewNote
   (mu/select-keys note [:note/author-id

@@ -1,9 +1,8 @@
 (ns codes.clj.docs.backend.adapters.db.postgres
   (:require [codes.clj.docs.backend.schemas.db.postgres :as schemas]))
 
-; TODO: input schema & test
 (defn db->author
-  {:malli/schema [:=> [:cat :any] schemas/Author]}
+  {:malli/schema [:=> [:cat schemas/UnionRow] schemas/Author]}
   [{:keys [author-id login account-source avatar-url created-at]}]
   {:author/author-id author-id
    :author/login login
@@ -11,9 +10,8 @@
    :author/avatar-url avatar-url
    :author/created-at created-at})
 
-; TODO: input schema & test
 (defn db->note
-  {:malli/schema [:=> [:cat :any] schemas/Note]}
+  {:malli/schema [:=> [:cat schemas/UnionRow] schemas/Note]}
   [{:keys [id definition-id body created] :as note}]
   {:note/note-id id
    :note/definition-id definition-id
@@ -21,17 +19,15 @@
    :note/created-at created
    :note/author (db->author note)})
 
-; TODO: input schema & test
 (defn db->notes
-  {:malli/schema [:=> [:cat :any] [:sequential schemas/Note]]}
+  {:malli/schema [:=> [:cat [:sequential schemas/UnionRow]] [:sequential schemas/Note]]}
   [db-rows]
   (->> db-rows
        (filter #(= (:type %) "note"))
        (map db->note)))
 
-; TODO: input schema & test
 (defn db->example
-  {:malli/schema [:=> [:cat :any [:sequential schemas/Author]] schemas/Example]}
+  {:malli/schema [:=> [:cat schemas/UnionRow [:sequential schemas/Author]] schemas/Example]}
   [{:keys [id definition-id body created] :as example}
    editors]
   {:example/example-id id
@@ -41,9 +37,8 @@
    :example/author (db->author example)
    :example/editors editors})
 
-; TODO: input schema & test
 (defn db->examples
-  {:malli/schema [:=> [:cat :any] [:sequential schemas/Example]]}
+  {:malli/schema [:=> [:cat [:sequential schemas/UnionRow]] [:sequential schemas/Example]]}
   [db-rows]
   (->> db-rows
        (filter #(= (:type %) "example"))
@@ -54,9 +49,8 @@
                     example (last sorted-examples)]
                 (db->example example editors))))))
 
-; TODO: input schema & test
 (defn db->see-also
-  {:malli/schema [:=> [:cat :any] schemas/SeeAlso]}
+  {:malli/schema [:=> [:cat schemas/UnionRow] schemas/SeeAlso]}
   [{:keys [id definition-id body created] :as see-also}]
   {:see-also/see-also-id id
    :see-also/definition-id definition-id
@@ -64,17 +58,15 @@
    :see-also/created-at created
    :see-also/author (db->author see-also)})
 
-; TODO: input schema & test
 (defn db->see-alsos
-  {:malli/schema [:=> [:cat :any] [:sequential schemas/SeeAlso]]}
+  {:malli/schema [:=> [:cat [:sequential schemas/UnionRow]] [:sequential schemas/SeeAlso]]}
   [db-rows]
   (->> db-rows
        (filter #(= (:type %) "see-also"))
        (map db->see-also)))
 
-; TODO: input schema
 (defn db->definitions
-  {:malli/schema [:=> [:cat :any] [:sequential schemas/Definition]]}
+  {:malli/schema [:=> [:cat [:sequential schemas/UnionRow]] [:sequential schemas/Definition]]}
   [db-rows]
   (->> db-rows
        (group-by :definition-id)

@@ -2,6 +2,7 @@
   (:require [com.stuartsierra.component :as component]
             [malli.core :as m]
             [malli.experimental.time :as met]
+            [malli.experimental.time.generator]
             [parenthesin.components.db.jdbc-hikari :as components.db]
             [parenthesin.components.http.clj-http :as components.http]))
 
@@ -28,6 +29,10 @@
 
 (def JavaZoneId
   (met/-zone-id-schema))
+
+(def TimeInstant
+  [inst? {:min #inst "2000-01-01"
+          :max #inst "2040-01-01"}])
 
 (def Components
   [:map
