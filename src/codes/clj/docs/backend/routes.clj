@@ -1,33 +1,32 @@
 (ns codes.clj.docs.backend.routes
-  (:require [reitit.swagger :as swagger]))
+  (:require [codes.clj.docs.backend.ports.http-in :as ports.http-in]
+            [codes.clj.docs.backend.schemas.wire :as schemas.wire]
+            [codes.clj.docs.backend.schemas.wire.in :as schemas.wire.in]
+            [reitit.swagger :as swagger]))
 
 (def routes
   [["/swagger.json"
     {:get {:no-doc true
            :swagger {:info {:title "clj.docs"
                             :description "codes.clj.docs.backend"}}
-           :handler (swagger/create-swagger-handler)}}]])
+           :handler (swagger/create-swagger-handler)}}]
 
-#_["/wallet"
-   {:swagger {:tags ["wallet"]}}
+   ["/author"
+    {:swagger {:tags ["author" "social"]}}
 
-   ["/history"
-    {:get {:summary "get all wallet entries and current total"
-           :responses {200 {:body schemas.wire-in/WalletHistory}
-                       500 {:body :string}}
-           :handler ports.http-in/get-history}}]
-   ["/deposit"
-    {:post {:summary "do a deposit in btc in the wallet"
-            :parameters {:body schemas.wire-in/WalletDeposit}
-            :responses {201 {:body schemas.wire-in/WalletEntry}
-                        400 {:body :string}
+    ["/"
+     {:post {:summary "create new author"
+             :parameters {:body schemas.wire.in/NewAuthor}
+             :responses {201 {:body {:id :uuid}}
+                         403 {:body :string}
+                         500 {:body :string}}
+             :handler ports.http-in/upsert-author}}]
+
+    ["/:login/:source"
+     {:get {:summary "get author by login and source"
+            :parameters {:path {:login :string
+                                :source :string}}
+            :responses {200 {:body schemas.wire/Author}
+                        404 {:body :string}
                         500 {:body :string}}
-            :handler ports.http-in/do-deposit!}}]
-
-   ["/withdrawal"
-    {:post {:summary "do a withdrawal in btc in the wallet if possible"
-            :parameters {:body schemas.wire-in/WalletWithdrawal}
-            :responses {201 {:body schemas.wire-in/WalletEntry}
-                        400 {:body :string}
-                        500 {:body :string}}
-            :handler ports.http-in/do-withdrawal!}}]]
+            :handler ports.http-in/get-author}}]]])

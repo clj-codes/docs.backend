@@ -1,5 +1,5 @@
 (ns unit.codes.clj.docs.backend.adapters.db.postgres-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [clojure.test :refer [deftest is testing use-fixtures]]
             [clojure.test.check.clojure-test :refer [defspec]]
             [clojure.test.check.properties :as properties]
             [codes.clj.docs.backend.adapters.db.postgres :as adapters]
@@ -8,7 +8,10 @@
             [malli.core :as m]
             [malli.generator :as mg]
             [malli.util :as mu]
-            [matcher-combinators.test :refer [match?]]))
+            [matcher-combinators.test :refer [match?]]
+            [parenthesin.helpers.malli :as helpers.malli]))
+
+(use-fixtures :once helpers.malli/with-intrumentation)
 
 (defspec db->author-test 50
   (properties/for-all [row (mg/generator schemas.db.postgres/UnionRow)]
@@ -19,7 +22,7 @@
                       (m/validate schemas.model.social/Note (adapters/db->note row))))
 
 (defspec db->notes-test 50
-  (properties/for-all [rows (mg/generator (mu/assoc [:sequential schemas.db.postgres/UnionRow] :type [:enum "note"]))]
+  (properties/for-all [rows (mg/generator [:sequential (mu/assoc schemas.db.postgres/UnionRow :type [:enum "note"])])]
                       (m/validate [:sequential schemas.model.social/Note] (adapters/db->notes rows))))
 
 (defspec db->example-test 50
@@ -28,7 +31,7 @@
                       (m/validate schemas.model.social/Example (adapters/db->example row editors))))
 
 (defspec db->examples-test 50
-  (properties/for-all [rows (mg/generator (mu/assoc schemas.db.postgres/UnionRow :type [:enum "example"]))]
+  (properties/for-all [rows (mg/generator [:sequential (mu/assoc schemas.db.postgres/UnionRow :type [:enum "example"])])]
                       (m/validate [:sequential schemas.model.social/Example] (adapters/db->examples rows))))
 
 (defspec db->see-also-test 50
@@ -36,7 +39,7 @@
                       (m/validate schemas.model.social/SeeAlso (adapters/db->see-also row))))
 
 (defspec db->see-alsos-test 50
-  (properties/for-all [rows (mg/generator (mu/assoc schemas.db.postgres/UnionRow :type [:enum "see-also"]))]
+  (properties/for-all [rows (mg/generator [:sequential (mu/assoc schemas.db.postgres/UnionRow :type [:enum "see-also"])])]
                       (m/validate [:sequential schemas.model.social/SeeAlso] (adapters/db->see-alsos rows))))
 
 (def db-rows

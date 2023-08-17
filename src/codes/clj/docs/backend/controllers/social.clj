@@ -9,7 +9,7 @@
   (db.postgres/upsert-author new-author database))
 
 (defn get-author
-  {:malli/schema [:=> [:cat :string :string schemas.types/Components] schemas.model.social/Author]}
+  {:malli/schema [:=> [:cat :string :keyword schemas.types/Components] schemas.model.social/Author]}
   [login source {:keys [database]}]
   (db.postgres/get-author login source database))
 
