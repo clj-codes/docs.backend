@@ -3,7 +3,7 @@
             [codes.clj.docs.backend.schemas.model.social :as schemas.model.social]))
 
 (defn db->author
-  {:malli/schema [:=> [:cat schemas.db/UnionRow] schemas.model.social/Author]}
+  {:malli/schema [:=> [:cat schemas.db/AuthorRow] schemas.model.social/Author]}
   [{:keys [author-id login account-source avatar-url created-at]}]
   {:author/author-id author-id
    :author/login login

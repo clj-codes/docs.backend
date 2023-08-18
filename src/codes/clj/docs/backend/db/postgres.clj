@@ -10,7 +10,7 @@
 (defn ^:private execute!
   {:malli/schema [:=> [:cat schemas.types/DatabaseComponent :any] :any]}
   [db sql-params]
-  (components.database/execute db sql-params jdbc/snake-kebab-opts))
+  (components.database/execute db sql-params jdbc/unqualified-snake-kebab-opts))
 
 (defn upsert-author
   {:malli/schema [:=> [:cat schemas.model.social/NewAuthor schemas.types/DatabaseComponent] :any]}
@@ -34,7 +34,8 @@
                               [:= :account_source (name source)])
            sql/format)
        (execute! db)
-       first))
+       first
+       adapters/db->author))
 
 (defn insert-see-also
   {:malli/schema [:=> [:cat schemas.model.social/NewSeeAlso schemas.types/DatabaseComponent] :any]}
