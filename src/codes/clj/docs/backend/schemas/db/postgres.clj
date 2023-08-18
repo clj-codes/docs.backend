@@ -1,5 +1,6 @@
 (ns codes.clj.docs.backend.schemas.db.postgres
-  (:require [codes.clj.docs.backend.schemas.types :refer [TimeInstant]]))
+  (:require [codes.clj.docs.backend.schemas.types :refer [TimeInstant]]
+            [malli.util :as mu]))
 
 (def account-source [:enum "github"])
 
@@ -15,3 +16,10 @@
    [:account-source account-source]
    [:avatar-url :string]
    [:created-at TimeInstant]])
+
+(def AuthorRow
+  (mu/select-keys UnionRow [:author-id
+                            :login
+                            :account-source
+                            :avatar-url
+                            :created-at]))
