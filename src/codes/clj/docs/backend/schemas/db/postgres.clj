@@ -1,8 +1,7 @@
 (ns codes.clj.docs.backend.schemas.db.postgres
-  (:require [codes.clj.docs.backend.schemas.types :refer [TimeInstant]]
+  (:require [codes.clj.docs.backend.schemas.model.social :as model.social]
+            [codes.clj.docs.backend.schemas.types :refer [TimeInstant]]
             [malli.util :as mu]))
-
-(def account-source [:enum "github"])
 
 (def row
   [:map
@@ -16,7 +15,7 @@
    [:example-id :uuid]
    [:see-also-id :uuid]
    [:login :string]
-   [:account-source account-source]
+   [:account-source model.social/account-source]
    [:avatar-url :string]
    [:created-at TimeInstant]])
 

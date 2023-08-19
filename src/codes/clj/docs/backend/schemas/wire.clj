@@ -1,14 +1,13 @@
 (ns codes.clj.docs.backend.schemas.wire
-  (:require [codes.clj.docs.backend.schemas.types :refer [TimeInstant]]
+  (:require [codes.clj.docs.backend.schemas.model.social :as model.social]
+            [codes.clj.docs.backend.schemas.types :refer [TimeInstant]]
             [malli.util :as mu]))
-
-(def account-source [:enum "github"])
 
 (def author
   [:map
    [:author-id :uuid]
    [:login :string]
-   [:account-source account-source]
+   [:account-source model.social/account-source]
    [:avatar-url :string]
    [:created-at TimeInstant]])
 
