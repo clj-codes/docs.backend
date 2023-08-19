@@ -2,7 +2,8 @@
   (:require [codes.clj.docs.backend.schemas.model.social :as schemas.model.social]
             [codes.clj.docs.backend.schemas.wire :as schemas.wire]
             [codes.clj.docs.backend.schemas.wire.in :as schemas.wire.in]
-            [codes.clj.docs.backend.schemas.wire.out :as schemas.wire.out]))
+            [codes.clj.docs.backend.schemas.wire.out :as schemas.wire.out]
+            [taoensso.encore :as enc]))
 
 (defn upsert-author-wire->model
   {:malli/schema [:=> [:cat schemas.wire.in/NewAuthor] schemas.model.social/NewAuthor]}
@@ -36,12 +37,14 @@
 
 (defn example->model->wire
   {:malli/schema [:=> [:cat schemas.model.social/Example] schemas.wire.out/Example]}
-  [{:example/keys [example-id author definition-id body created-at]}]
-  {:example-id example-id
-   :author (author->model->wire author)
-   :definition-id definition-id
-   :body body
-   :created-at created-at})
+  [{:example/keys [example-id author definition-id body created-at editors]}]
+  (enc/assoc-some {:example-id example-id
+                   :definition-id definition-id
+                   :body body
+                   :created-at created-at}
+                  :author (when author (author->model->wire author))
+                  :editors (when (seq editors)
+                             (map author->model->wire editors))))
 
 (defn new-see-also-wire->model
   {:malli/schema [:=> [:cat schemas.wire.in/NewSeeAlso] schemas.model.social/NewSeeAlso]}
@@ -53,11 +56,11 @@
 (defn see-also->model->wire
   {:malli/schema [:=> [:cat schemas.model.social/SeeAlso] schemas.wire.out/SeeAlso]}
   [{:see-also/keys [see-also-id author definition-id definition-id-to created-at]}]
-  {:see-also-id see-also-id
-   :author (author->model->wire author)
-   :definition-id definition-id
-   :definition-id-to definition-id-to
-   :created-at created-at})
+  (enc/assoc-some {:see-also-id see-also-id
+                   :definition-id definition-id
+                   :definition-id-to definition-id-to
+                   :created-at created-at}
+                  :author (when author (author->model->wire author))))
 
 (defn new-note-wire->model
   {:malli/schema [:=> [:cat schemas.wire.in/NewNote] schemas.model.social/NewNote]}
@@ -77,11 +80,12 @@
 (defn note->model->wire
   {:malli/schema [:=> [:cat schemas.model.social/Note] schemas.wire.out/Note]}
   [{:note/keys [note-id author definition-id body created-at]}]
-  {:note-id note-id
-   :author (author->model->wire author)
-   :definition-id definition-id
-   :body body
-   :created-at created-at})
+  (enc/assoc-some
+   {:note-id note-id
+    :definition-id definition-id
+    :body body
+    :created-at created-at}
+   :author (when author (author->model->wire author))))
 
 (defn definition->model->wire
   {:malli/schema [:=> [:cat schemas.model.social/Definition] schemas.wire.out/Definition]}

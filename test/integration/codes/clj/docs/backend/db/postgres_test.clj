@@ -1,6 +1,5 @@
 (ns integration.codes.clj.docs.backend.db.postgres-test
   (:require [clojure.test :refer [use-fixtures]]
-            [codes.clj.docs.backend.adapters.db.postgres :as adapters.db]
             [codes.clj.docs.backend.db.postgres :as db]
             [com.stuartsierra.component :as component]
             [integration.codes.clj.docs.backend.util :as util]
@@ -53,9 +52,8 @@
    :fail-fast? true}
 
   [database (state-flow.api/get-state :database)
-   author-flow (util.db.postgres/upsert-author "delboni" "github")
-   :let [author (adapters.db/db->author author-flow)
-         author-id (:author/author-id author)]]
+   author (util.db.postgres/upsert-author "delboni" "github")
+   :let [author-id (:author/author-id author)]]
 
   (util.db.postgres/create-see-also {:see-also/author-id author-id
                                      :see-also/definition-id "clojure.core/disj"
@@ -75,9 +73,8 @@
    :fail-fast? true}
 
   [database (state-flow.api/get-state :database)
-   author-flow (util.db.postgres/upsert-author "delboni" "github")
-   :let [author (adapters.db/db->author author-flow)
-         author-id (:author/author-id author)]
+   author (util.db.postgres/upsert-author "delboni" "github")
+   :let [author-id (:author/author-id author)]
    note (util.db.postgres/create-note {:note/author-id author-id
                                        :note/definition-id "clojure.core/disj"
                                        :note/body "my note about this function."})]
@@ -90,7 +87,7 @@
                                   :note/created-at inst?}]}]
             (db/get-by-definition "clojure.core/disj" database)))
 
-  (util.db.postgres/update-note {:note/note-id (:note-id note)
+  (util.db.postgres/update-note {:note/note-id (:note/note-id note)
                                  :note/author-id author-id
                                  :note/definition-id "clojure.core/disj"
                                  :note/body "edited my note about this function."})
@@ -111,9 +108,8 @@
    :fail-fast? true}
 
   [database (state-flow.api/get-state :database)
-   author-flow (util.db.postgres/upsert-author "delboni" "github")
-   :let [author (adapters.db/db->author author-flow)
-         author-id (:author/author-id author)]
+   author (util.db.postgres/upsert-author "delboni" "github")
+   :let [author-id (:author/author-id author)]
    example-1 (util.db.postgres/create-example {:example/author-id author-id
                                                :example/definition-id "clojure.core/disj"
                                                :example/body "my example about this function."})
@@ -141,7 +137,9 @@
                                     :example/body "my example about this function. edit 2"})
 
   (flow "check transaction was inserted in db"
-    (match? [{:definition/examples [(assoc example-full-1 :example/body "my example about this function. edit 2")
+    (match? [{:definition/examples [(assoc example-full-1
+                                           :example/body "my example about this function. edit 2"
+                                           :example/created-at inst?)
                                     example-full-2]}]
             (db/get-by-definition "clojure.core/disj" database))))
 
@@ -151,9 +149,8 @@
    :fail-fast? true}
 
   [database (state-flow.api/get-state :database)
-   author-flow (util.db.postgres/upsert-author "delboni" "github")
-   :let [author (adapters.db/db->author author-flow)
-         author-id (:author/author-id author)]
+   author (util.db.postgres/upsert-author "delboni" "github")
+   :let [author-id (:author/author-id author)]
    _note-1 (util.db.postgres/create-note {:note/author-id author-id
                                           :note/definition-id "clojure.core/disj"
                                           :note/body "my note about this function."})

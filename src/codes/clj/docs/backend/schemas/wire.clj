@@ -23,7 +23,7 @@
   [:map
    [:see-also-id :uuid]
    [:author-id :uuid]
-   [:author Author]
+   [:author {:optional true} Author]
    [:definition-id :string]
    [:definition-id-to :string]
    [:created-at TimeInstant]])
@@ -32,7 +32,7 @@
   [:map
    [:example-id :uuid]
    [:author-id :uuid]
-   [:author Author]
+   [:author {:optional true} Author]
    [:definition-id :string]
    [:body :string]
    [:created-at TimeInstant]])
@@ -41,7 +41,7 @@
   [:map
    [:note-id :uuid]
    [:author-id :uuid]
-   [:author Author]
+   [:author {:optional true} Author]
    [:definition-id :string]
    [:body :string]
    [:created-at TimeInstant]

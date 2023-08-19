@@ -28,7 +28,7 @@
   [:map
    [:see-also/see-also-id :uuid]
    [:see-also/author-id :uuid]
-   [:see-also/author Author]
+   [:see-also/author {:optional true} Author]
    [:see-also/definition-id :string]
    [:see-also/definition-id-to :string]
    [:see-also/created-at TimeInstant]])
@@ -49,7 +49,8 @@
   [:map
    [:example/example-id :uuid]
    [:example/author-id :uuid]
-   [:example/author Author]
+   [:example/author {:optional true} Author]
+   [:example/editors {:optional true} [:sequential Author]]
    [:example/definition-id :string]
    [:example/body :string]
    [:example/created-at TimeInstant]])
@@ -67,6 +68,7 @@
 (def Example
   (mu/select-keys example [:example/example-id
                            :example/author
+                           :example/editors
                            :example/definition-id
                            :example/body
                            :example/created-at]))
@@ -75,7 +77,7 @@
   [:map
    [:note/note-id :uuid]
    [:note/author-id :uuid]
-   [:note/author Author]
+   [:note/author {:optional true} Author]
    [:note/definition-id :string]
    [:note/body :string]
    [:note/created-at TimeInstant]

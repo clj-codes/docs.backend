@@ -14,32 +14,44 @@
 (use-fixtures :once helpers.malli/with-intrumentation)
 
 (defspec db->author-test 50
-  (properties/for-all [row (mg/generator schemas.db.postgres/UnionRow)]
+  (properties/for-all [row (mg/generator schemas.db.postgres/AuthorRow)]
                       (m/validate schemas.model.social/Author (adapters/db->author row))))
 
 (defspec db->note-test 50
-  (properties/for-all [row (mg/generator (mu/assoc schemas.db.postgres/UnionRow :type [:enum "note"]))]
+  (properties/for-all [row (mg/generator (mu/assoc schemas.db.postgres/FullRow :type [:enum "note"]))]
+                      (m/validate schemas.model.social/Note (adapters/db->note row))))
+
+(defspec db->note-base-test 50
+  (properties/for-all [row (mg/generator schemas.db.postgres/BaseRow)]
                       (m/validate schemas.model.social/Note (adapters/db->note row))))
 
 (defspec db->notes-test 50
-  (properties/for-all [rows (mg/generator [:sequential (mu/assoc schemas.db.postgres/UnionRow :type [:enum "note"])])]
+  (properties/for-all [rows (mg/generator [:sequential (mu/assoc schemas.db.postgres/FullRow :type [:enum "note"])])]
                       (m/validate [:sequential schemas.model.social/Note] (adapters/db->notes rows))))
 
 (defspec db->example-test 50
-  (properties/for-all [row (mg/generator (mu/assoc schemas.db.postgres/UnionRow :type [:enum "example"]))
+  (properties/for-all [row (mg/generator (mu/assoc schemas.db.postgres/FullRow :type [:enum "example"]))
                        editors (mg/generator [:sequential schemas.model.social/Author])]
                       (m/validate schemas.model.social/Example (adapters/db->example row editors))))
 
+(defspec db->example-base-test 50
+  (properties/for-all [row (mg/generator schemas.db.postgres/BaseRow)]
+                      (m/validate schemas.model.social/Example (adapters/db->example row []))))
+
 (defspec db->examples-test 50
-  (properties/for-all [rows (mg/generator [:sequential (mu/assoc schemas.db.postgres/UnionRow :type [:enum "example"])])]
+  (properties/for-all [rows (mg/generator [:sequential (mu/assoc schemas.db.postgres/FullRow :type [:enum "example"])])]
                       (m/validate [:sequential schemas.model.social/Example] (adapters/db->examples rows))))
 
 (defspec db->see-also-test 50
-  (properties/for-all [row (mg/generator (mu/assoc schemas.db.postgres/UnionRow :type [:enum "see-also"]))]
+  (properties/for-all [row (mg/generator (mu/assoc schemas.db.postgres/FullRow :type [:enum "see-also"]))]
+                      (m/validate schemas.model.social/SeeAlso (adapters/db->see-also row))))
+
+(defspec db->see-also-base-test 50
+  (properties/for-all [row (mg/generator schemas.db.postgres/BaseRow)]
                       (m/validate schemas.model.social/SeeAlso (adapters/db->see-also row))))
 
 (defspec db->see-alsos-test 50
-  (properties/for-all [rows (mg/generator [:sequential (mu/assoc schemas.db.postgres/UnionRow :type [:enum "see-also"])])]
+  (properties/for-all [rows (mg/generator [:sequential (mu/assoc schemas.db.postgres/FullRow :type [:enum "see-also"])])]
                       (m/validate [:sequential schemas.model.social/SeeAlso] (adapters/db->see-alsos rows))))
 
 (def db-rows

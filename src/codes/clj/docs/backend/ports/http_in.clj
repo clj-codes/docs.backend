@@ -9,7 +9,7 @@
    :body {:id (-> author
                   adapters.social/upsert-author-wire->model
                   (controllers.social/upsert-author components)
-                  :author-id)}})
+                  :author/author-id)}})
 
 (defn get-author
   [{{{:keys [login source]} :path} :parameters
@@ -19,3 +19,30 @@
      :body (adapters.social/author->model->wire author)}
     {:status 404
      :body "not found"}))
+
+(defn insert-see-also
+  [{{author :body} :parameters
+    components :components}]
+  {:status 201
+   :body {:id (-> author
+                  adapters.social/new-see-also-wire->model
+                  (controllers.social/insert-see-also components)
+                  :see-also-id)}})
+
+(defn insert-example
+  [{{author :body} :parameters
+    components :components}]
+  {:status 201
+   :body {:id (-> author
+                  adapters.social/new-example-wire->model
+                  (controllers.social/insert-example components)
+                  :example-id)}})
+
+(defn update-example
+  [{{author :body} :parameters
+    components :components}]
+  {:status 201
+   :body {:id (-> author
+                  adapters.social/update-example-wire->model
+                  (controllers.social/update-example components)
+                  :example-id)}})

@@ -13,7 +13,7 @@
   (components.database/execute db sql-params jdbc/unqualified-snake-kebab-opts))
 
 (defn upsert-author
-  {:malli/schema [:=> [:cat schemas.model.social/NewAuthor schemas.types/DatabaseComponent] :any]}
+  {:malli/schema [:=> [:cat schemas.model.social/NewAuthor schemas.types/DatabaseComponent] schemas.model.social/Author]}
   [transaction db]
   (->> (-> (sql.helpers/insert-into :author)
            (sql.helpers/values [transaction])
@@ -22,7 +22,8 @@
            (sql.helpers/returning :*)
            sql/format)
        (execute! db)
-       first))
+       first
+       adapters/db->author))
 
 (defn get-author
   {:malli/schema [:=> [:cat :string :keyword schemas.types/DatabaseComponent] schemas.model.social/Author]}
@@ -38,30 +39,36 @@
        adapters/db->author))
 
 (defn insert-see-also
-  {:malli/schema [:=> [:cat schemas.model.social/NewSeeAlso schemas.types/DatabaseComponent] :any]}
+  {:malli/schema [:=> [:cat schemas.model.social/NewSeeAlso schemas.types/DatabaseComponent] schemas.model.social/SeeAlso]}
   [transaction db]
   (->> (-> (sql.helpers/insert-into :see-also)
            (sql.helpers/values [transaction])
-           (sql.helpers/returning :*)
+           (sql.helpers/returning [:see-also-id :id]
+                                  :definition-id
+                                  [:definition-id-to :body]
+                                  [:created-at :created])
            sql/format)
        (execute! db)
-       first))
+       first
+       adapters/db->see-also))
 
 (defn insert-example
-  {:malli/schema [:=> [:cat schemas.model.social/NewExample schemas.types/DatabaseComponent] :any]}
+  {:malli/schema [:=> [:cat schemas.model.social/NewExample schemas.types/DatabaseComponent] schemas.model.social/Example]}
   [transaction db]
   (jdbc/with-transaction [datasource (:datasource db)]
     (let [execute-tx! (fn [db sql] (jdbc/execute! db sql jdbc/snake-kebab-opts))
           new-example (select-keys transaction [:example/definition-id])
-          example-id (->> (-> (sql.helpers/insert-into :example)
-                              (sql.helpers/values [new-example])
-                              (sql.helpers/returning :example/example-id)
-                              sql/format)
-                          (execute-tx! datasource)
-                          first
-                          :example/example-id)
+          {:example/keys [example-id
+                          created-at]} (->> (-> (sql.helpers/insert-into :example)
+                                                (sql.helpers/values [new-example])
+                                                (sql.helpers/returning :example-id
+                                                                       :created-at)
+                                                sql/format)
+                                            (execute-tx! datasource)
+                                            first)
           example (-> transaction
-                      (assoc :example/example-id example-id))]
+                      (assoc :example/example-id example-id
+                             :example/created-at created-at))]
       (->> (-> (sql.helpers/insert-into :example-edit)
                (sql.helpers/values [(dissoc example :example/definition-id)])
                sql/format)
@@ -69,35 +76,52 @@
       example)))
 
 (defn update-example
-  {:malli/schema [:=> [:cat schemas.model.social/UpdateExample schemas.types/DatabaseComponent] :any]}
+  {:malli/schema [:=> [:cat schemas.model.social/UpdateExample schemas.types/DatabaseComponent] schemas.model.social/Example]}
   [transaction db]
-  (->> (-> (sql.helpers/insert-into :example-edit)
-           (sql.helpers/values [transaction])
-           (sql.helpers/returning :*)
-           sql/format)
-       (execute! db)
-       first))
+  (let [example (->> (->  (sql.helpers/with
+                           [:example-edited (-> (sql.helpers/insert-into :example-edit)
+                                                (sql.helpers/values [transaction])
+                                                (sql.helpers/returning :*))])
+                          (sql.helpers/select [:example/example-id :id]
+                                              :definition-id
+                                              :body
+                                              [:example-edited/created-at :created])
+                          (sql.helpers/from :example-edited)
+                          (sql.helpers/join :example
+                                            [:= :example/example-id :example-edited/example-id])
+                          sql/format)
+                     (execute! db)
+                     first)]
+    (adapters/db->example example [])))
 
 (defn insert-note
-  {:malli/schema [:=> [:cat schemas.model.social/NewNote schemas.types/DatabaseComponent] :any]}
+  {:malli/schema [:=> [:cat schemas.model.social/NewNote schemas.types/DatabaseComponent] schemas.model.social/Note]}
   [transaction db]
   (->> (-> (sql.helpers/insert-into :note)
            (sql.helpers/values [transaction])
-           (sql.helpers/returning :*)
+           (sql.helpers/returning [:note-id :id]
+                                  :definition-id
+                                  :body
+                                  [:created-at :created])
            sql/format)
        (execute! db)
-       first))
+       first
+       adapters/db->note))
 
 (defn update-note
-  {:malli/schema [:=> [:cat schemas.model.social/UpdateNote schemas.types/DatabaseComponent] :any]}
+  {:malli/schema [:=> [:cat schemas.model.social/UpdateNote schemas.types/DatabaseComponent] schemas.model.social/Note]}
   [transaction db]
   (->> (-> (sql.helpers/update :note)
            (sql.helpers/set transaction)
            (sql.helpers/where [:= :note-id (:note/note-id transaction)])
-           (sql.helpers/returning :*)
+           (sql.helpers/returning [:note-id :id]
+                                  :definition-id
+                                  :body
+                                  [:created-at :created])
            sql/format)
        (execute! db)
-       first))
+       first
+       adapters/db->note))
 
 (defn get-by-definition
   {:malli/schema [:=> [:cat :string schemas.types/DatabaseComponent] [:sequential schemas.model.social/Definition]]}
