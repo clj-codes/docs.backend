@@ -26,13 +26,13 @@
        adapters/db->author))
 
 (defn get-author
-  {:malli/schema [:=> [:cat :string :keyword schemas.types/DatabaseComponent] schemas.model.social/Author]}
+  {:malli/schema [:=> [:cat :string schemas.model.social/account-source schemas.types/DatabaseComponent] schemas.model.social/Author]}
   [login source db]
   (->> (-> (sql.helpers/select :*)
            (sql.helpers/from :author)
            (sql.helpers/where :and
                               [:= :login login]
-                              [:= :account_source (name source)])
+                              [:= :account_source source])
            sql/format)
        (execute! db)
        first

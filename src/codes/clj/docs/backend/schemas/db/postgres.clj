@@ -33,9 +33,9 @@
                        :created-at]))
 
 (def BaseRow (mu/select-keys row [:id
-                                   :definition-id
-                                   :body
-                                   :created]))
+                                  :definition-id
+                                  :body
+                                  :created]))
 
 (def Row [:or FullRow BaseRow])
 

@@ -44,7 +44,7 @@
              :author/account-source "github"
              :author/avatar-url "https://my.pic.com/me2.jpg"
              :author/created-at inst?}
-            (db/get-author "delboni" :github database))))
+            (db/get-author "delboni" "github" database))))
 
 (defflow see-also-db-test
   {:init (util/start-system! create-and-start-components!)

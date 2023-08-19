@@ -14,7 +14,7 @@
 (defn get-author
   [{{{:keys [login source]} :path} :parameters
     components :components}]
-  (if-let [author (controllers.social/get-author login (keyword source) components)]
+  (if-let [author (controllers.social/get-author login source components)]
     {:status 200
      :body (adapters.social/author->model->wire author)}
     {:status 404
