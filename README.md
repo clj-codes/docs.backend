@@ -1,6 +1,19 @@
 # codes.clj.docs.backend-malli
 Backend Service for [docs.clj.codes](https://docs.clj.codes).
 
+## TODO
+
+ - [x] Social Database (postgres & basic api)
+ - [ ] Document Database (datalevin & merge with social db on get api)
+    - [ ] Malli schema & adapters for datalevin data
+    - [ ] List all namespaces by project
+    - [ ] List all definitions by namespaces
+    - [ ] Get definition docs & social by definition id
+ - [ ] Auth using Github
+    - [ ] Create author and login by github
+    - [ ] Interceptor to check if author can update its own notes
+    - [ ] Admin, Moderator and basic user. (optional)
+
 ## Repl
 To open a nrepl
 ```bash
@@ -50,7 +63,7 @@ clj -M:migratus create migration-name
 ```
 To execute all pending migrations
 ```bash
-clj -M:migratus migration
+clj -M:migratus migrate
 ```
 To rollback the latest migration
 ```bash
