@@ -6,10 +6,10 @@
   [{{author :body} :parameters
     components :components}]
   {:status 201
-   :body {:id (-> author
-                  adapters.social/upsert-author-wire->model
-                  (controllers.social/upsert-author components)
-                  :author/author-id)}})
+   :body (-> author
+             adapters.social/upsert-author-wire->model
+             (controllers.social/upsert-author components)
+             adapters.social/author->model->wire)})
 
 (defn get-author
   [{{{:keys [login source]} :path} :parameters
@@ -27,7 +27,7 @@
    :body {:id (-> author
                   adapters.social/new-see-also-wire->model
                   (controllers.social/insert-see-also components)
-                  :see-also-id)}})
+                  adapters.social/see-also->model->wire)}})
 
 (defn insert-example
   [{{author :body} :parameters
@@ -36,7 +36,7 @@
    :body {:id (-> author
                   adapters.social/new-example-wire->model
                   (controllers.social/insert-example components)
-                  :example-id)}})
+                  adapters.social/example->model->wire)}})
 
 (defn update-example
   [{{author :body} :parameters
@@ -45,4 +45,22 @@
    :body {:id (-> author
                   adapters.social/update-example-wire->model
                   (controllers.social/update-example components)
-                  :example-id)}})
+                  adapters.social/example->model->wire)}})
+
+(defn insert-note
+  [{{author :body} :parameters
+    components :components}]
+  {:status 201
+   :body {:id (-> author
+                  adapters.social/new-note-wire->model
+                  (controllers.social/insert-note components)
+                  adapters.social/note->model->wire)}})
+
+(defn update-note
+  [{{author :body} :parameters
+    components :components}]
+  {:status 201
+   :body {:id (-> author
+                  adapters.social/update-note-wire->model
+                  (controllers.social/update-note components)
+                  adapters.social/note->model->wire)}})

@@ -36,7 +36,11 @@
 
     (flow "should create author"
       (match? (matchers/embeds {:status 201
-                                :body  {:id string?}})
+                                :body  {:author-id string?
+                                        :login "delboni"
+                                        :account-source "github"
+                                        :avatar-url "https://my.pic/me.jpg"
+                                        :created-at string?}})
               (state-flow.server/request! {:method :post
                                            :uri    "/author/"
                                            :body   {:login "delboni"
