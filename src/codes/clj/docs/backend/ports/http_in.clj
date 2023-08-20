@@ -24,43 +24,43 @@
   [{{author :body} :parameters
     components :components}]
   {:status 201
-   :body {:id (-> author
-                  adapters.social/new-see-also-wire->model
-                  (controllers.social/insert-see-also components)
-                  adapters.social/see-also->model->wire)}})
+   :body (-> author
+             adapters.social/new-see-also-wire->model
+             (controllers.social/insert-see-also components)
+             adapters.social/see-also->model->wire)})
 
 (defn insert-example
   [{{author :body} :parameters
     components :components}]
   {:status 201
-   :body {:id (-> author
-                  adapters.social/new-example-wire->model
-                  (controllers.social/insert-example components)
-                  adapters.social/example->model->wire)}})
+   :body (-> author
+             adapters.social/new-example-wire->model
+             (controllers.social/insert-example components)
+             adapters.social/example->model->wire)})
 
 (defn update-example
   [{{author :body} :parameters
     components :components}]
   {:status 201
-   :body {:id (-> author
-                  adapters.social/update-example-wire->model
-                  (controllers.social/update-example components)
-                  adapters.social/example->model->wire)}})
+   :body (-> author
+             adapters.social/update-example-wire->model
+             (controllers.social/update-example components)
+             adapters.social/example->model->wire)})
 
 (defn insert-note
   [{{author :body} :parameters
     components :components}]
   {:status 201
-   :body {:id (-> author
-                  adapters.social/new-note-wire->model
-                  (controllers.social/insert-note components)
-                  adapters.social/note->model->wire)}})
+   :body (-> author
+             adapters.social/new-note-wire->model
+             (controllers.social/insert-note components)
+             adapters.social/note->model->wire)})
 
 (defn update-note
   [{{author :body} :parameters
     components :components}]
   {:status 201
-   :body {:id (-> author
-                  adapters.social/update-note-wire->model
-                  (controllers.social/update-note components)
-                  adapters.social/note->model->wire)}})
+   :body (-> author
+             adapters.social/update-note-wire->model
+             (controllers.social/update-note components)
+             adapters.social/note->model->wire)})

@@ -53,3 +53,11 @@
          (db/insert-see-also see-also)
          state-flow.api/return)))
 
+(defn get-by-definition
+  [definition-id]
+  (flow "get socials by definition id"
+    [database (state-flow.api/get-state :database)]
+    (->> database
+         (db/get-by-definition definition-id)
+         vec
+         state-flow.api/return)))
