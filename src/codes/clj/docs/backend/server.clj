@@ -12,7 +12,7 @@
 
 (def system-atom (atom nil))
 
-(defn- build-system-map []
+(defn base-system-map []
   (component/system-map
    :config (config/new-config)
    :http (http/new-http)
@@ -36,8 +36,8 @@
 (defn -main
   "The entry-point for 'gen-class'"
   [& _args]
-  (start-system! (build-system-map)))
+  (start-system! (base-system-map)))
 
 (comment
-  (start-system! (build-system-map))
+  (start-system! (base-system-map))
   (stop-system!))
