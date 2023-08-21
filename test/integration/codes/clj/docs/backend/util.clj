@@ -1,16 +1,26 @@
 (ns integration.codes.clj.docs.backend.util
-  (:require [com.stuartsierra.component :as component]
+  (:require [codes.clj.docs.backend.server :as server]
+            [com.stuartsierra.component :as component]
+            [parenthesin.components.http.clj-http :as components.http]
             [parenthesin.helpers.logs :as logs]
             [parenthesin.helpers.migrations :as migrations]
             [pg-embedded-clj.core :as pg-emb]))
 
+(defn create-and-start-components! []
+  (component/start-system
+   (merge (server/base-system-map)
+          (component/system-map
+           :http (components.http/new-http-mock {})))))
+
 (defn start-system!
-  [system-start-fn]
-  (fn []
-    (logs/setup :info :auto)
-    (pg-emb/init-pg)
-    (migrations/migrate (migrations/configuration-with-db))
-    (system-start-fn)))
+  ([]
+   ((start-system! create-and-start-components!)))
+  ([system-start-fn]
+   (fn []
+     (logs/setup :info :auto)
+     (pg-emb/init-pg)
+     (migrations/migrate (migrations/configuration-with-db))
+     (system-start-fn))))
 
 (defn stop-system!
   [system]
