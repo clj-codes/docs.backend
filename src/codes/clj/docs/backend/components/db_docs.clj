@@ -21,7 +21,7 @@
   [url http]
   (-> http
       (http/request {:url url
-                     :method get
+                     :method :get
                      :as :byte-array})
       :body
       io/input-stream))
