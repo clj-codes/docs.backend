@@ -43,8 +43,7 @@
                 :col 1
                 :name-col 11
                 :end-col 16
-                :namespace #:namespace{:id "org.clojure/clojure/clojure.pprint"
-                                       :name "clojure.pprint"}
+                :namespace #:namespace{:id "org.clojure/clojure/clojure.pprint"}
                 :doc "Execute the body as a pretty printing logical block with output to *out* which \nmust be a pretty printing writer. When used from pprint or cl-format this can be \nassumed. \n\nThis function is intended for use when writing custom dispatch functions.\n\nBefore the body the caller can optionally specify options: :prefix :per-line-prefix \nand :suffix."
                 :git-source "https://github.com/clojure/clojure/blob/clojure-1.11.1/src/clj/clojure/pprint/pprint_base.clj#L302"
                 :name-end-row 302
@@ -65,8 +64,7 @@
                 :col 1
                 :name-col 7
                 :end-col 51
-                :namespace #:namespace{:id "org.clojure/clojure/clojure.pprint"
-                                       :name "clojure.pprint"}
+                :namespace #:namespace{:id "org.clojure/clojure/clojure.pprint"}
                 :doc "Prints a collection of maps in a textual table. Prints table headings\n   ks and then a line of output for each row corresponding to the keys\n   in ks. If ks are not specified use the keys of the first item in rows."
                 :git-source "https://github.com/clojure/clojure/blob/clojure-1.11.1/src/clj/clojure/pprint/print_table.clj#L11"
                 :fixed-arities #{1 2}

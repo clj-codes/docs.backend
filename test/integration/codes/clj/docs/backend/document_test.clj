@@ -44,7 +44,8 @@
                :definition/name-end-col 31
                :definition/end-row 327
                :definition/name "pprint-logical-block"}
-              (d/q '[:find (pull ?e [*]) .
+              (d/q '[:find (pull ?e [*
+                                     {:definition/namespace [*]}]) .
                      :in $ ?id
                      :where
                      [?e :definition/id ?id]]

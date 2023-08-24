@@ -7,12 +7,26 @@
             [parenthesin.helpers.migrations :as migrations]
             [pg-embedded-clj.core :as pg-emb]))
 
+(def minimal-schema
+  {:project/id          {:db/valueType :db.type/string
+                         :unique :db.unique/identity}
+   :namespace/id        {:db/valueType :db.type/string
+                         :unique :db.unique/identity}
+   :namespace/project   {:db/valueType :db.type/ref}
+   :namespace/doc       {:db/valueType :db.type/string
+                         :db/fulltext  true}
+   :definition/id        {:db/valueType :db.type/string
+                          :unique :db.unique/identity}
+   :definition/namespace {:db/valueType :db.type/ref}
+   :definition/doc       {:db/valueType :db.type/string
+                          :db/fulltext  true}})
+
 (defn create-and-start-components! []
   (component/start-system
    (merge (server/base-system-map)
           (component/system-map
            :http (components.http/new-http-mock {})
-           :db-docs (components.db-docs/new-db-docs-mock {})))))
+           :db-docs (components.db-docs/new-db-docs-mock minimal-schema)))))
 
 (defn start-system!
   ([]
