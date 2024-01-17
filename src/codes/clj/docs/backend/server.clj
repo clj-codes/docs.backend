@@ -20,7 +20,7 @@
    :router (router/new-router routes/routes)
    :database (component/using (database/new-database) [:config])
    :db-docs (component/using (components.db-docs/new-db-docs {}) [:config :http])
-   :webserver (component/using (webserver/new-webserver) [:config :http :router :database])))
+   :webserver (component/using (webserver/new-webserver) [:config :http :router :database :db-docs])))
 
 (defn start-system! [system-map]
   (logs/setup :info :auto)
