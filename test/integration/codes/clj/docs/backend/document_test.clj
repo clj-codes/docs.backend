@@ -1,14 +1,17 @@
 (ns integration.codes.clj.docs.backend.document-test
-  (:require [codes.clj.docs.backend.components.db-docs :as component.db-docs]
+  (:require [clojure.test :refer [use-fixtures]]
+            [codes.clj.docs.backend.components.db-docs :as component.db-docs]
             [datalevin.core :as d]
             [integration.codes.clj.docs.backend.fixtures.document :as fixtures.document]
             [integration.codes.clj.docs.backend.util :as util]
             [integration.codes.clj.docs.backend.util.db.datalevin :as util.db.datalevin]
+            [parenthesin.helpers.malli :as helpers.malli]
             [state-flow.api :refer [defflow flow]]
             [state-flow.assertions.matcher-combinators :refer [match?]]))
 
-(defflow
-  flow-integration-docs-definition-test
+(use-fixtures :once helpers.malli/with-intrumentation)
+
+(defflow flow-integration-docs-definition-test
   {:init util/start-system!
    :cleanup util/stop-system!
    :fail-fast? true}
@@ -51,3 +54,23 @@
                      [?e :definition/id ?id]]
                    (component.db-docs/db db-docs)
                    "org.clojure/clojure/clojure.pprint/pprint-logical-block/0")))))
+
+(defflow projects-db-test
+  {:init util/start-system!
+   :cleanup util/stop-system!
+   :fail-fast? true}
+
+  ; prepare docs-db with some data
+  (util.db.datalevin/transact fixtures.document/datoms)
+
+  (flow "find projects in db"
+    (match? [{:project/manifest :pom
+              :project/tag "clojure-1.11.1"
+              :project/sha "ce55092f2b2f5481d25cff6205470c1335760ef6"
+              :project/url "https://github.com/clojure/clojure"
+              :project/artifact "clojure"
+              :project/paths ["/src/main/java" "/src/main/clojure" "/src/resources" "/src/clj"]
+              :project/name "org.clojure/clojure"
+              :project/group "org.clojure"
+              :project/id "org.clojure/clojure"}]
+            (util.db.datalevin/get-projects))))

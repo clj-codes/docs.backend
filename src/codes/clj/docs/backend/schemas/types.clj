@@ -1,5 +1,6 @@
 (ns codes.clj.docs.backend.schemas.types
-  (:require [com.stuartsierra.component :as component]
+  (:require [codes.clj.docs.backend.components.db-docs :as components.db-docs]
+            [com.stuartsierra.component :as component]
             [malli.core :as m]
             [malli.experimental.time.generator]
             [parenthesin.components.db.jdbc-hikari :as components.db]
@@ -17,6 +18,12 @@
     :pred #(satisfies? components.db/DatabaseProvider %)
     :type-properties {:error/message "should satisfy parenthesin.components.database/DatabaseProvider protocol."}}))
 
+(def DatalevinComponent
+  (m/-simple-schema
+   {:type :datalevin-component
+    :pred #(satisfies? components.db-docs/DbDocsProvider %)
+    :type-properties {:error/message "should satisfy codes.clj.docs.backend.components.db-docs/DbDocsProvider protocol."}}))
+
 (def GenericComponent
   (m/-simple-schema
    {:type :generic-component
@@ -32,4 +39,5 @@
    [:config GenericComponent]
    [:http HttpComponent]
    [:router GenericComponent]
-   [:database DatabaseComponent]])
+   [:database DatabaseComponent]
+   [:db-docs DatalevinComponent]])

@@ -1,23 +1,29 @@
 (ns codes.clj.docs.backend.components.db-docs
   (:require [clojure.java.io :as io]
-            [codes.clj.docs.backend.schemas.types :as schemas.types]
             [com.stuartsierra.component :as component]
             [datalevin.core :as d]
             [datalevin.util :as util]
+            [malli.core :as m]
             [parenthesin.components.http.clj-http :as http]
             [parenthesin.helpers.logs :as logs])
   (:import [java.io File]
            [java.nio.file Files]
            [java.nio.file.attribute FileAttribute]))
 
+(def GenericComponent
+  (m/-simple-schema
+   {:type :generic-component
+    :pred #(satisfies? component/Lifecycle %)
+    :type-properties {:error/message "should satisfy com.stuartsierra.component/Lifecycle protocol."}}))
+
 (defn ^:private get-db-download-url
-  {:malli/schema [:=> [:cat schemas.types/GenericComponent] :string]}
+  {:malli/schema [:=> [:cat GenericComponent] :string]}
   [config]
   (let [{:keys [url version file-name]} (-> config :config :db-docs)]
     (format "%s/%s/%s" url version file-name)))
 
 (defn ^:private download-input-stream!
-  {:malli/schema [:=> [:cat :string schemas.types/HttpComponent] bytes?]}
+  {:malli/schema [:=> [:cat :string GenericComponent] bytes?]}
   [url http]
   (-> http
       (http/request {:url url
@@ -44,7 +50,7 @@
         (recur (.getNextEntry stream))))))
 
 (defn download-db!
-  {:malli/schema [:=> [:cat schemas.types/GenericComponent schemas.types/HttpComponent] :nil]}
+  {:malli/schema [:=> [:cat GenericComponent GenericComponent] :nil]}
   [db-path config http]
   (-> config
       get-db-download-url
