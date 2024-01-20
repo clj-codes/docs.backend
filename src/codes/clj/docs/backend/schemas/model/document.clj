@@ -36,6 +36,8 @@
    [:namespace/doc {:optional true} :string]
    [:namespace/row {:optional true} :int]])
 
+(def Namespaces [:sequential Namespace])
+
 (def Definition
   [:map
    [:definition/group :string]

@@ -20,3 +20,11 @@
     (->> database
          (db/get-projects)
          state-flow.api/return)))
+
+(defn get-namespaces-by-project
+  [project-id]
+  (flow "get all namespaces for a project-id in document db"
+    [database (state-flow.api/get-state :db-docs)]
+    (->> database
+         (db/get-namespaces-by-project project-id)
+         state-flow.api/return)))

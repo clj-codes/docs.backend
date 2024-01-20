@@ -64,13 +64,10 @@
   (util.db.datalevin/transact fixtures.document/datoms)
 
   (flow "find projects in db"
-    (match? [{:project/manifest :pom
-              :project/tag "clojure-1.11.1"
-              :project/sha "ce55092f2b2f5481d25cff6205470c1335760ef6"
-              :project/url "https://github.com/clojure/clojure"
-              :project/artifact "clojure"
-              :project/paths ["/src/main/java" "/src/main/clojure" "/src/resources" "/src/clj"]
-              :project/name "org.clojure/clojure"
-              :project/group "org.clojure"
-              :project/id "org.clojure/clojure"}]
-            (util.db.datalevin/get-projects))))
+    (match? [fixtures.document/project-clojure]
+            (util.db.datalevin/get-projects)))
+
+  (flow "find namespaces by project in db"
+    (match? [(assoc fixtures.document/namespace-clojure-pprint
+                    :namespace/project fixtures.document/project-clojure)]
+            (util.db.datalevin/get-namespaces-by-project "org.clojure/clojure"))))
