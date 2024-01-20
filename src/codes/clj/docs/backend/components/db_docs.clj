@@ -50,7 +50,7 @@
         (recur (.getNextEntry stream))))))
 
 (defn download-db!
-  {:malli/schema [:=> [:cat GenericComponent GenericComponent] :nil]}
+  {:malli/schema [:=> [:cat :string GenericComponent GenericComponent] :nil]}
   [db-path config http]
   (-> config
       get-db-download-url

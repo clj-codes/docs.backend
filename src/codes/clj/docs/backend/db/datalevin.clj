@@ -7,7 +7,6 @@
 (defn get-projects
   {:malli/schema [:=> [:cat schemas.types/DatalevinComponent] [:sequential schemas.model.document/Project]]}
   [db]
-  (println :get-project db)
   (d/q '[:find [(pull ?e [*]) ...]
          :in $
          :where

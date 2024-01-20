@@ -6,7 +6,7 @@
             [codes.clj.docs.backend.schemas.model.social :as schemas.model.social]
             [codes.clj.docs.backend.schemas.wire :as schemas.wire]
             [codes.clj.docs.backend.schemas.wire.in :as schemas.wire.in]
-            [codes.clj.docs.backend.schemas.wire.out :as schemas.wire.out]
+            [codes.clj.docs.backend.schemas.wire.out.social :as schemas.wire.out.social]
             [malli.core :as m]
             [malli.generator :as mg]
             [parenthesin.helpers.malli :as helpers.malli]))
@@ -31,7 +31,7 @@
 
 (defspec example->model->wire-test 50
   (properties/for-all [example (mg/generator schemas.model.social/Example)]
-                      (m/validate schemas.wire.out/Example (adapters.social/example->model->wire example))))
+                      (m/validate schemas.wire.out.social/Example (adapters.social/example->model->wire example))))
 
 (defspec new-see-also-wire->model-test 50
   (properties/for-all [see-also (mg/generator schemas.wire.in/NewSeeAlso)]
@@ -39,7 +39,7 @@
 
 (defspec see-also->model->wire-test 50
   (properties/for-all [see-also (mg/generator schemas.model.social/SeeAlso)]
-                      (m/validate schemas.wire.out/SeeAlso (adapters.social/see-also->model->wire see-also))))
+                      (m/validate schemas.wire.out.social/SeeAlso (adapters.social/see-also->model->wire see-also))))
 
 (defspec upsert-note-wire->model-test 50
   (properties/for-all [note (mg/generator schemas.wire.in/NewNote)]
@@ -51,8 +51,8 @@
 
 (defspec note->model->wire-test 50
   (properties/for-all [note (mg/generator schemas.model.social/Note)]
-                      (m/validate schemas.wire.out/Note (adapters.social/note->model->wire note))))
+                      (m/validate schemas.wire.out.social/Note (adapters.social/note->model->wire note))))
 
 (defspec definition->model->wire-test 50
   (properties/for-all [definition (mg/generator schemas.model.social/Definition)]
-                      (m/validate schemas.wire.out/Definition (adapters.social/definition->model->wire definition))))
+                      (m/validate schemas.wire.out.social/Definition (adapters.social/definition->model->wire definition))))

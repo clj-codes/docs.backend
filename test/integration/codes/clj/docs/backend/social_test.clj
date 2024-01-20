@@ -24,7 +24,7 @@
                        :avatar-url "https://my.pic/me.jpg"
                        :created-at string?}}
               (state-flow.server/request! {:method :post
-                                           :uri    "/author/"
+                                           :uri    "/social/author/"
                                            :body   {:login "delboni"
                                                     :account-source "github"
                                                     :avatar-url "https://my.pic/me.jpg"}})))
@@ -37,7 +37,7 @@
                       :avatar-url "https://my.pic/me.jpg",
                       :created-at string?}}
               (state-flow.server/request! {:method :get
-                                           :uri    "/author/delboni/github"})))))
+                                           :uri    "/social/author/delboni/github"})))))
 
 (defflow
   flow-integration-note-test
@@ -46,7 +46,7 @@
    :fail-fast? true}
   (flow "should interact with system"
     [author-response (state-flow.server/request! {:method :post
-                                                  :uri    "/author/"
+                                                  :uri    "/social/author/"
                                                   :body   {:login "delboni"
                                                            :account-source "github"
                                                            :avatar-url "https://my.pic/me.jpg"}})
@@ -54,7 +54,7 @@
 
     (flow "create & update note"
       [new-note-response (state-flow.server/request! {:method :post
-                                                      :uri    "/note/"
+                                                      :uri    "/social/note/"
                                                       :body   {:author-id author-id
                                                                :definition-id "clojure.core/disj"
                                                                :body "my note about this function."}})
@@ -83,7 +83,7 @@
                         :body "my edited note about this function."
                         :created-at string?}}
                 (state-flow.server/request! {:method :put
-                                             :uri    "/note/"
+                                             :uri    "/social/note/"
                                              :body   {:author-id author-id
                                                       :note-id note-id
                                                       :definition-id "clojure.core/disj"
@@ -104,7 +104,7 @@
    :fail-fast? true}
   (flow "should interact with system"
     [author-response (state-flow.server/request! {:method :post
-                                                  :uri    "/author/"
+                                                  :uri    "/social/author/"
                                                   :body   {:login "delboni"
                                                            :account-source "github"
                                                            :avatar-url "https://my.pic/me.jpg"}})
@@ -112,7 +112,7 @@
 
     (flow "create & update see-also"
       [new-see-also-response (state-flow.server/request! {:method :post
-                                                          :uri    "/see-also/"
+                                                          :uri    "/social/see-also/"
                                                           :body   {:author-id author-id
                                                                    :definition-id "clojure.core/disj"
                                                                    :definition-id-to "clojure.core/dissoc"}})
@@ -141,7 +141,7 @@
    :fail-fast? true}
   (flow "should interact with system"
     [author-response (state-flow.server/request! {:method :post
-                                                  :uri    "/author/"
+                                                  :uri    "/social/author/"
                                                   :body   {:login "delboni"
                                                            :account-source "github"
                                                            :avatar-url "https://my.pic/me.jpg"}})
@@ -149,7 +149,7 @@
 
     (flow "create & update example"
       [new-example-response (state-flow.server/request! {:method :post
-                                                         :uri    "/example/"
+                                                         :uri    "/social/example/"
                                                          :body   {:author-id author-id
                                                                   :definition-id "clojure.core/disj"
                                                                   :body "my example about this function."}})
@@ -178,7 +178,7 @@
                         :body "my edited example about this function."
                         :created-at string?}}
                 (state-flow.server/request! {:method :put
-                                             :uri    "/example/"
+                                             :uri    "/social/example/"
                                              :body   {:author-id author-id
                                                       :example-id example-id
                                                       :definition-id "clojure.core/disj"

@@ -12,6 +12,8 @@
    [:project/tag {:optional true} :string]
    [:project/manifest {:optional true} :keyword]])
 
+(def Projects [:sequential Project])
+
 (def Namespace
   [:map
    [:namespace/id :string]
