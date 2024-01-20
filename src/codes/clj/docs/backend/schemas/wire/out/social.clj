@@ -1,4 +1,4 @@
-(ns codes.clj.docs.backend.schemas.wire.out.social 
+(ns codes.clj.docs.backend.schemas.wire.out.social
   (:require [codes.clj.docs.backend.schemas.wire :refer [example note see-also]]
             [malli.util :as mu]))
 
