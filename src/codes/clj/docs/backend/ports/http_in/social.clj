@@ -64,3 +64,12 @@
              adapters.social/update-note-wire->model
              (controllers.social/update-note components)
              adapters.social/note->model->wire)})
+
+(defn get-by-definition
+  [{{{:keys [definition-id]} :path} :parameters
+    components :components}]
+  (if-let [definition (controllers.social/get-by-definition definition-id components)]
+    {:status 200
+     :body (adapters.social/social->model->wire definition)}
+    {:status 404
+     :body "not found"}))

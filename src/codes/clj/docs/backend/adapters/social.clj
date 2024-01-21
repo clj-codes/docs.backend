@@ -96,10 +96,10 @@
     :created-at created-at}
    :author (when author (author->model->wire author))))
 
-(defn definition->model->wire
-  {:malli/schema [:=> [:cat schemas.model.social/Definition]
-                  schemas.wire.out.social/Definition]}
-  [{:definition/keys [definition-id notes examples see-alsos]}]
+(defn social->model->wire
+  {:malli/schema [:=> [:cat schemas.model.social/Social]
+                  schemas.wire.out.social/Social]}
+  [{:social/keys [definition-id notes examples see-alsos]}]
   {:definition-id definition-id
    :notes (map note->model->wire notes)
    :examples (map example->model->wire examples)

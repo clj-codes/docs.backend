@@ -59,11 +59,11 @@
                                      :see-also/definition-id-to "clojure.core/dissoc"})
 
   (flow "check transaction was inserted in db"
-    (match? [{:definition/see-alsos [{:see-also/see-also-id uuid?
-                                      :see-also/author author
-                                      :see-also/definition-id "clojure.core/disj"
-                                      :see-also/definition-id-to "clojure.core/dissoc"
-                                      :see-also/created-at inst?}]}]
+    (match? {:social/see-alsos [{:see-also/see-also-id uuid?
+                                 :see-also/author author
+                                 :see-also/definition-id "clojure.core/disj"
+                                 :see-also/definition-id-to "clojure.core/dissoc"
+                                 :see-also/created-at inst?}]}
             (util.db.postgres/get-by-definition "clojure.core/disj"))))
 
 (defflow note-db-test
@@ -78,11 +78,11 @@
                                        :note/body "my note about this function."})]
 
   (flow "check transaction was inserted in db"
-    (match? [{:definition/notes [{:note/note-id uuid?
-                                  :note/author author
-                                  :note/definition-id "clojure.core/disj"
-                                  :note/body "my note about this function."
-                                  :note/created-at inst?}]}]
+    (match? {:social/notes [{:note/note-id uuid?
+                             :note/author author
+                             :note/definition-id "clojure.core/disj"
+                             :note/body "my note about this function."
+                             :note/created-at inst?}]}
             (util.db.postgres/get-by-definition "clojure.core/disj")))
 
   (util.db.postgres/update-note {:note/note-id (:note/note-id note)
@@ -91,13 +91,13 @@
                                  :note/body "edited my note about this function."})
 
   (flow "check transaction was updated in db"
-    (match? [{:definition/notes [{:note/note-id uuid?
-                                  :note/author author
-                                  :note/definition-id "clojure.core/disj"
-                                  :note/body "edited my note about this function."
-                                  :note/created-at inst?
-                                  ;todo: :note/updated-at inst?
-                                  }]}]
+    (match? {:social/notes [{:note/note-id uuid?
+                             :note/author author
+                             :note/definition-id "clojure.core/disj"
+                             :note/body "edited my note about this function."
+                             :note/created-at inst?
+                             ;todo: :note/updated-at inst?
+                             }]}
             (util.db.postgres/get-by-definition "clojure.core/disj"))))
 
 (defflow example-db-test
@@ -121,8 +121,8 @@
                             (dissoc :example/author-id))]]
 
   (flow "check transaction was inserted in db"
-    (match? [{:definition/examples [example-full-1
-                                    example-full-2]}]
+    (match? {:social/examples [example-full-1
+                               example-full-2]}
             (util.db.postgres/get-by-definition "clojure.core/disj")))
 
   (util.db.postgres/update-example {:example/example-id (:example/example-id example-1)
@@ -134,10 +134,10 @@
                                     :example/body "my example about this function. edit 2"})
 
   (flow "check transaction was inserted in db"
-    (match? [{:definition/examples [(assoc example-full-1
-                                           :example/body "my example about this function. edit 2"
-                                           :example/created-at inst?)
-                                    example-full-2]}]
+    (match? {:social/examples [(assoc example-full-1
+                                      :example/body "my example about this function. edit 2"
+                                      :example/created-at inst?)
+                               example-full-2]}
             (util.db.postgres/get-by-definition "clojure.core/disj"))))
 
 (defflow all-db-test
@@ -164,63 +164,61 @@
                                                 :example/body "another example about this function."})]
 
   (flow "check transaction was inserted in db"
-    (match? (m/match-with
-             [vector? m/in-any-order]
-             [{:definition/definition-id "clojure.core/disj"
-               :definition/notes [#:note{:note-id uuid?
+    (match? {:social/definition-id "clojure.core/disj"
+             :social/notes [#:note{:note-id uuid?
+                                   :definition-id "clojure.core/disj"
+                                   :body "my note about this function."
+                                   :created-at inst?
+                                   :author #:author{:author-id uuid?
+                                                    :login "delboni"
+                                                    :account-source "github"
+                                                    :avatar-url "https://my.pic.com/me.jpg"
+                                                    :created-at inst?}}
+                            #:note{:note-id uuid?
+                                   :definition-id "clojure.core/disj"
+                                   :body "my second note about this function."
+                                   :created-at inst?
+                                   :author #:author{:author-id uuid?
+                                                    :login "delboni"
+                                                    :account-source "github"
+                                                    :avatar-url "https://my.pic.com/me.jpg"
+                                                    :created-at
+                                                    inst?}}]
+             :social/examples [#:example{:example-id uuid?
                                          :definition-id "clojure.core/disj"
-                                         :body "my note about this function."
+                                         :body "my example about this function."
                                          :created-at inst?
                                          :author #:author{:author-id uuid?
                                                           :login "delboni"
                                                           :account-source "github"
                                                           :avatar-url "https://my.pic.com/me.jpg"
-                                                          :created-at inst?}}
-                                  #:note{:note-id uuid?
+                                                          :created-at inst?}
+                                         :editors [#:author{:author-id uuid?
+                                                            :login "delboni"
+                                                            :account-source "github"
+                                                            :avatar-url "https://my.pic.com/me.jpg"
+                                                            :created-at inst?}]}
+                               #:example{:example-id uuid?
                                          :definition-id "clojure.core/disj"
-                                         :body "my second note about this function."
+                                         :body "another example about this function."
                                          :created-at inst?
                                          :author #:author{:author-id uuid?
                                                           :login "delboni"
                                                           :account-source "github"
                                                           :avatar-url "https://my.pic.com/me.jpg"
-                                                          :created-at
-                                                          inst?}}]
-               :definition/examples [#:example{:example-id uuid?
-                                               :definition-id "clojure.core/disj"
-                                               :body "my example about this function."
-                                               :created-at inst?
-                                               :author #:author{:author-id uuid?
-                                                                :login "delboni"
-                                                                :account-source "github"
-                                                                :avatar-url "https://my.pic.com/me.jpg"
-                                                                :created-at inst?}
-                                               :editors [#:author{:author-id uuid?
-                                                                  :login "delboni"
-                                                                  :account-source "github"
-                                                                  :avatar-url "https://my.pic.com/me.jpg"
-                                                                  :created-at inst?}]}
-                                     #:example{:example-id uuid?
-                                               :definition-id "clojure.core/disj"
-                                               :body "another example about this function."
-                                               :created-at inst?
-                                               :author #:author{:author-id uuid?
-                                                                :login "delboni"
-                                                                :account-source "github"
-                                                                :avatar-url "https://my.pic.com/me.jpg"
-                                                                :created-at inst?}
-                                               :editors [#:author{:author-id uuid?
-                                                                  :login "delboni"
-                                                                  :account-source "github"
-                                                                  :avatar-url "https://my.pic.com/me.jpg"
-                                                                  :created-at inst?}]}]
-               :definition/see-alsos [#:see-also{:see-also-id uuid?
-                                                 :definition-id "clojure.core/disj"
-                                                 :definition-id-to "clojure.core/dissoc"
-                                                 :created-at inst?
-                                                 :author #:author{:author-id uuid?
-                                                                  :login "delboni"
-                                                                  :account-source "github"
-                                                                  :avatar-url "https://my.pic.com/me.jpg"
-                                                                  :created-at inst?}}]}])
+                                                          :created-at inst?}
+                                         :editors [#:author{:author-id uuid?
+                                                            :login "delboni"
+                                                            :account-source "github"
+                                                            :avatar-url "https://my.pic.com/me.jpg"
+                                                            :created-at inst?}]}]
+             :social/see-alsos [#:see-also{:see-also-id uuid?
+                                           :definition-id "clojure.core/disj"
+                                           :definition-id-to "clojure.core/dissoc"
+                                           :created-at inst?
+                                           :author #:author{:author-id uuid?
+                                                            :login "delboni"
+                                                            :account-source "github"
+                                                            :avatar-url "https://my.pic.com/me.jpg"
+                                                            :created-at inst?}}]}
             (util.db.postgres/get-by-definition "clojure.core/disj"))))

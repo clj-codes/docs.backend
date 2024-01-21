@@ -25,7 +25,7 @@
                         :created-at
                         :updated-at]))
 
-(def Definition
+(def Social
   [:map
    [:definition-id :string]
    [:notes [:sequential Note]]

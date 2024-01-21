@@ -13,7 +13,8 @@
   (components.database/execute db sql-params jdbc/unqualified-snake-kebab-opts))
 
 (defn upsert-author
-  {:malli/schema [:=> [:cat schemas.model.social/NewAuthor schemas.types/DatabaseComponent] schemas.model.social/Author]}
+  {:malli/schema [:=> [:cat schemas.model.social/NewAuthor schemas.types/DatabaseComponent]
+                  schemas.model.social/Author]}
   [transaction db]
   (->> (-> (sql.helpers/insert-into :author)
            (sql.helpers/values [transaction])
@@ -26,7 +27,8 @@
        adapters/db->author))
 
 (defn get-author
-  {:malli/schema [:=> [:cat :string schemas.model.social/account-source schemas.types/DatabaseComponent] [:maybe schemas.model.social/Author]]}
+  {:malli/schema [:=> [:cat :string schemas.model.social/account-source schemas.types/DatabaseComponent]
+                  [:maybe schemas.model.social/Author]]}
   [login source db]
   (when-let [author (->> (-> (sql.helpers/select :*)
                              (sql.helpers/from :author)
@@ -39,7 +41,8 @@
     (adapters/db->author author)))
 
 (defn insert-see-also
-  {:malli/schema [:=> [:cat schemas.model.social/NewSeeAlso schemas.types/DatabaseComponent] schemas.model.social/SeeAlso]}
+  {:malli/schema [:=> [:cat schemas.model.social/NewSeeAlso schemas.types/DatabaseComponent]
+                  schemas.model.social/SeeAlso]}
   [transaction db]
   (->> (-> (sql.helpers/insert-into :see-also)
            (sql.helpers/values [transaction])
@@ -53,7 +56,8 @@
        adapters/db->see-also))
 
 (defn insert-example
-  {:malli/schema [:=> [:cat schemas.model.social/NewExample schemas.types/DatabaseComponent] schemas.model.social/Example]}
+  {:malli/schema [:=> [:cat schemas.model.social/NewExample schemas.types/DatabaseComponent]
+                  schemas.model.social/Example]}
   [transaction db]
   (jdbc/with-transaction [datasource (:datasource db)]
     (let [execute-tx! (fn [db sql] (jdbc/execute! db sql jdbc/snake-kebab-opts))
@@ -76,7 +80,8 @@
       example)))
 
 (defn update-example
-  {:malli/schema [:=> [:cat schemas.model.social/UpdateExample schemas.types/DatabaseComponent] schemas.model.social/Example]}
+  {:malli/schema [:=> [:cat schemas.model.social/UpdateExample schemas.types/DatabaseComponent]
+                  schemas.model.social/Example]}
   [transaction db]
   (let [example (->> (->  (sql.helpers/with
                            [:example-edited (-> (sql.helpers/insert-into :example-edit)
@@ -95,7 +100,8 @@
     (adapters/db->example example [])))
 
 (defn insert-note
-  {:malli/schema [:=> [:cat schemas.model.social/NewNote schemas.types/DatabaseComponent] schemas.model.social/Note]}
+  {:malli/schema [:=> [:cat schemas.model.social/NewNote schemas.types/DatabaseComponent]
+                  schemas.model.social/Note]}
   [transaction db]
   (->> (-> (sql.helpers/insert-into :note)
            (sql.helpers/values [transaction])
@@ -109,7 +115,8 @@
        adapters/db->note))
 
 (defn update-note
-  {:malli/schema [:=> [:cat schemas.model.social/UpdateNote schemas.types/DatabaseComponent] schemas.model.social/Note]}
+  {:malli/schema [:=> [:cat schemas.model.social/UpdateNote schemas.types/DatabaseComponent]
+                  schemas.model.social/Note]}
   [transaction db]
   (->> (-> (sql.helpers/update :note)
            (sql.helpers/set transaction)
@@ -124,7 +131,8 @@
        adapters/db->note))
 
 (defn get-by-definition
-  {:malli/schema [:=> [:cat :string schemas.types/DatabaseComponent] [:sequential schemas.model.social/Definition]]}
+  {:malli/schema [:=> [:cat :string schemas.types/DatabaseComponent]
+                  schemas.model.social/Social]}
   [definition-id db]
   (->> (-> (sql.helpers/union-all
             (-> (sql.helpers/select
@@ -166,4 +174,4 @@
                 (sql.helpers/where [:= :see-also/definition-id definition-id])))
            sql/format)
        (execute! db)
-       adapters/db->definitions))
+       adapters/db->social))

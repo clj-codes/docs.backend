@@ -85,7 +85,17 @@
               :responses {201 {:body schemas.wire.out.social/SeeAlso}
                           400 {:body :string}
                           500 {:body :string}}
-              :handler ports.http-in.social/insert-see-also}}]]]
+              :handler ports.http-in.social/insert-see-also}}]]
+
+    ["/definition"
+     {:swagger {:tags ["definition" "social"]}}
+
+     ["/{*definition-id}"
+      {:get {:summary "get definition socials list by id"
+             :parameters {:path {:definition-id :string}}
+             :responses {200 {:body schemas.wire.out.social/Social}
+                         404 {:body :string}}
+             :handler ports.http-in.social/get-by-definition}}]]]
 
    ["/document"
 

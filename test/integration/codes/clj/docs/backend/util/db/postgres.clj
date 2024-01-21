@@ -59,5 +59,4 @@
     [database (state-flow.api/get-state :database)]
     (->> database
          (db/get-by-definition definition-id)
-         vec
          state-flow.api/return)))

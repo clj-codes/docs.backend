@@ -69,12 +69,14 @@
                 new-note-response)
 
         (flow "checks db for new note"
-          (match? [#:definition{:definition-id "clojure.core/disj"
-                                :notes [#:note{:note-id (parse-uuid note-id)
-                                               :definition-id "clojure.core/disj"
-                                               :body "my note about this function."
-                                               :created-at inst?}]}]
-                  (util.db.postgres/get-by-definition "clojure.core/disj"))))
+          (match? {:status 200
+                   :body {:definition-id "clojure.core/disj"
+                          :notes [{:note-id note-id
+                                   :definition-id "clojure.core/disj"
+                                   :body "my note about this function."
+                                   :created-at string?}]}}
+                  (state-flow.server/request! {:method :get
+                                               :uri "/social/definition/clojure.core/disj"}))))
 
       (flow "check update note response"
         (match? {:status 201
@@ -90,12 +92,14 @@
                                                       :body "my edited note about this function."}}))
 
         (flow "checks db for updated note"
-          (match? [#:definition{:definition-id "clojure.core/disj"
-                                :notes [#:note{:note-id (parse-uuid note-id)
-                                               :definition-id "clojure.core/disj"
-                                               :body "my edited note about this function."
-                                               :created-at inst?}]}]
-                  (util.db.postgres/get-by-definition "clojure.core/disj")))))))
+          (match? {:status 200
+                   :body {:definition-id "clojure.core/disj"
+                          :notes [{:note-id note-id
+                                   :definition-id "clojure.core/disj"
+                                   :body "my edited note about this function."
+                                   :created-at string?}]}}
+                  (state-flow.server/request! {:method :get
+                                               :uri "/social/definition/clojure.core/disj"})))))))
 
 (defflow
   flow-integration-see-also-test
@@ -127,12 +131,14 @@
                 new-see-also-response)
 
         (flow "checks db for new see-also"
-          (match? [#:definition{:definition-id "clojure.core/disj"
-                                :see-alsos [#:see-also{:see-also-id (parse-uuid see-also-id)
-                                                       :definition-id "clojure.core/disj"
-                                                       :definition-id-to "clojure.core/dissoc"
-                                                       :created-at inst?}]}]
-                  (util.db.postgres/get-by-definition "clojure.core/disj")))))))
+          (match? {:status 200
+                   :body {:definition-id "clojure.core/disj"
+                          :see-alsos [{:see-also-id see-also-id
+                                       :definition-id "clojure.core/disj"
+                                       :definition-id-to "clojure.core/dissoc"
+                                       :created-at string?}]}}
+                  (state-flow.server/request! {:method :get
+                                               :uri "/social/definition/clojure.core/disj"})))))))
 
 (defflow
   flow-integration-example-test
@@ -164,12 +170,14 @@
                 new-example-response)
 
         (flow "checks db for new example"
-          (match? [#:definition{:definition-id "clojure.core/disj"
-                                :examples [#:example{:example-id (parse-uuid example-id)
-                                                     :definition-id "clojure.core/disj"
-                                                     :body "my example about this function."
-                                                     :created-at inst?}]}]
-                  (util.db.postgres/get-by-definition "clojure.core/disj"))))
+          (match? {:status 200
+                   :body {:definition-id "clojure.core/disj"
+                          :examples [{:example-id example-id
+                                      :definition-id "clojure.core/disj"
+                                      :body "my example about this function."
+                                      :created-at string?}]}}
+                  (state-flow.server/request! {:method :get
+                                               :uri "/social/definition/clojure.core/disj"}))))
 
       (flow "check update example response"
         (match? {:status 201
@@ -185,9 +193,11 @@
                                                       :body "my edited example about this function."}}))
 
         (flow "checks db for updated example"
-          (match? [#:definition{:definition-id "clojure.core/disj"
-                                :examples [#:example{:example-id (parse-uuid example-id)
-                                                     :definition-id "clojure.core/disj"
-                                                     :body "my edited example about this function."
-                                                     :created-at inst?}]}]
-                  (util.db.postgres/get-by-definition "clojure.core/disj")))))))
+          (match? {:status 200
+                   :body {:definition-id "clojure.core/disj"
+                          :examples [{:example-id example-id
+                                      :definition-id "clojure.core/disj"
+                                      :body "my edited example about this function."
+                                      :created-at string?}]}}
+                  (state-flow.server/request! {:method :get
+                                               :uri "/social/definition/clojure.core/disj"})))))))
