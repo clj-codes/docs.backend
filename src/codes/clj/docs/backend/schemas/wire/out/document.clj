@@ -1,7 +1,7 @@
 (ns codes.clj.docs.backend.schemas.wire.out.document
-  (:require [codes.clj.docs.backend.schemas.wire :refer [definition
-                                                         namespace-schema
-                                                         project]]
+  (:require [codes.clj.docs.backend.schemas.wire.document :refer [definition
+                                                                  namespace-schema
+                                                                  project]]
             [malli.util :as mu]))
 
 (def Project
