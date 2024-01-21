@@ -1,5 +1,6 @@
 (ns codes.clj.docs.backend.schemas.wire.out.social
-  (:require [codes.clj.docs.backend.schemas.wire :refer [example note see-also]]
+  (:require [codes.clj.docs.backend.schemas.wire.social :refer [example note
+                                                                see-also]]
             [malli.util :as mu]))
 
 (def SeeAlso

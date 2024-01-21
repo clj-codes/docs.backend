@@ -4,9 +4,9 @@
             [clojure.test.check.properties :as properties]
             [codes.clj.docs.backend.adapters.social :as adapters.social]
             [codes.clj.docs.backend.schemas.model.social :as schemas.model.social]
-            [codes.clj.docs.backend.schemas.wire :as schemas.wire]
-            [codes.clj.docs.backend.schemas.wire.in :as schemas.wire.in]
+            [codes.clj.docs.backend.schemas.wire.in.social :as schemas.wire.in.social]
             [codes.clj.docs.backend.schemas.wire.out.social :as schemas.wire.out.social]
+            [codes.clj.docs.backend.schemas.wire.social :as schemas.wire.social]
             [malli.core :as m]
             [malli.generator :as mg]
             [parenthesin.helpers.malli :as helpers.malli]))
@@ -14,19 +14,19 @@
 (use-fixtures :once helpers.malli/with-intrumentation)
 
 (defspec upsert-author-wire->model-test 50
-  (properties/for-all [author (mg/generator schemas.wire.in/NewAuthor)]
+  (properties/for-all [author (mg/generator schemas.wire.in.social/NewAuthor)]
                       (m/validate schemas.model.social/NewAuthor (adapters.social/upsert-author-wire->model author))))
 
 (defspec author->model->wire-test 50
   (properties/for-all [author (mg/generator schemas.model.social/Author)]
-                      (m/validate schemas.wire/Author (adapters.social/author->model->wire author))))
+                      (m/validate schemas.wire.social/Author (adapters.social/author->model->wire author))))
 
 (defspec new-example-wire->model-test 50
-  (properties/for-all [example (mg/generator schemas.wire.in/NewExample)]
+  (properties/for-all [example (mg/generator schemas.wire.in.social/NewExample)]
                       (m/validate schemas.model.social/NewExample (adapters.social/new-example-wire->model example))))
 
 (defspec update-example-wire->model-test 50
-  (properties/for-all [example (mg/generator schemas.wire.in/UpdateExample)]
+  (properties/for-all [example (mg/generator schemas.wire.in.social/UpdateExample)]
                       (m/validate schemas.model.social/UpdateExample (adapters.social/update-example-wire->model example))))
 
 (defspec example->model->wire-test 50
@@ -34,7 +34,7 @@
                       (m/validate schemas.wire.out.social/Example (adapters.social/example->model->wire example))))
 
 (defspec new-see-also-wire->model-test 50
-  (properties/for-all [see-also (mg/generator schemas.wire.in/NewSeeAlso)]
+  (properties/for-all [see-also (mg/generator schemas.wire.in.social/NewSeeAlso)]
                       (m/validate schemas.model.social/NewSeeAlso (adapters.social/new-see-also-wire->model see-also))))
 
 (defspec see-also->model->wire-test 50
@@ -42,11 +42,11 @@
                       (m/validate schemas.wire.out.social/SeeAlso (adapters.social/see-also->model->wire see-also))))
 
 (defspec upsert-note-wire->model-test 50
-  (properties/for-all [note (mg/generator schemas.wire.in/NewNote)]
+  (properties/for-all [note (mg/generator schemas.wire.in.social/NewNote)]
                       (m/validate schemas.model.social/NewNote (adapters.social/new-note-wire->model note))))
 
 (defspec update-note-wire->model-test 50
-  (properties/for-all [note (mg/generator schemas.wire.in/UpdateNote)]
+  (properties/for-all [note (mg/generator schemas.wire.in.social/UpdateNote)]
                       (m/validate schemas.model.social/UpdateNote (adapters.social/update-note-wire->model note))))
 
 (defspec note->model->wire-test 50

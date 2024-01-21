@@ -28,7 +28,8 @@
   {:malli/schema [:=> [:cat schemas.model.document/Namespace]
                   schemas.wire.out.document/Namespace]}
   [{:namespace/keys [id name group artifact project
-                     end-row meta name-end-col name-end-row name-row added author filename git-source col name-col end-col doc row]}]
+                     end-row meta name-end-col name-end-row name-row added
+                     author filename git-source col name-col end-col doc row]}]
   (enc/assoc-some
    {:id           id
     :name         name
@@ -60,7 +61,10 @@
   {:malli/schema [:=> [:cat schemas.model.document/Definition]
                   schemas.wire.out.document/Definition]}
   [{:definition/keys [id group artifact name namespace
-                      private added arglist-strs col defined-by doc end-col end-row filename fixed-arities git-source macro meta name-col name-end-col name-end-row name-row protocol-name protocol-ns row varargs-min-arity]}]
+                      private added arglist-strs col defined-by doc end-col
+                      end-row filename fixed-arities git-source macro meta
+                      name-col name-end-col name-end-row name-row protocol-name
+                      protocol-ns row varargs-min-arity]}]
   (enc/assoc-some
    {:id        id
     :group     group
