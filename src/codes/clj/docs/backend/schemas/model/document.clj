@@ -41,10 +41,10 @@
 (def Definition
   [:map
    [:definition/group :string]
+   [:definition/namespace Namespace]
    [:definition/artifact :string]
    [:definition/name :string]
    [:definition/defined-by {:optional true} :string]
-   [:definition/namespace {:optional true} Namespace]
    [:definition/fixed-arities {:optional true} [:set :int]]
    [:definition/arglist-strs {:optional true} [:sequential :string]]
    [:definition/end-row {:optional true} :int]

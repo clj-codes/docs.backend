@@ -12,11 +12,29 @@
 (use-fixtures :once helpers.malli/with-intrumentation)
 
 (defspec project->wire 50
-  (properties/for-all [projects (mg/generator schemas.model.document/Project)]
+  (properties/for-all [project (mg/generator schemas.model.document/Project)]
                       (m/validate schemas.wire.out.document/Project
-                                  (adapters.document/project->wire projects))))
+                                  (adapters.document/project->wire project))))
 
 (defspec projects->wire 50
   (properties/for-all [projects (mg/generator schemas.model.document/Projects)]
                       (m/validate schemas.wire.out.document/Projects
                                   (adapters.document/projects->wire projects))))
+
+(defspec namespace->wire 50
+  (properties/for-all [namespace (mg/generator schemas.model.document/Namespace)]
+                      (m/validate schemas.wire.out.document/Namespace
+                                  (adapters.document/namespace->wire namespace))))
+(defspec namespaces->wire 50
+  (properties/for-all [namespaces (mg/generator schemas.model.document/Namespaces)]
+                      (m/validate schemas.wire.out.document/Namespaces
+                                  (adapters.document/namespaces->wire namespaces))))
+
+(defspec definition->wire 50
+  (properties/for-all [definition (mg/generator schemas.model.document/Definition)]
+                      (m/validate schemas.wire.out.document/Definition
+                                  (adapters.document/definition->wire definition))))
+(defspec definitions->wire 50
+  (properties/for-all [definitions (mg/generator schemas.model.document/Definitions)]
+                      (m/validate schemas.wire.out.document/Definitions
+                                  (adapters.document/definitions->wire definitions))))

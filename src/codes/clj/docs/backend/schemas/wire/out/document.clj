@@ -18,47 +18,53 @@
 (def Projects [:sequential Project])
 
 (def Namespace
-  (mu/select-keys namespace-schema [:id
-                                    :project
-                                    :group
-                                    :artifact
-                                    :name
-                                    :end-row
-                                    :meta
-                                    :name-end-col
-                                    :name-end-row
-                                    :name-row
-                                    :added
-                                    :author
-                                    :filename
-                                    :git-source
-                                    :col
-                                    :name-col
-                                    :end-col
-                                    :doc
-                                    :row]))
+  (-> namespace-schema
+      (mu/select-keys [:id
+                       :group
+                       :artifact
+                       :name
+                       :end-row
+                       :meta
+                       :name-end-col
+                       :name-end-row
+                       :name-row
+                       :added
+                       :author
+                       :filename
+                       :git-source
+                       :col
+                       :name-col
+                       :end-col
+                       :doc
+                       :row])
+      (mu/assoc :project-id :string)))
+
+(def Namespaces [:sequential Namespace])
 
 (def Definition
-  (mu/select-keys definition [:group
-                              :artifact
-                              :name
-                              :defined-by
-                              :namespace
-                              :fixed-arities
-                              :arglist-strs
-                              :end-row
-                              :meta
-                              :name-end-col
-                              :name-end-row
-                              :added
-                              :author
-                              :filename
-                              :git-source
-                              :col
-                              :name-col
-                              :end-col
-                              :macro
-                              :varargs-min-arity
-                              :private
-                              :protocol-ns
-                              :protocol-name]))
+  (-> definition
+      (mu/select-keys [:group
+                       :artifact
+                       :name
+                       :defined-by
+                       :fixed-arities
+                       :arglist-strs
+                       :end-row
+                       :meta
+                       :name-end-col
+                       :name-end-row
+                       :added
+                       :author
+                       :filename
+                       :git-source
+                       :col
+                       :name-col
+                       :end-col
+                       :macro
+                       :varargs-min-arity
+                       :private
+                       :protocol-ns
+                       :protocol-name])
+      (mu/assoc :namespace-id :string)))
+
+(def Definitions [:sequential Definition])

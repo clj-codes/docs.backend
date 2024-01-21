@@ -84,12 +84,13 @@
 
 (def definition
   [:map
+   [:id :string]
+   [:namespace namespace-schema]
    [:group :string]
    [:artifact :string]
    [:name :string]
    [:defined-by {:optional true} :string]
-   [:namespace {:optional true} namespace-schema]
-   [:fixed-arities {:optional true} [:sequential :int]]
+   [:fixed-arities {:optional true} [:set :int]]
    [:arglist-strs {:optional true} [:sequential :string]]
    [:end-row {:optional true} :int]
    [:meta {:optional true} :any]
