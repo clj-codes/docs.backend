@@ -7,3 +7,13 @@
   {:malli/schema [:=> [:cat schemas.types/Components] schemas.model.document/Projects]}
   [{:keys [db-docs]}]
   (db/get-projects db-docs))
+
+(defn get-namespaces-by-project
+  {:malli/schema [:=> [:cat :string schemas.types/Components] schemas.model.document/Namespaces]}
+  [project-id {:keys [db-docs]}]
+  (db/get-namespaces-by-project project-id db-docs))
+
+(defn get-definitions-by-namespace
+  {:malli/schema [:=> [:cat :string schemas.types/Components] schemas.model.document/Definitions]}
+  [namespace-id {:keys [db-docs]}]
+  (db/get-definitions-by-namespace namespace-id db-docs))

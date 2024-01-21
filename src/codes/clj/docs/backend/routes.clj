@@ -94,4 +94,24 @@
      ["/"
       {:get {:summary "get project list"
              :responses {200 {:body schemas.wire.out.document/Projects}}
-             :handler ports.http-in/get-projects}}]]]])
+             :handler ports.http-in/get-projects}}]]
+
+    ["/namespaces"
+     {:swagger {:tags ["namespaces" "document"]}}
+
+     ["/{*project-id}"
+      {:get {:summary "get namespace list by project id"
+             :parameters {:path {:project-id :string}}
+             :responses {200 {:body schemas.wire.out.document/Namespaces}
+                         404 {:body :string}}
+             :handler ports.http-in/get-namespaces-by-project}}]]
+
+    ["/definitions"
+     {:swagger {:tags ["definitions" "document"]}}
+
+     ["/{*namespace-id}"
+      {:get {:summary "get definition list by namespace id"
+             :parameters {:path {:namespace-id :string}}
+             :responses {200 {:body schemas.wire.out.document/Definitions}
+                         404 {:body :string}}
+             :handler ports.http-in/get-definitions-by-namespace}}]]]])
