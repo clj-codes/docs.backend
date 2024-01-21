@@ -5,9 +5,10 @@ Backend Service for [docs.clj.codes](https://docs.clj.codes).
 
  - [x] Social Database (postgres & basic api)
  - [ ] Document Database (datalevin & merge with social db on get api)
-    - [ ] Malli schema & adapters for datalevin data
-    - [ ] List all namespaces by project
-    - [ ] List all definitions by namespaces
+    - [x] Malli schema & adapters for datalevin data
+    - [x] List all available project
+    - [x] List all namespaces by project
+    - [x] List all definitions by namespaces
     - [ ] Get definition docs & social by definition id
  - [ ] Auth using Github
     - [ ] Create author and login by github

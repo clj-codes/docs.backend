@@ -2,7 +2,7 @@
   (:require [codes.clj.docs.backend.schemas.model.social :as schemas.model.social]
             [codes.clj.docs.backend.schemas.wire :as schemas.wire]
             [codes.clj.docs.backend.schemas.wire.in :as schemas.wire.in]
-            [codes.clj.docs.backend.schemas.wire.out :as schemas.wire.out]
+            [codes.clj.docs.backend.schemas.wire.out.social :as schemas.wire.out.social]
             [taoensso.encore :as enc]))
 
 (defn upsert-author-wire->model
@@ -36,7 +36,7 @@
             :body body})
 
 (defn example->model->wire
-  {:malli/schema [:=> [:cat schemas.model.social/Example] schemas.wire.out/Example]}
+  {:malli/schema [:=> [:cat schemas.model.social/Example] schemas.wire.out.social/Example]}
   [{:example/keys [example-id author definition-id body created-at editors]}]
   (enc/assoc-some {:example-id example-id
                    :definition-id definition-id
@@ -54,7 +54,7 @@
              :definition-id-to definition-id-to})
 
 (defn see-also->model->wire
-  {:malli/schema [:=> [:cat schemas.model.social/SeeAlso] schemas.wire.out/SeeAlso]}
+  {:malli/schema [:=> [:cat schemas.model.social/SeeAlso] schemas.wire.out.social/SeeAlso]}
   [{:see-also/keys [see-also-id author definition-id definition-id-to created-at]}]
   (enc/assoc-some {:see-also-id see-also-id
                    :definition-id definition-id
@@ -78,7 +78,7 @@
          :body body})
 
 (defn note->model->wire
-  {:malli/schema [:=> [:cat schemas.model.social/Note] schemas.wire.out/Note]}
+  {:malli/schema [:=> [:cat schemas.model.social/Note] schemas.wire.out.social/Note]}
   [{:note/keys [note-id author definition-id body created-at]}]
   (enc/assoc-some
    {:note-id note-id
@@ -88,7 +88,7 @@
    :author (when author (author->model->wire author))))
 
 (defn definition->model->wire
-  {:malli/schema [:=> [:cat schemas.model.social/Definition] schemas.wire.out/Definition]}
+  {:malli/schema [:=> [:cat schemas.model.social/Definition] schemas.wire.out.social/Definition]}
   [{:definition/keys [definition-id notes examples see-alsos]}]
   {:definition-id definition-id
    :notes (map note->model->wire notes)

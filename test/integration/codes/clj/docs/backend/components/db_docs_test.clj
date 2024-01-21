@@ -1,6 +1,6 @@
 (ns integration.codes.clj.docs.backend.components.db-docs-test
   (:require [clojure.java.io :as io]
-            [clojure.test :refer [deftest is testing]]
+            [clojure.test :refer [deftest is testing use-fixtures]]
             [codes.clj.docs.backend.components.db-docs :as component.db-docs]
             [com.stuartsierra.component :as component]
             [datalevin.core :as d]
@@ -8,7 +8,10 @@
             [matcher-combinators.matchers :as m]
             [matcher-combinators.test :refer [match?]]
             [parenthesin.components.config.aero :as component.config]
-            [parenthesin.components.http.clj-http :as component.http]))
+            [parenthesin.components.http.clj-http :as component.http]
+            [parenthesin.helpers.malli :as helpers.malli]))
+
+(use-fixtures :once helpers.malli/with-intrumentation)
 
 (defn- create-and-start-system! [components]
   (->> components

@@ -1,5 +1,6 @@
 (ns codes.clj.docs.backend.server
-  (:require [codes.clj.docs.backend.routes :as routes]
+  (:require [codes.clj.docs.backend.components.db-docs :as components.db-docs]
+            [codes.clj.docs.backend.routes :as routes]
             [com.stuartsierra.component :as component]
             [parenthesin.components.config.aero :as config]
             [parenthesin.components.db.jdbc-hikari :as database]
@@ -18,7 +19,8 @@
    :http (http/new-http)
    :router (router/new-router routes/routes)
    :database (component/using (database/new-database) [:config])
-   :webserver (component/using (webserver/new-webserver) [:config :http :router :database])))
+   :db-docs (component/using (components.db-docs/new-db-docs {}) [:config :http])
+   :webserver (component/using (webserver/new-webserver) [:config :http :router :database :db-docs])))
 
 (defn start-system! [system-map]
   (logs/setup :info :auto)
