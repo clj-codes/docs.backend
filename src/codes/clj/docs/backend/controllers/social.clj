@@ -47,6 +47,6 @@
 
 (defn get-by-definition
   {:malli/schema [:=> [:cat :string schemas.types/Components]
-                  schemas.model.social/Social]}
+                  [:maybe schemas.model.social/Social]]}
   [definition-id {:keys [database]}]
   (db.postgres/get-by-definition definition-id database))

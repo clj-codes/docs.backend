@@ -125,4 +125,14 @@
              :parameters {:path {:namespace-id :string}}
              :responses {200 {:body schemas.wire.out.document/Definitions}
                          404 {:body :string}}
-             :handler ports.http-in.document/get-definitions-by-namespace}}]]]])
+             :handler ports.http-in.document/get-definitions-by-namespace}}]]
+
+    ["/definition"
+     {:swagger {:tags ["definition" "document"]}}
+
+     ["/{*definition-id}"
+      {:get {:summary "get definition by id"
+             :parameters {:path {:definition-id :string}}
+             :responses {200 {:body schemas.wire.out.document/Definition}
+                         404 {:body :string}}
+             :handler ports.http-in.document/get-definition-by-id}}]]]])

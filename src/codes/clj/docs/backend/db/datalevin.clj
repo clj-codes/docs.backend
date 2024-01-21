@@ -8,10 +8,10 @@
   {:malli/schema [:=> [:cat schemas.types/DatalevinComponent]
                   schemas.model.document/Projects]}
   [db]
-  (d/q '[:find [(pull ?e [*]) ...]
+  (d/q '[:find [(pull ?p [*]) ...]
          :in $
          :where
-         [?e :project/id]]
+         [?p :project/id]]
        (component.db-docs/db db)))
 
 (defn get-namespaces-by-project
@@ -30,10 +30,22 @@
   {:malli/schema [:=> [:cat :string schemas.types/DatalevinComponent]
                   schemas.model.document/Definitions]}
   [namespace-id db]
-  (d/q '[:find [(pull ?n [* {:definition/namespace [* {:namespace/project [*]}]}]) ...]
+  (d/q '[:find [(pull ?d [* {:definition/namespace [* {:namespace/project [*]}]}]) ...]
          :in $ ?q
          :where
          [?p :namespace/id ?q]
-         [?n :definition/namespace ?p]]
+         [?d :definition/namespace ?p]]
        (component.db-docs/db db)
        namespace-id))
+
+(defn get-definition-by-id
+  {:malli/schema [:=> [:cat :string schemas.types/DatalevinComponent]
+                  [:maybe schemas.model.document/Definition]]}
+  [definition-id db]
+  (-> (d/q '[:find [(pull ?d [* {:definition/namespace [* {:namespace/project [*]}]}]) ...]
+             :in $ ?q
+             :where
+             [?d :definition/id ?q]]
+           (component.db-docs/db db)
+           definition-id)
+      first))

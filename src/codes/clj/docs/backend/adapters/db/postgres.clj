@@ -74,7 +74,7 @@
 
 (defn db->social
   {:malli/schema [:=> [:cat [:sequential schemas.db/Row]]
-                  schemas.model.social/Social]}
+                  [:maybe schemas.model.social/Social]]}
   [db-rows]
   (->> db-rows
        (group-by :definition-id)

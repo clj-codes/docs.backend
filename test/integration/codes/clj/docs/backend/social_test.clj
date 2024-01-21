@@ -1,7 +1,6 @@
 (ns integration.codes.clj.docs.backend.social-test
   (:require [clojure.test :refer [use-fixtures]]
             [integration.codes.clj.docs.backend.util :as util]
-            [integration.codes.clj.docs.backend.util.db.postgres :as util.db.postgres]
             [parenthesin.helpers.malli :as helpers.malli]
             [parenthesin.helpers.state-flow.server.pedestal :as state-flow.server]
             [state-flow.api :refer [defflow flow]]
@@ -201,3 +200,16 @@
                                       :created-at string?}]}}
                   (state-flow.server/request! {:method :get
                                                :uri "/social/definition/clojure.core/disj"})))))))
+
+(defflow
+  flow-integration-definition-test
+  {:init util/start-system!
+   :cleanup util/stop-system!
+   :fail-fast? true}
+  (flow "should interact with system"
+
+    (flow "should not return definition"
+      (match? {:status 404
+               :body "not found"}
+              (state-flow.server/request! {:method :get
+                                           :uri    "/social/definition/golang/go/math/abs/0"})))))

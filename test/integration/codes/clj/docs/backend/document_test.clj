@@ -117,4 +117,37 @@
       (match? {:status 404
                :body "not found"}
               (state-flow.server/request! {:method :get
-                                           :uri    "/document/definitions/golang/go/math"})))))
+                                           :uri    "/document/definitions/golang/go/math"})))
+
+    (flow "should return definition"
+      (match? {:status 200
+               :body {:end-row 327, :group "org.clojure"
+                      :meta {:arglists [["options*" "body"]]}
+                      :namespace-id "org.clojure/clojure/clojure.pprint"
+                      :name-end-col 31
+                      :name-end-row 302
+                      :private false
+                      :name-row 302
+                      :added "1.2"
+                      :name "pprint-logical-block"
+                      :defined-by "clojure.core/defmacro"
+                      :git-source "https://github.com/clojure/clojure/blob/clojure-1.11.1/src/clj/clojure/pprint/pprint_base.clj#L302"
+                      :filename "/src/clj/clojure/pprint/pprint_base.clj"
+                      :macro true
+                      :col 1
+                      :id "org.clojure/clojure/clojure.pprint/pprint-logical-block/0"
+                      :name-col 11
+                      :artifact "clojure"
+                      :end-col 16
+                      :arglist-strs ["[& args]"]
+                      :varargs-min-arity 0
+                      :doc "Execute the body as a pretty printing logical block with output to *out* which \nmust be a pretty printing writer. When used from pprint or cl-format this can be \nassumed. \n\nThis function is intended for use when writing custom dispatch functions.\n\nBefore the body the caller can optionally specify options: :prefix :per-line-prefix \nand :suffix."
+                      :row 302}}
+              (state-flow.server/request! {:method :get
+                                           :uri    "/document/definition/org.clojure/clojure/clojure.pprint/pprint-logical-block/0"})))
+
+    (flow "should not return definition"
+      (match? {:status 404
+               :body "not found"}
+              (state-flow.server/request! {:method :get
+                                           :uri    "/document/definition/golang/go/math/abs/0"})))))

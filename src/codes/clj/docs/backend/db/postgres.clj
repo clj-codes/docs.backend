@@ -132,7 +132,7 @@
 
 (defn get-by-definition
   {:malli/schema [:=> [:cat :string schemas.types/DatabaseComponent]
-                  schemas.model.social/Social]}
+                  [:maybe schemas.model.social/Social]]}
   [definition-id db]
   (->> (-> (sql.helpers/union-all
             (-> (sql.helpers/select

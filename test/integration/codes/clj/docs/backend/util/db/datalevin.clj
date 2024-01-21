@@ -36,3 +36,11 @@
     (->> database
          (db/get-definitions-by-namespace namespace-id)
          state-flow.api/return)))
+
+(defn get-definition-by-id
+  [definition-id]
+  (flow "get definition by id in document db"
+    [database (state-flow.api/get-state :db-docs)]
+    (->> database
+         (db/get-definition-by-id definition-id)
+         state-flow.api/return)))

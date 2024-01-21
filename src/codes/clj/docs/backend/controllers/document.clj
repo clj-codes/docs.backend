@@ -4,16 +4,25 @@
             [codes.clj.docs.backend.schemas.types :as schemas.types]))
 
 (defn get-projects
-  {:malli/schema [:=> [:cat schemas.types/Components] schemas.model.document/Projects]}
+  {:malli/schema [:=> [:cat schemas.types/Components]
+                  schemas.model.document/Projects]}
   [{:keys [db-docs]}]
   (db/get-projects db-docs))
 
 (defn get-namespaces-by-project
-  {:malli/schema [:=> [:cat :string schemas.types/Components] schemas.model.document/Namespaces]}
+  {:malli/schema [:=> [:cat :string schemas.types/Components]
+                  schemas.model.document/Namespaces]}
   [project-id {:keys [db-docs]}]
   (db/get-namespaces-by-project project-id db-docs))
 
 (defn get-definitions-by-namespace
-  {:malli/schema [:=> [:cat :string schemas.types/Components] schemas.model.document/Definitions]}
+  {:malli/schema [:=> [:cat :string schemas.types/Components]
+                  schemas.model.document/Definitions]}
   [namespace-id {:keys [db-docs]}]
   (db/get-definitions-by-namespace namespace-id db-docs))
+
+(defn get-definition-by-id
+  {:malli/schema [:=> [:cat :string schemas.types/Components]
+                  [:maybe schemas.model.document/Definition]]}
+  [definition-id {:keys [db-docs]}]
+  (db/get-definition-by-id definition-id db-docs))
