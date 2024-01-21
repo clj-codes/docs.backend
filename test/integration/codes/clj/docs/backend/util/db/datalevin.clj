@@ -28,3 +28,11 @@
     (->> database
          (db/get-namespaces-by-project project-id)
          state-flow.api/return)))
+
+(defn get-definition-by-namespace
+  [namespace-id]
+  (flow "get all definitions for a namespace-id in document db"
+    [database (state-flow.api/get-state :db-docs)]
+    (->> database
+         (db/get-definitions-by-namespace namespace-id)
+         state-flow.api/return)))

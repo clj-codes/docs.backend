@@ -5,6 +5,7 @@
             [integration.codes.clj.docs.backend.fixtures.document :as fixtures.document]
             [integration.codes.clj.docs.backend.util :as util]
             [integration.codes.clj.docs.backend.util.db.datalevin :as util.db.datalevin]
+            [matcher-combinators.matchers :as m]
             [parenthesin.helpers.malli :as helpers.malli]
             [state-flow.api :refer [defflow flow]]
             [state-flow.assertions.matcher-combinators :refer [match?]]))
@@ -70,4 +71,11 @@
   (flow "find namespaces by project in db"
     (match? [(assoc fixtures.document/namespace-clojure-pprint
                     :namespace/project fixtures.document/project-clojure)]
-            (util.db.datalevin/get-namespaces-by-project "org.clojure/clojure"))))
+            (util.db.datalevin/get-namespaces-by-project "org.clojure/clojure")))
+
+  (flow "find definitions by namespace in db"
+    (match? (m/in-any-order
+             (map #(assoc % :definition/namespace fixtures.document/namespace-clojure-pprint)
+                  [fixtures.document/definition-clojure-pprint-pprint-logical-block
+                   fixtures.document/definition-clojure-pprint-print-table]))
+            (util.db.datalevin/get-definition-by-namespace "org.clojure/clojure/clojure.pprint"))))

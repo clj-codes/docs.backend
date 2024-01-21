@@ -25,3 +25,15 @@
          [?n :namespace/project ?p]]
        (component.db-docs/db db)
        project-id))
+
+(defn get-definitions-by-namespace
+  {:malli/schema [:=> [:cat :string schemas.types/DatalevinComponent]
+                  schemas.model.document/Definitions]}
+  [namespace-id db]
+  (d/q '[:find [(pull ?n [* {:definition/namespace [* {:namespace/project [*]}]}]) ...]
+         :in $ ?q
+         :where
+         [?p :namespace/id ?q]
+         [?n :definition/namespace ?p]]
+       (component.db-docs/db db)
+       namespace-id))

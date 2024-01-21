@@ -328,7 +328,10 @@
                                                                                                                             :any],
                                                                                                                      :ret :sequential}}},
                                                                              get-namespaces {:arities {1 {:args [:any],
-                                                                                                          :ret :sequential}}}},
+                                                                                                          :ret :sequential}}},
+                                                                             get-definitions-by-namespace {:arities {2 {:args [:string
+                                                                                                                               :any],
+                                                                                                                        :ret :sequential}}}},
                                         codes.clj.docs.backend.adapters.social {new-note-wire->model {:arities {1 {:args [{:op :keys,
                                                                                                                            :req {:author-id :any,
                                                                                                                                  :definition-id :string,

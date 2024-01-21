@@ -45,7 +45,7 @@
    [:definition/name :string]
    [:definition/defined-by {:optional true} :string]
    [:definition/namespace {:optional true} Namespace]
-   [:definition/fixed-arities {:optional true} [:sequential :int]]
+   [:definition/fixed-arities {:optional true} [:set :int]]
    [:definition/arglist-strs {:optional true} [:sequential :string]]
    [:definition/end-row {:optional true} :int]
    [:definition/meta {:optional true} :any]
@@ -63,3 +63,5 @@
    [:definition/private {:optional true} :boolean]
    [:definition/protocol-ns {:optional true} :string]
    [:definition/protocol-name {:optional true} :string]])
+
+(def Definitions [:sequential Definition])
