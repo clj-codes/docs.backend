@@ -36,8 +36,6 @@
    [:namespace/name-end-row {:optional true} :int]
    [:namespace/filename {:optional true} :string]])
 
-
-
 (def Namespaces [:sequential Namespace])
 
 (def Definition
