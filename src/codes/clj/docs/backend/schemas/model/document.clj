@@ -4,13 +4,13 @@
   [:map
    [:project/id :string]
    [:project/name :string]
-   [:project/group {:optional true} :string]
-   [:project/artifact {:optional true} :string]
-   [:project/paths {:optional true} [:sequential :string]]
-   [:project/url {:optional true} :string]
-   [:project/sha {:optional true} :string]
-   [:project/tag {:optional true} :string]
-   [:project/manifest {:optional true} :keyword]])
+   [:project/group :string]
+   [:project/artifact :string]
+   [:project/paths [:vector :string]]
+   [:project/url :string]
+   [:project/sha :string]
+   [:project/tag :string]
+   [:project/manifest :keyword]])
 
 (def Projects [:sequential Project])
 
@@ -18,50 +18,56 @@
   [:map
    [:namespace/id :string]
    [:namespace/project Project]
+   [:namespace/name :string]
    [:namespace/group :string]
    [:namespace/artifact :string]
-   [:namespace/name :string]
-   [:namespace/end-row {:optional true} :int]
-   [:namespace/meta {:optional true} :any]
    [:namespace/name-end-col {:optional true} :int]
-   [:namespace/name-end-row {:optional true} :int]
-   [:namespace/name-row {:optional true} :int]
    [:namespace/added {:optional true} :string]
-   [:namespace/author {:optional true} :string]
-   [:namespace/filename {:optional true} :string]
-   [:namespace/git-source {:optional true} :string]
-   [:namespace/col {:optional true} :int]
-   [:namespace/name-col {:optional true} :int]
+   [:namespace/end-row {:optional true} :int]
    [:namespace/end-col {:optional true} :int]
+   [:namespace/git-source {:optional true} :string]
+   [:namespace/name-row {:optional true} :int]
+   [:namespace/meta {:optional true} :any]
+   [:namespace/row {:optional true} :int]
+   [:namespace/col {:optional true} :int]
+   [:namespace/author {:optional true} :string]
+   [:namespace/name-col {:optional true} :int]
    [:namespace/doc {:optional true} :string]
-   [:namespace/row {:optional true} :int]])
+   [:namespace/name-end-row {:optional true} :int]
+   [:namespace/filename {:optional true} :string]])
+
+
 
 (def Namespaces [:sequential Namespace])
 
 (def Definition
   [:map
+   [:definition/id :string]
    [:definition/group :string]
-   [:definition/namespace Namespace]
    [:definition/artifact :string]
    [:definition/name :string]
+   [:definition/namespace Namespace]
+   [:definition/private :boolean]
+   [:definition/added {:optional true} :string]
+   [:definition/arglist-strs {:optional true} [:vector :string]]
+   [:definition/col {:optional true} :int]
    [:definition/defined-by {:optional true} :string]
-   [:definition/fixed-arities {:optional true} [:set :int]]
-   [:definition/arglist-strs {:optional true} [:sequential :string]]
+   [:definition/doc {:optional true} :string]
+   [:definition/end-col {:optional true} :int]
    [:definition/end-row {:optional true} :int]
+   [:definition/filename {:optional true} :string]
+   [:definition/fixed-arities {:optional true} [:set :int]]
+   [:definition/git-source {:optional true} :string]
+   [:definition/macro {:optional true} :boolean]
    [:definition/meta {:optional true} :any]
+   [:definition/name-col {:optional true} :int]
    [:definition/name-end-col {:optional true} :int]
    [:definition/name-end-row {:optional true} :int]
-   [:definition/added {:optional true} :string]
-   [:definition/author {:optional true} :string]
-   [:definition/filename {:optional true} :string]
-   [:definition/git-source {:optional true} :string]
-   [:definition/col {:optional true} :int]
-   [:definition/name-col {:optional true} :int]
-   [:definition/end-col {:optional true} :int]
-   [:definition/macro {:optional true} :boolean]
-   [:definition/varargs-min-arity {:optional true} :int]
-   [:definition/private {:optional true} :boolean]
+   [:definition/name-row {:optional true} :int]
+   [:definition/protocol-name {:optional true} :string]
    [:definition/protocol-ns {:optional true} :string]
-   [:definition/protocol-name {:optional true} :string]])
+   [:definition/row {:optional true} :int]
+   [:definition/varargs-min-arity {:optional true} :int]])
 
 (def Definitions [:sequential Definition])
+

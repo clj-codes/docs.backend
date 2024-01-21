@@ -20,9 +20,9 @@
 (def Namespace
   (-> namespace-schema
       (mu/select-keys [:id
+                       :name
                        :group
                        :artifact
-                       :name
                        :end-row
                        :meta
                        :name-end-col
@@ -43,28 +43,31 @@
 
 (def Definition
   (-> definition
-      (mu/select-keys [:group
+      (mu/select-keys [:id
+                       :group
                        :artifact
                        :name
-                       :defined-by
-                       :fixed-arities
+                       :private
+                       :added
                        :arglist-strs
+                       :col
+                       :defined-by
+                       :doc
+                       :end-col
                        :end-row
+                       :filename
+                       :fixed-arities
+                       :git-source
+                       :macro
                        :meta
+                       :name-col
                        :name-end-col
                        :name-end-row
-                       :added
-                       :author
-                       :filename
-                       :git-source
-                       :col
-                       :name-col
-                       :end-col
-                       :macro
-                       :varargs-min-arity
-                       :private
+                       :name-row
+                       :protocol-name
                        :protocol-ns
-                       :protocol-name])
+                       :row
+                       :varargs-min-arity])
       (mu/assoc :namespace-id :string)))
 
 (def Definitions [:sequential Definition])

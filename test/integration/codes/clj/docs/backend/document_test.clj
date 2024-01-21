@@ -75,23 +75,27 @@
                        :name-end-col 18
                        :name-end-row 11
                        :private false
+                       :name-row 11
                        :added "1.3"
                        :name "print-table"
                        :defined-by "clojure.core/defn"
                        :git-source "https://github.com/clojure/clojure/blob/clojure-1.11.1/src/clj/clojure/pprint/print_table.clj#L11"
                        :filename "/src/clj/clojure/pprint/print_table.clj"
                        :col 1
+                       :id "org.clojure/clojure/clojure.pprint/print-table/0"
                        :name-col 7
                        :artifact "clojure"
                        :end-col 51
-                       :arglist-strs ["[ks rows]" "[rows]"]}
-                      {:end-row 327
-                       :group "org.clojure"
+                       :arglist-strs ["[ks rows]" "[rows]"]
+                       :doc "Prints a collection of maps in a textual table. Prints table headings\n   ks and then a line of output for each row corresponding to the keys\n   in ks. If ks are not specified use the keys of the first item in rows."
+                       :row 11}
+                      {:end-row 327, :group "org.clojure"
                        :meta {:arglists [["options*" "body"]]}
                        :namespace-id "org.clojure/clojure/clojure.pprint"
                        :name-end-col 31
                        :name-end-row 302
                        :private false
+                       :name-row 302
                        :added "1.2"
                        :name "pprint-logical-block"
                        :defined-by "clojure.core/defmacro"
@@ -99,11 +103,14 @@
                        :filename "/src/clj/clojure/pprint/pprint_base.clj"
                        :macro true
                        :col 1
+                       :id "org.clojure/clojure/clojure.pprint/pprint-logical-block/0"
                        :name-col 11
                        :artifact "clojure"
                        :end-col 16
                        :arglist-strs ["[& args]"]
-                       :varargs-min-arity 0}]}
+                       :varargs-min-arity 0
+                       :doc "Execute the body as a pretty printing logical block with output to *out* which \nmust be a pretty printing writer. When used from pprint or cl-format this can be \nassumed. \n\nThis function is intended for use when writing custom dispatch functions.\n\nBefore the body the caller can optionally specify options: :prefix :per-line-prefix \nand :suffix."
+                       :row 302}]}
               (state-flow.server/request! {:method :get
                                            :uri    "/document/definitions/org.clojure/clojure/clojure.pprint"})))
     (flow "should not return definitions"

@@ -29,25 +29,26 @@
                   schemas.wire.out.document/Namespace]}
   [{:namespace/keys [id name group artifact project
                      end-row meta name-end-col name-end-row name-row added author filename git-source col name-col end-col doc row]}]
-  (enc/assoc-some {:id         id
-                   :group      group
-                   :artifact   artifact
-                   :name       name
-                   :project-id (:project/id project)}
-                  :end-row      end-row
-                  :meta         meta
-                  :name-end-col name-end-col
-                  :name-end-row name-end-row
-                  :name-row     name-row
-                  :added        added
-                  :author       author
-                  :filename     filename
-                  :git-source   git-source
-                  :col          col
-                  :name-col     name-col
-                  :end-col      end-col
-                  :doc          doc
-                  :row          row))
+  (enc/assoc-some
+   {:id           id
+    :name         name
+    :group        group
+    :artifact     artifact
+    :project-id   (:project/id project)}
+   :name-end-col name-end-col
+   :added        added
+   :end-row      end-row
+   :end-col      end-col
+   :git-source   git-source
+   :name-row     name-row
+   :meta         meta
+   :row          row
+   :col          col
+   :author       author
+   :name-col     name-col
+   :doc          doc
+   :name-end-row name-end-row
+   :filename     filename))
 
 (defn namespaces->wire
   {:malli/schema [:=> [:cat schemas.model.document/Namespaces]
@@ -58,33 +59,35 @@
 (defn definition->wire
   {:malli/schema [:=> [:cat schemas.model.document/Definition]
                   schemas.wire.out.document/Definition]}
-  [{:definition/keys [id name group artifact namespace
-                      defined-by fixed-arities arglist-strs end-row meta name-end-col name-end-row added author filename git-source col name-col end-col macro varargs-min-arity private protocol-ns protocol-name]}]
+  [{:definition/keys [id group artifact name namespace
+                      private added arglist-strs col defined-by doc end-col end-row filename fixed-arities git-source macro meta name-col name-end-col name-end-row name-row protocol-name protocol-ns row varargs-min-arity]}]
   (enc/assoc-some
-   {:id                id
-    :group             group
-    :artifact          artifact
-    :name              name
-    :namespace-id      (:namespace/id namespace)}
-   :defined-by        defined-by
-   :fixed-arities     fixed-arities
+   {:id        id
+    :group     group
+    :artifact  artifact
+    :name      name
+    :namespace-id (:namespace/id namespace)}
+   :private           private
+   :added             added
    :arglist-strs      arglist-strs
+   :col               col
+   :defined-by        defined-by
+   :doc               doc
+   :end-col           end-col
    :end-row           end-row
+   :filename          filename
+   :fixed-arities     fixed-arities
+   :git-source        git-source
+   :macro             macro
    :meta              meta
+   :name-col          name-col
    :name-end-col      name-end-col
    :name-end-row      name-end-row
-   :added             added
-   :author            author
-   :filename          filename
-   :git-source        git-source
-   :col               col
-   :name-col          name-col
-   :end-col           end-col
-   :macro             macro
-   :varargs-min-arity varargs-min-arity
-   :private           private
+   :name-row          name-row
+   :protocol-name     protocol-name
    :protocol-ns       protocol-ns
-   :protocol-name     protocol-name))
+   :row               row
+   :varargs-min-arity varargs-min-arity))
 
 (defn definitions->wire
   {:malli/schema [:=> [:cat schemas.model.document/Definitions]
