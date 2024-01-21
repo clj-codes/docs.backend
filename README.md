@@ -7,8 +7,8 @@ Backend Service for [docs.clj.codes](https://docs.clj.codes).
  - [ ] Document Database (datalevin & merge with social db on get api)
     - [x] Malli schema & adapters for datalevin data
     - [x] List all available project
-    - [ ] List all namespaces by project
-    - [ ] List all definitions by namespaces
+    - [x] List all namespaces by project
+    - [x] List all definitions by namespaces
     - [ ] Get definition docs & social by definition id
  - [ ] Auth using Github
     - [ ] Create author and login by github
