@@ -101,9 +101,9 @@
                         :note/created-at
                         :note/updated-at]))
 
-(def Definition
+(def Social
   [:map
-   [:definition/definition-id :string]
-   [:definition/notes [:sequential Note]]
-   [:definition/examples [:sequential Example]]
-   [:definition/see-alsos [:sequential SeeAlso]]])
+   [:social/definition-id :string]
+   [:social/notes [:sequential Note]]
+   [:social/examples [:sequential Example]]
+   [:social/see-alsos [:sequential SeeAlso]]])

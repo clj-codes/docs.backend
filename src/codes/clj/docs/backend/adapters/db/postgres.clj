@@ -22,14 +22,16 @@
                   :note/author (when author-id (db->author note))))
 
 (defn db->notes
-  {:malli/schema [:=> [:cat [:sequential schemas.db/Row]] [:sequential schemas.model.social/Note]]}
+  {:malli/schema [:=> [:cat [:sequential schemas.db/Row]]
+                  [:sequential schemas.model.social/Note]]}
   [db-rows]
   (->> db-rows
        (filter #(= (:type %) "note"))
        (map db->note)))
 
 (defn db->example
-  {:malli/schema [:=> [:cat schemas.db/Row [:sequential schemas.model.social/Author]] schemas.model.social/Example]}
+  {:malli/schema [:=> [:cat schemas.db/Row [:sequential schemas.model.social/Author]]
+                  schemas.model.social/Example]}
   [{:keys [id definition-id body created author-id] :as example}
    editors]
   (enc/assoc-some {:example/example-id id
@@ -40,7 +42,8 @@
                   :example/editors (when (seq editors) editors)))
 
 (defn db->examples
-  {:malli/schema [:=> [:cat [:sequential schemas.db/Row]] [:sequential schemas.model.social/Example]]}
+  {:malli/schema [:=> [:cat [:sequential schemas.db/Row]]
+                  [:sequential schemas.model.social/Example]]}
   [db-rows]
   (->> db-rows
        (filter #(= (:type %) "example"))
@@ -62,14 +65,16 @@
                                      (db->author see-also))))
 
 (defn db->see-alsos
-  {:malli/schema [:=> [:cat [:sequential schemas.db/Row]] [:sequential schemas.model.social/SeeAlso]]}
+  {:malli/schema [:=> [:cat [:sequential schemas.db/Row]]
+                  [:sequential schemas.model.social/SeeAlso]]}
   [db-rows]
   (->> db-rows
        (filter #(= (:type %) "see-also"))
        (map db->see-also)))
 
-(defn db->definitions
-  {:malli/schema [:=> [:cat [:sequential schemas.db/Row]] [:sequential schemas.model.social/Definition]]}
+(defn db->social
+  {:malli/schema [:=> [:cat [:sequential schemas.db/Row]]
+                  [:maybe schemas.model.social/Social]]}
   [db-rows]
   (->> db-rows
        (group-by :definition-id)
@@ -77,7 +82,8 @@
               (let [notes (db->notes items)
                     examples (db->examples items)
                     see-alsos (db->see-alsos items)]
-                {:definition/definition-id definition-id
-                 :definition/notes notes
-                 :definition/examples examples
-                 :definition/see-alsos see-alsos})))))
+                {:social/definition-id definition-id
+                 :social/notes notes
+                 :social/examples examples
+                 :social/see-alsos see-alsos})))
+       first))

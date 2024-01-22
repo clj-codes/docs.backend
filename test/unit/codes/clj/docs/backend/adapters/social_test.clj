@@ -53,6 +53,6 @@
   (properties/for-all [note (mg/generator schemas.model.social/Note)]
                       (m/validate schemas.wire.out.social/Note (adapters.social/note->model->wire note))))
 
-(defspec definition->model->wire-test 50
-  (properties/for-all [definition (mg/generator schemas.model.social/Definition)]
-                      (m/validate schemas.wire.out.social/Definition (adapters.social/definition->model->wire definition))))
+(defspec social->model->wire-test 50
+  (properties/for-all [definition (mg/generator schemas.model.social/Social)]
+                      (m/validate schemas.wire.out.social/Social (adapters.social/social->model->wire definition))))

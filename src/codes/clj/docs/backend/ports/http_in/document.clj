@@ -29,3 +29,12 @@
      :body (adapters.document/definitions->wire definitions)}
     {:status 404
      :body "not found"}))
+
+(defn get-definition-by-id
+  [{{{:keys [definition-id]} :path} :parameters
+    components :components}]
+  (if-let [definitions (controllers.document/get-definition-by-id definition-id components)]
+    {:status 200
+     :body (adapters.document/definition->wire definitions)}
+    {:status 404
+     :body "not found"}))

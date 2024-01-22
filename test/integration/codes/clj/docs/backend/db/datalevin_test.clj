@@ -78,4 +78,8 @@
              (map #(assoc % :definition/namespace fixtures.document/namespace-clojure-pprint)
                   [fixtures.document/definition-clojure-pprint-pprint-logical-block
                    fixtures.document/definition-clojure-pprint-print-table]))
-            (util.db.datalevin/get-definition-by-namespace "org.clojure/clojure/clojure.pprint"))))
+            (util.db.datalevin/get-definition-by-namespace "org.clojure/clojure/clojure.pprint")))
+
+  (flow "find definitions by its id in db"
+    (match? fixtures.document/definition-clojure-pprint-print-table
+            (util.db.datalevin/get-definition-by-id "org.clojure/clojure/clojure.pprint/print-table/0"))))
