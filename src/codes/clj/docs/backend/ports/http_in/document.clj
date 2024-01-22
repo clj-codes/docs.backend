@@ -14,8 +14,10 @@
   (if-let [namespaces (-> project-id
                           (controllers.document/get-namespaces-by-project components)
                           seq)]
-    {:status 200
-     :body (adapters.document/namespaces->wire namespaces)}
+    (let [project (-> namespaces first :namespace/project)]
+      {:status 200
+       :body {:project (adapters.document/project->wire project)
+              :namespaces (adapters.document/namespaces->wire namespaces)}})
     {:status 404
      :body "not found"}))
 
@@ -25,16 +27,24 @@
   (if-let [definitions (-> namespace-id
                            (controllers.document/get-definitions-by-namespace components)
                            seq)]
-    {:status 200
-     :body (adapters.document/definitions->wire definitions)}
+    (let [namespace (-> definitions first :definition/namespace)
+          project (:namespace/project namespace)]
+      {:status 200
+       :body {:project (adapters.document/project->wire project)
+              :namespace (adapters.document/namespace->wire namespace)
+              :definitions (adapters.document/definitions->wire definitions)}})
     {:status 404
      :body "not found"}))
 
 (defn get-definition-by-id
   [{{{:keys [definition-id]} :path} :parameters
     components :components}]
-  (if-let [definitions (controllers.document/get-definition-by-id definition-id components)]
-    {:status 200
-     :body (adapters.document/definition->wire definitions)}
+  (if-let [definition (controllers.document/get-definition-by-id definition-id components)]
+    (let [namespace (:definition/namespace definition)
+          project (:namespace/project namespace)]
+      {:status 200
+       :body {:project (adapters.document/project->wire project)
+              :namespace (adapters.document/namespace->wire namespace)
+              :definition (adapters.document/definition->wire definition)}})
     {:status 404
      :body "not found"}))
