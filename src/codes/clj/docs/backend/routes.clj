@@ -113,7 +113,7 @@
      ["/{*project-id}"
       {:get {:summary "get namespace list by project id"
              :parameters {:path {:project-id :string}}
-             :responses {200 {:body schemas.wire.out.document/Namespaces}
+             :responses {200 {:body schemas.wire.out.document/ProjectNamespaces}
                          404 {:body :string}}
              :handler ports.http-in.document/get-namespaces-by-project}}]]
 
@@ -121,9 +121,9 @@
      {:swagger {:tags ["definitions" "document"]}}
 
      ["/{*namespace-id}"
-      {:get {:summary "get definition list by namespace id"
+      {:get {:summary "get definitions list by namespace id"
              :parameters {:path {:namespace-id :string}}
-             :responses {200 {:body schemas.wire.out.document/Definitions}
+             :responses {200 {:body schemas.wire.out.document/ProjectNamespaceDefinitions}
                          404 {:body :string}}
              :handler ports.http-in.document/get-definitions-by-namespace}}]]
 
@@ -133,6 +133,6 @@
      ["/{*definition-id}"
       {:get {:summary "get definition by id"
              :parameters {:path {:definition-id :string}}
-             :responses {200 {:body schemas.wire.out.document/Definition}
+             :responses {200 {:body schemas.wire.out.document/ProjectNamespaceDefinition}
                          404 {:body :string}}
              :handler ports.http-in.document/get-definition-by-id}}]]]])

@@ -41,6 +41,11 @@
 
 (def Namespaces [:sequential Namespace])
 
+(def ProjectNamespaces
+  [:map
+   [:project Project]
+   [:namespaces Namespaces]])
+
 (def Definition
   (-> definition
       (mu/select-keys [:id
@@ -71,3 +76,15 @@
       (mu/assoc :namespace-id :string)))
 
 (def Definitions [:sequential Definition])
+
+(def ProjectNamespaceDefinitions
+  [:map
+   [:project Project]
+   [:namespace Namespace]
+   [:definitions Definitions]])
+
+(def ProjectNamespaceDefinition
+  [:map
+   [:project Project]
+   [:namespace Namespace]
+   [:definition Definition]])
