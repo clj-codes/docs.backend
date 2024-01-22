@@ -22,7 +22,7 @@
                   :note/author (when author-id (db->author note))))
 
 (defn db->notes
-  {:malli/schema [:=> [:cat [:sequential schemas.db/Row]] 
+  {:malli/schema [:=> [:cat [:sequential schemas.db/Row]]
                   [:sequential schemas.model.social/Note]]}
   [db-rows]
   (->> db-rows
@@ -30,7 +30,7 @@
        (map db->note)))
 
 (defn db->example
-  {:malli/schema [:=> [:cat schemas.db/Row [:sequential schemas.model.social/Author]] 
+  {:malli/schema [:=> [:cat schemas.db/Row [:sequential schemas.model.social/Author]]
                   schemas.model.social/Example]}
   [{:keys [id definition-id body created author-id] :as example}
    editors]
