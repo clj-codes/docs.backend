@@ -72,10 +72,10 @@
       (when-not (util/file-exists db-path)
         (logs/log :info :datalevin :db-not-found :downloading :start)
         (download-db! db-path config http)
-        (logs/log :info :datalevin :db-not-found :downloading :end)
-        (if conn
-          this
-          (assoc this :conn (d/get-conn db-path schema))))))
+        (logs/log :info :datalevin :db-not-found :downloading :end))
+      (if conn
+        this
+        (assoc this :conn (d/get-conn db-path schema)))))
   (stop [this]
     (logs/log :info :datalevin :stop)
     (if conn
