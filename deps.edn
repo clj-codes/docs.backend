@@ -6,7 +6,7 @@
         metosin/malli {:mvn/version "0.14.0"}
         metosin/reitit-swagger {:mvn/version "0.6.0"}
         org.postgresql/postgresql {:mvn/version "42.7.1"}
-        com.taoensso/encore {:mvn/version "3.68.0"}
+        com.taoensso/encore {:mvn/version "3.74.2"}
         datalevin/datalevin {:mvn/version "0.8.26"}}
  :aliases
  {:dev {:extra-paths ["test" "dev" "test/resources"]
