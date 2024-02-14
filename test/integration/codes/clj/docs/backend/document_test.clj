@@ -34,7 +34,7 @@
                        :tag "clojure-1.11.1"
                        :sha "ce55092f2b2f5481d25cff6205470c1335760ef6"}]}
               (state-flow.server/request! {:method :get
-                                           :uri    "/document/projects/"})))
+                                           :uri    "/api/document/projects/"})))
 
     (flow "should return namespaces"
       (match? {:status 200
@@ -70,12 +70,12 @@
                                     :doc "A Pretty Printer for Clojure\n\nclojure.pprint implements a flexible system for printing structured data\nin a pleasing easy-to-understand format. Basic use of the pretty printer is \nsimple just call pprint instead of println. More advanced users can use \nthe building blocks provided to create custom output formats. \n\nOut of the box pprint supports a simple structured format for basic data \nand a specialized format for Clojure source code. More advanced formats \nincluding formats that don't look like Clojure data at all like XML and \nJSON can be rendered by creating custom dispatch functions. \n\nIn addition to the pprint function this module contains cl-format a text \nformatting function which is fully compatible with the format function in \nCommon Lisp. Because pretty printing directives are directly integrated with\ncl-format it supports very concise custom dispatch. It also provides\na more powerful alternative to Clojure's standard format function.\n\nSee documentation for pprint and cl-format for more information or \ncomplete documentation on the Clojure web site on GitHub."
                                     :row 14}]}}
               (state-flow.server/request! {:method :get
-                                           :uri    "/document/namespaces/org.clojure/clojure"})))
+                                           :uri    "/api/document/namespaces/org.clojure/clojure"})))
     (flow "should not return namespaces"
       (match? {:status 404
                :body "not found"}
               (state-flow.server/request! {:method :get
-                                           :uri    "/document/namespaces/golang/go"})))
+                                           :uri    "/api/document/namespaces/golang/go"})))
 
     (flow "should return definitions"
       (match? {:status 200
@@ -155,12 +155,12 @@
                                      :doc "Execute the body as a pretty printing logical block with output to *out* which \nmust be a pretty printing writer. When used from pprint or cl-format this can be \nassumed. \n\nThis function is intended for use when writing custom dispatch functions.\n\nBefore the body the caller can optionally specify options: :prefix :per-line-prefix \nand :suffix."
                                      :row 302}]}}
               (state-flow.server/request! {:method :get
-                                           :uri    "/document/definitions/org.clojure/clojure/clojure.pprint"})))
+                                           :uri    "/api/document/definitions/org.clojure/clojure/clojure.pprint"})))
     (flow "should not return definitions"
       (match? {:status 404
                :body "not found"}
               (state-flow.server/request! {:method :get
-                                           :uri    "/document/definitions/golang/go/math"})))
+                                           :uri    "/api/document/definitions/golang/go/math"})))
 
     (flow "should return definition"
       (match? {:status 200
@@ -218,10 +218,10 @@
                                    :doc "Execute the body as a pretty printing logical block with output to *out* which \nmust be a pretty printing writer. When used from pprint or cl-format this can be \nassumed. \n\nThis function is intended for use when writing custom dispatch functions.\n\nBefore the body the caller can optionally specify options: :prefix :per-line-prefix \nand :suffix."
                                    :row 302}}}
               (state-flow.server/request! {:method :get
-                                           :uri    "/document/definition/org.clojure/clojure/clojure.pprint/pprint-logical-block/0"})))
+                                           :uri    "/api/document/definition/org.clojure/clojure/clojure.pprint/pprint-logical-block/0"})))
 
     (flow "should not return definition"
       (match? {:status 404
                :body "not found"}
               (state-flow.server/request! {:method :get
-                                           :uri    "/document/definition/golang/go/math/abs/0"})))))
+                                           :uri    "/api/document/definition/golang/go/math/abs/0"})))))
