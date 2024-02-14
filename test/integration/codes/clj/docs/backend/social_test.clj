@@ -23,7 +23,7 @@
                        :avatar-url "https://my.pic/me.jpg"
                        :created-at string?}}
               (state-flow.server/request! {:method :post
-                                           :uri    "/social/author/"
+                                           :uri    "/api/social/author/"
                                            :body   {:login "delboni"
                                                     :account-source "github"
                                                     :avatar-url "https://my.pic/me.jpg"}})))
@@ -36,7 +36,7 @@
                       :avatar-url "https://my.pic/me.jpg",
                       :created-at string?}}
               (state-flow.server/request! {:method :get
-                                           :uri    "/social/author/delboni/github"})))))
+                                           :uri    "/api/social/author/delboni/github"})))))
 
 (defflow
   flow-integration-note-test
@@ -45,7 +45,7 @@
    :fail-fast? true}
   (flow "should interact with system"
     [author-response (state-flow.server/request! {:method :post
-                                                  :uri    "/social/author/"
+                                                  :uri    "/api/social/author/"
                                                   :body   {:login "delboni"
                                                            :account-source "github"
                                                            :avatar-url "https://my.pic/me.jpg"}})
@@ -53,7 +53,7 @@
 
     (flow "create & update note"
       [new-note-response (state-flow.server/request! {:method :post
-                                                      :uri    "/social/note/"
+                                                      :uri    "/api/social/note/"
                                                       :body   {:author-id author-id
                                                                :definition-id "clojure.core/disj"
                                                                :body "my note about this function."}})
@@ -75,7 +75,7 @@
                                    :body "my note about this function."
                                    :created-at string?}]}}
                   (state-flow.server/request! {:method :get
-                                               :uri "/social/definition/clojure.core/disj"}))))
+                                               :uri "/api/social/definition/clojure.core/disj"}))))
 
       (flow "check update note response"
         (match? {:status 201
@@ -84,7 +84,7 @@
                         :body "my edited note about this function."
                         :created-at string?}}
                 (state-flow.server/request! {:method :put
-                                             :uri    "/social/note/"
+                                             :uri    "/api/social/note/"
                                              :body   {:author-id author-id
                                                       :note-id note-id
                                                       :definition-id "clojure.core/disj"
@@ -98,7 +98,7 @@
                                    :body "my edited note about this function."
                                    :created-at string?}]}}
                   (state-flow.server/request! {:method :get
-                                               :uri "/social/definition/clojure.core/disj"})))))))
+                                               :uri "/api/social/definition/clojure.core/disj"})))))))
 
 (defflow
   flow-integration-see-also-test
@@ -107,7 +107,7 @@
    :fail-fast? true}
   (flow "should interact with system"
     [author-response (state-flow.server/request! {:method :post
-                                                  :uri    "/social/author/"
+                                                  :uri    "/api/social/author/"
                                                   :body   {:login "delboni"
                                                            :account-source "github"
                                                            :avatar-url "https://my.pic/me.jpg"}})
@@ -115,7 +115,7 @@
 
     (flow "create & update see-also"
       [new-see-also-response (state-flow.server/request! {:method :post
-                                                          :uri    "/social/see-also/"
+                                                          :uri    "/api/social/see-also/"
                                                           :body   {:author-id author-id
                                                                    :definition-id "clojure.core/disj"
                                                                    :definition-id-to "clojure.core/dissoc"}})
@@ -137,7 +137,7 @@
                                        :definition-id-to "clojure.core/dissoc"
                                        :created-at string?}]}}
                   (state-flow.server/request! {:method :get
-                                               :uri "/social/definition/clojure.core/disj"})))))))
+                                               :uri "/api/social/definition/clojure.core/disj"})))))))
 
 (defflow
   flow-integration-example-test
@@ -146,7 +146,7 @@
    :fail-fast? true}
   (flow "should interact with system"
     [author-response (state-flow.server/request! {:method :post
-                                                  :uri    "/social/author/"
+                                                  :uri    "/api/social/author/"
                                                   :body   {:login "delboni"
                                                            :account-source "github"
                                                            :avatar-url "https://my.pic/me.jpg"}})
@@ -154,7 +154,7 @@
 
     (flow "create & update example"
       [new-example-response (state-flow.server/request! {:method :post
-                                                         :uri    "/social/example/"
+                                                         :uri    "/api/social/example/"
                                                          :body   {:author-id author-id
                                                                   :definition-id "clojure.core/disj"
                                                                   :body "my example about this function."}})
@@ -176,7 +176,7 @@
                                       :body "my example about this function."
                                       :created-at string?}]}}
                   (state-flow.server/request! {:method :get
-                                               :uri "/social/definition/clojure.core/disj"}))))
+                                               :uri "/api/social/definition/clojure.core/disj"}))))
 
       (flow "check update example response"
         (match? {:status 201
@@ -185,7 +185,7 @@
                         :body "my edited example about this function."
                         :created-at string?}}
                 (state-flow.server/request! {:method :put
-                                             :uri    "/social/example/"
+                                             :uri    "/api/social/example/"
                                              :body   {:author-id author-id
                                                       :example-id example-id
                                                       :definition-id "clojure.core/disj"
@@ -199,7 +199,7 @@
                                       :body "my edited example about this function."
                                       :created-at string?}]}}
                   (state-flow.server/request! {:method :get
-                                               :uri "/social/definition/clojure.core/disj"})))))))
+                                               :uri "/api/social/definition/clojure.core/disj"})))))))
 
 (defflow
   flow-integration-definition-test
@@ -212,4 +212,4 @@
       (match? {:status 404
                :body "not found"}
               (state-flow.server/request! {:method :get
-                                           :uri    "/social/definition/golang/go/math/abs/0"})))))
+                                           :uri    "/api/social/definition/golang/go/math/abs/0"})))))
