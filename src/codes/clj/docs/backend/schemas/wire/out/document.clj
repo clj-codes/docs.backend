@@ -28,6 +28,7 @@
                        :name-end-col
                        :name-end-row
                        :name-row
+                       :deprecated
                        :added
                        :author
                        :filename
@@ -35,6 +36,7 @@
                        :col
                        :name-col
                        :end-col
+                       :no-doc
                        :doc
                        :row])
       (mu/assoc :project-id :string)))
@@ -53,6 +55,7 @@
                        :artifact
                        :name
                        :private
+                       :deprecated
                        :added
                        :arglist-strs
                        :col
