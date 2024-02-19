@@ -20,6 +20,7 @@
    [:group :string]
    [:artifact :string]
    [:name-end-col {:optional true} :int]
+   [:deprecated {:optional true} :string]
    [:added {:optional true} :string]
    [:end-row {:optional true} :int]
    [:end-col {:optional true} :int]
@@ -30,6 +31,7 @@
    [:col {:optional true} :int]
    [:author {:optional true} :string]
    [:name-col {:optional true} :int]
+   [:no-doc {:optional true} :boolean]
    [:doc {:optional true} :string]
    [:name-end-row {:optional true} :int]
    [:filename {:optional true} :string]])
@@ -42,6 +44,7 @@
    [:name :string]
    [:namespace namespace-schema]
    [:private :boolean]
+   [:deprecated {:optional true} :string]
    [:added {:optional true} :string]
    [:arglist-strs {:optional true} [:vector :string]]
    [:col {:optional true} :int]

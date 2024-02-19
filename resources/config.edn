@@ -10,5 +10,5 @@
 
  :db-docs {:dir "target"
            :url "https://github.com/clj-codes/docs.extractor/releases/download"
-           :version "v0.1.1"
+           :version "v0.1.2"
            :file-name "docs-db.zip"}}

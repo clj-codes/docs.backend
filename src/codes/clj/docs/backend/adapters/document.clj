@@ -29,7 +29,8 @@
                   schemas.wire.out.document/Namespace]}
   [{:namespace/keys [id name group artifact project
                      end-row meta name-end-col name-end-row name-row added
-                     author filename git-source col name-col end-col doc row]}]
+                     author filename git-source col name-col end-col doc row
+                     deprecated no-doc]}]
   (enc/assoc-some
    {:id           id
     :name         name
@@ -37,6 +38,7 @@
     :artifact     artifact
     :project-id   (:project/id project)}
    :name-end-col name-end-col
+   :deprecated   deprecated
    :added        added
    :end-row      end-row
    :end-col      end-col
@@ -47,6 +49,7 @@
    :col          col
    :author       author
    :name-col     name-col
+   :no-doc       no-doc
    :doc          doc
    :name-end-row name-end-row
    :filename     filename))
@@ -64,7 +67,7 @@
                       private added arglist-strs col defined-by doc end-col
                       end-row filename fixed-arities git-source macro meta
                       name-col name-end-col name-end-row name-row protocol-name
-                      protocol-ns row varargs-min-arity]}]
+                      protocol-ns row varargs-min-arity deprecated]}]
   (enc/assoc-some
    {:id        id
     :group     group
@@ -72,6 +75,7 @@
     :name      name
     :namespace-id (:namespace/id namespace)}
    :private           private
+   :deprecated        deprecated
    :added             added
    :arglist-strs      arglist-strs
    :col               col

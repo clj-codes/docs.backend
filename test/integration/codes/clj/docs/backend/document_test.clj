@@ -57,6 +57,7 @@
                                     :name-end-row 37
                                     :name-row 37
                                     :added "1.2"
+                                    :deprecated "1.3"
                                     :name "clojure.pprint"
                                     :git-source "https://github.com/clojure/clojure/blob/clojure-1.11.1/src/clj/clojure/pprint.clj#L14"
                                     :author "Tom Faulhaber"
@@ -67,6 +68,7 @@
                                     :artifact "clojure"
                                     :end-col 40
                                     :project-id "org.clojure/clojure"
+                                    :no-doc true
                                     :doc "A Pretty Printer for Clojure\n\nclojure.pprint implements a flexible system for printing structured data\nin a pleasing easy-to-understand format. Basic use of the pretty printer is \nsimple just call pprint instead of println. More advanced users can use \nthe building blocks provided to create custom output formats. \n\nOut of the box pprint supports a simple structured format for basic data \nand a specialized format for Clojure source code. More advanced formats \nincluding formats that don't look like Clojure data at all like XML and \nJSON can be rendered by creating custom dispatch functions. \n\nIn addition to the pprint function this module contains cl-format a text \nformatting function which is fully compatible with the format function in \nCommon Lisp. Because pretty printing directives are directly integrated with\ncl-format it supports very concise custom dispatch. It also provides\na more powerful alternative to Clojure's standard format function.\n\nSee documentation for pprint and cl-format for more information or \ncomplete documentation on the Clojure web site on GitHub."
                                     :row 14}]}}
               (state-flow.server/request! {:method :get
@@ -98,6 +100,7 @@
                                   :name-end-row 37
                                   :name-row 37
                                   :added "1.2"
+                                  :deprecated "1.3"
                                   :name "clojure.pprint"
                                   :git-source "https://github.com/clojure/clojure/blob/clojure-1.11.1/src/clj/clojure/pprint.clj#L14"
                                   :author "Tom Faulhaber"
@@ -108,6 +111,7 @@
                                   :artifact "clojure"
                                   :end-col 40
                                   :project-id "org.clojure/clojure"
+                                  :no-doc true
                                   :doc "A Pretty Printer for Clojure\n\nclojure.pprint implements a flexible system for printing structured data\nin a pleasing easy-to-understand format. Basic use of the pretty printer is \nsimple just call pprint instead of println. More advanced users can use \nthe building blocks provided to create custom output formats. \n\nOut of the box pprint supports a simple structured format for basic data \nand a specialized format for Clojure source code. More advanced formats \nincluding formats that don't look like Clojure data at all like XML and \nJSON can be rendered by creating custom dispatch functions. \n\nIn addition to the pprint function this module contains cl-format a text \nformatting function which is fully compatible with the format function in \nCommon Lisp. Because pretty printing directives are directly integrated with\ncl-format it supports very concise custom dispatch. It also provides\na more powerful alternative to Clojure's standard format function.\n\nSee documentation for pprint and cl-format for more information or \ncomplete documentation on the Clojure web site on GitHub."
                                   :row 14}
                       :definitions [{:fixed-arities [1 2]
@@ -120,6 +124,7 @@
                                      :private false
                                      :name-row 11
                                      :added "1.3"
+                                     :deprecated "1.4"
                                      :name "print-table"
                                      :defined-by "clojure.core/defn"
                                      :git-source "https://github.com/clojure/clojure/blob/clojure-1.11.1/src/clj/clojure/pprint/print_table.clj#L11"
