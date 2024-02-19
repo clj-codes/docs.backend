@@ -95,6 +95,7 @@ jobs:
         name: built-uberjar
 
     - uses: superfly/flyctl-actions/setup-flyctl@master
-    - run: flyctl deploy --remote-only
+      # --ha=false because by default fly.io spins two machines for high availability
+    - run: flyctl deploy --remote-only --ha=false
       env:
         FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
