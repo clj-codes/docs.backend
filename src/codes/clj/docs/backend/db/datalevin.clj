@@ -61,7 +61,7 @@
 
 (defn search-by-fulltext
   {:malli/schema [:=> [:cat :string :int schemas.types/DatalevinComponent]
-                  schemas.model.document/SearchResult]}
+                  schemas.model.document/SearchResults]}
   [search top db-component]
   (let [db (component.db-docs/db db-component)]
 

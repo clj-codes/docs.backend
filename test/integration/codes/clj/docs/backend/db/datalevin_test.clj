@@ -82,4 +82,20 @@
 
   (flow "find definitions by its id in db"
     (match? fixtures.document/definition-clojure-pprint-print-table
-            (util.db.datalevin/get-definition-by-id "org.clojure/clojure/clojure.pprint/print-table/0"))))
+            (util.db.datalevin/get-definition-by-id "org.clojure/clojure/clojure.pprint/print-table/0")))
+
+  (flow "serach by fulltext in db"
+    (match? [#:definition{:id "org.clojure/clojure/clojure.pprint/pprint-logical-block/0"
+                          :doc #"^Execute the body as a pretty printing logical block"
+                          :name "pprint-logical-block"}
+             #:namespace{:name "clojure.pprint"
+                         :doc #"A Pretty Printer for Clojure"
+                         :id "org.clojure/clojure/clojure.pprint"}]
+            (util.db.datalevin/search-by-fulltext "pprint" 10))
+    (match? [#:namespace{:name "clojure.pprint"
+                         :doc #"^A Pretty Printer for Clojure"
+                         :id "org.clojure/clojure/clojure.pprint"}
+             #:project{:artifact "clojure"
+                       :group "org.clojure"
+                       :id "org.clojure/clojure"}]
+            (util.db.datalevin/search-by-fulltext "clojure" 10))))

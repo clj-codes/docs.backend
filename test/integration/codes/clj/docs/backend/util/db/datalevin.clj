@@ -44,3 +44,11 @@
     (->> database
          (db/get-definition-by-id definition-id)
          state-flow.api/return)))
+
+(defn search-by-fulltext
+  [search top]
+  (flow "search by fulltext index in document db"
+    [database (state-flow.api/get-state :db-docs)]
+    (->> database
+         (db/search-by-fulltext search top)
+         state-flow.api/return)))

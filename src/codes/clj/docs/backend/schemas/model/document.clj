@@ -90,3 +90,5 @@
 
 (def SearchResult
   [:or DefinitionSearchResult NamespaceSearchResult ProjectSearchResult])
+
+(def SearchResults [:sequential SearchResult])

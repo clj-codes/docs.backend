@@ -84,7 +84,6 @@
         (assoc this :conn nil))
       this))
 
-
   DbDocsProvider
   (db [this]
     (d/db (:conn this)))
