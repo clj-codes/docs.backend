@@ -63,7 +63,7 @@
   (conn [component]
     "Returns a database connection"))
 
-(defrecord DbDocs [schema config http conn]
+(defrecord DbDocs [schema opts config http conn]
   component/Lifecycle
   (start [this]
     (logs/log :info :datalevin :start)
@@ -75,7 +75,7 @@
         (logs/log :info :datalevin :db-not-found :downloading :end))
       (if conn
         this
-        (assoc this :conn (d/get-conn db-path schema)))))
+        (assoc this :conn (d/get-conn db-path schema opts)))))
   (stop [this]
     (logs/log :info :datalevin :stop)
     (if conn
@@ -91,10 +91,13 @@
   (conn [this]
     (:conn this)))
 
-(defn new-db-docs [schema]
-  (map->DbDocs {:schema schema}))
+(defn new-db-docs
+  ([schema opts]
+   (map->DbDocs {:schema schema :opts opts}))
+  ([schema]
+   (map->DbDocs {:schema schema :opts nil})))
 
-(defrecord DbDocsMock [schema conn db-path]
+(defrecord DbDocsMock [schema opts conn db-path]
   component/Lifecycle
   (start [this]
     (logs/log :info :datalevin :start)
@@ -104,7 +107,7 @@
       (if conn
         this
         (assoc this
-               :conn (d/get-conn db-path schema)
+               :conn (d/get-conn db-path schema opts)
                :db-path db-path))))
   (stop [this]
     (logs/log :info :datalevin :stop)
@@ -122,5 +125,8 @@
   (conn [this]
     (:conn this)))
 
-(defn new-db-docs-mock [schema]
-  (map->DbDocsMock {:schema schema}))
+(defn new-db-docs-mock
+  ([schema opts]
+   (map->DbDocsMock {:schema schema :opts opts}))
+  ([schema]
+   (map->DbDocsMock {:schema schema :opts nil})))

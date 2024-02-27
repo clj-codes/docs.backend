@@ -91,3 +91,13 @@
    [:project Project]
    [:namespace Namespace]
    [:definition Definition]])
+
+(def SearchResult
+  [:map
+   [:id :string]
+   [:name :string]
+   [:type [:enum :definition :namespace :project]]
+   [:group {:optional true} :string]
+   [:doc {:optional true} :string]])
+
+(def SearchResults [:sequential SearchResult])

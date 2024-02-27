@@ -229,4 +229,23 @@
       (match? {:status 404
                :body "not found"}
               (state-flow.server/request! {:method :get
-                                           :uri    "/api/document/definition/golang/go/math/abs/0"})))))
+                                           :uri    "/api/document/definition/golang/go/math/abs/0"})))
+
+    (flow "should return search results"
+      (match? {:status 200
+               :body [{:id "org.clojure/clojure/clojure.pprint/pprint-logical-block/0"
+                       :name "pprint-logical-block"
+                       :type "definition"
+                       :doc #"^Execute the body as a pretty printing"}
+                      {:id "org.clojure/clojure/clojure.pprint"
+                       :name "clojure.pprint"
+                       :type "namespace"
+                       :doc #"^A Pretty Printer for Clojure"}]}
+              (state-flow.server/request! {:method :get
+                                           :uri    "/api/document/search/?q=pprint"})))
+
+    (flow "should return empty search results"
+      (match? {:status 200
+               :body []}
+              (state-flow.server/request! {:method :get
+                                           :uri    "/api/document/search/?q=golang"})))))

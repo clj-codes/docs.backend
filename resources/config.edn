@@ -1,5 +1,5 @@
 {:webserver/port #long #or [#env PORT 3001]
- :webserver/allowed-origins ["http://docs.cljs.codes" "https://docs.cljs.codes"
+ :webserver/allowed-origins ["http://docs.clj.codes" "https://docs.clj.codes"
                              "http://docs-frontend.fly.dev" "https://docs-frontend.fly.dev"]
 
  :database {:dbtype "postgres"
@@ -11,5 +11,5 @@
 
  :db-docs {:dir "target"
            :url "https://github.com/clj-codes/docs.extractor/releases/download"
-           :version "v0.1.2"
+           :version "v0.3.0"
            :file-name "docs-db.zip"}}

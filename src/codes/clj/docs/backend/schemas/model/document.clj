@@ -1,4 +1,5 @@
-(ns codes.clj.docs.backend.schemas.model.document)
+(ns codes.clj.docs.backend.schemas.model.document
+  (:require [malli.util :as mu]))
 
 (def Project
   [:map
@@ -72,3 +73,22 @@
 
 (def Definitions [:sequential Definition])
 
+(def DefinitionSearchResult
+  (mu/select-keys Definition [:definition/id
+                              :definition/name
+                              :definition/doc]))
+
+(def NamespaceSearchResult
+  (mu/select-keys Namespace [:namespace/id
+                             :namespace/name
+                             :namespace/doc]))
+
+(def ProjectSearchResult
+  (mu/select-keys Project [:project/id
+                           :project/artifact
+                           :project/group]))
+
+(def SearchResult
+  [:or DefinitionSearchResult NamespaceSearchResult ProjectSearchResult])
+
+(def SearchResults [:sequential SearchResult])

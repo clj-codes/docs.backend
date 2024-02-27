@@ -26,3 +26,9 @@
                   [:maybe schemas.model.document/Definition]]}
   [definition-id {:keys [db-docs]}]
   (db/get-definition-by-id definition-id db-docs))
+
+(defn search-by-fulltext
+  {:malli/schema [:=> [:cat :string :int schemas.types/Components]
+                  schemas.model.document/SearchResults]}
+  [search top {:keys [db-docs]}]
+  (db/search-by-fulltext search top db-docs))
