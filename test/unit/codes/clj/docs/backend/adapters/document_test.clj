@@ -38,3 +38,12 @@
   (properties/for-all [definitions (mg/generator schemas.model.document/Definitions)]
                       (m/validate schemas.wire.out.document/Definitions
                                   (adapters.document/definitions->wire definitions))))
+
+(defspec search-result->wire 50
+  (properties/for-all [search-result (mg/generator schemas.model.document/SearchResult)]
+                      (m/validate schemas.wire.out.document/SearchResult
+                                  (adapters.document/search-result->wire search-result))))
+(defspec search-results->wire 50
+  (properties/for-all [search-results (mg/generator schemas.model.document/SearchResults)]
+                      (m/validate schemas.wire.out.document/SearchResults
+                                  (adapters.document/search-results->wire search-results))))

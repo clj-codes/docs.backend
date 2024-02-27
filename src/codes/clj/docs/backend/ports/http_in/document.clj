@@ -48,3 +48,10 @@
               :definition (adapters.document/definition->wire definition)}})
     {:status 404
      :body "not found"}))
+
+(defn search-by-fulltext
+  [{{{:keys [q top]} :query} :parameters
+    components :components}]
+  {:status 200
+   :body (-> (controllers.document/search-by-fulltext q (or top 20) components)
+             adapters.document/search-results->wire)})

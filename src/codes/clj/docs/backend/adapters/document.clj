@@ -102,3 +102,35 @@
                   schemas.wire.out.document/Definitions]}
   [definitions]
   (map definition->wire definitions))
+
+(defn search-result->wire
+  {:malli/schema [:=> [:cat schemas.model.document/SearchResult]
+                  schemas.wire.out.document/SearchResult]}
+  [search-result]
+  (cond
+    (:definition/id search-result)
+    (let [{:definition/keys [id name doc]} search-result]
+      (enc/assoc-some {:id   id
+                       :name name
+                       :type :definition}
+                      :doc doc))
+
+    (:namespace/id search-result)
+    (let [{:namespace/keys [id name doc]} search-result]
+      (enc/assoc-some {:id   id
+                       :name name
+                       :type :namespace}
+                      :doc doc))
+
+    (:project/id search-result)
+    (let [{:project/keys [id artifact group]} search-result]
+      (enc/assoc-some {:id   id
+                       :name artifact
+                       :type :project}
+                      :group group))))
+
+(defn search-results->wire
+  {:malli/schema [:=> [:cat schemas.model.document/SearchResults]
+                  schemas.wire.out.document/SearchResults]}
+  [search-results]
+  (map search-result->wire search-results))

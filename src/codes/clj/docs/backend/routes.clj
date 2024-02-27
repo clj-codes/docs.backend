@@ -17,10 +17,10 @@
    ["/api"
 
     ["/social"
+     {:swagger {:tags ["social"]}}
 
      ["/author"
-      {:swagger {:tags ["author" "social"]}}
-
+      {:swagger {:tags ["author"]}}
       ["/"
        {:post {:summary "create new author"
                :parameters {:body schemas.wire.in.social/NewAuthor}
@@ -41,8 +41,6 @@
               :handler ports.http-in.social/get-author}}]]
 
      ["/example"
-      {:swagger {:tags ["example" "social"]}}
-
       ["/"
        {:post {:summary "create new example"
                :parameters {:body schemas.wire.in.social/NewExample}
@@ -60,8 +58,6 @@
               :handler ports.http-in.social/update-example}}]]
 
      ["/note"
-      {:swagger {:tags ["note" "social"]}}
-
       ["/"
        {:post {:summary "create new note"
                :parameters {:body schemas.wire.in.social/NewNote}
@@ -79,8 +75,6 @@
               :handler ports.http-in.social/update-note}}]]
 
      ["/see-also"
-      {:swagger {:tags ["see-also" "social"]}}
-
       ["/"
        {:post {:summary "create new see-also"
                :parameters {:body schemas.wire.in.social/NewSeeAlso}
@@ -90,8 +84,6 @@
                :handler ports.http-in.social/insert-see-also}}]]
 
      ["/definition"
-      {:swagger {:tags ["definition" "social"]}}
-
       ["/{*definition-id}"
        {:get {:summary "get definition socials list by id"
               :parameters {:path {:definition-id :string}}
@@ -100,18 +92,15 @@
               :handler ports.http-in.social/get-by-definition}}]]]
 
     ["/document"
+     {:swagger {:tags ["document"]}}
 
      ["/projects"
-      {:swagger {:tags ["projects" "document"]}}
-
       ["/"
        {:get {:summary "get project list"
               :responses {200 {:body schemas.wire.out.document/Projects}}
               :handler ports.http-in.document/get-projects}}]]
 
      ["/namespaces"
-      {:swagger {:tags ["namespaces" "document"]}}
-
       ["/{*project-id}"
        {:get {:summary "get namespace list by project id"
               :parameters {:path {:project-id :string}}
@@ -120,8 +109,6 @@
               :handler ports.http-in.document/get-namespaces-by-project}}]]
 
      ["/definitions"
-      {:swagger {:tags ["definitions" "document"]}}
-
       ["/{*namespace-id}"
        {:get {:summary "get definitions list by namespace id"
               :parameters {:path {:namespace-id :string}}
@@ -130,11 +117,19 @@
               :handler ports.http-in.document/get-definitions-by-namespace}}]]
 
      ["/definition"
-      {:swagger {:tags ["definition" "document"]}}
-
       ["/{*definition-id}"
        {:get {:summary "get definition by id"
               :parameters {:path {:definition-id :string}}
               :responses {200 {:body schemas.wire.out.document/ProjectNamespaceDefinition}
                           404 {:body :string}}
-              :handler ports.http-in.document/get-definition-by-id}}]]]]])
+              :handler ports.http-in.document/get-definition-by-id}}]]
+
+     ["/search"
+      ["/"
+       {:get {:summary "search documents by fulltext index"
+              :parameters {:query [:map
+                                   [:q :string]
+                                   [:top {:optional true} :int]]}
+              :responses {200 {:body schemas.wire.out.document/SearchResults}
+                          404 {:body :string}}
+              :handler ports.http-in.document/search-by-fulltext}}]]]]])
