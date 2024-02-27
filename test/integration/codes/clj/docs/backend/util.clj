@@ -1,8 +1,10 @@
 (ns integration.codes.clj.docs.backend.util
   (:require [codes.clj.docs.backend.components.db-docs :as components.db-docs]
-            [codes.clj.docs.backend.db.datalevin :refer [read-conn-opts]]
+            [codes.clj.docs.backend.db.datalevin :refer [merge-tokenizers
+                                                         read-conn-opts]]
             [codes.clj.docs.backend.server :as server]
             [com.stuartsierra.component :as component]
+            [datalevin.interpret :refer [inter-fn]]
             [datalevin.search-utils :as su]
             [parenthesin.components.http.clj-http :as components.http]
             [parenthesin.helpers.logs :as logs]
@@ -46,7 +48,9 @@
 
 (def write-conn-opts
   (let [analyzer (su/create-analyzer
-                  {:tokenizer (su/create-regexp-tokenizer #"[\s:/\.;,!=?\"'()\[\]{}|<>&@#^*\\~`\-]+")
+                  {:tokenizer (merge-tokenizers
+                               (inter-fn [s] [[s 0 0]])
+                               (su/create-regexp-tokenizer #"[\s:/\.;,!=?\"'()\[\]{}|<>&@#^*\\~`\-]+"))
                    :token-filters [su/lower-case-token-filter
                                    su/prefix-token-filter]})]
     (-> read-conn-opts

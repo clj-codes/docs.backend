@@ -9,4 +9,5 @@
                                       honeysql.helpers/from]}}
  :lint-as {honeysql.helpers/defhelper clj-kondo.lint-as/def-catch-all
            clojure.test.check.properties/for-all clojure.core/let
-           clojure.test.check.clojure-test/defspec clojure.test/deftest}}
+           clojure.test.check.clojure-test/defspec clojure.test/deftest
+           datalevin.interpret/inter-fn clojure.core/fn}}

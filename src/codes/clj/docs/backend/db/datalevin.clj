@@ -3,11 +3,21 @@
             [codes.clj.docs.backend.schemas.model.document :as schemas.model.document]
             [codes.clj.docs.backend.schemas.types :as schemas.types]
             [datalevin.core :as d]
+            [datalevin.interpret :refer [inter-fn]]
             [datalevin.search-utils :as su]))
+
+(defn merge-tokenizers
+  "Merges the results of tokenizer a and b into one sequence."
+  [tokenizer-a tokenizer-b]
+  (inter-fn [^String s]
+    (into (sequence (tokenizer-a s))
+      (sequence (tokenizer-b s)))))
 
 (def read-conn-opts
   (let [query-analyzer (su/create-analyzer
-                        {:tokenizer (su/create-regexp-tokenizer #"[\s:/\.;,!=?\"'()\[\]{}|<>&@#^*\\~`\-]+")
+                        {:tokenizer (merge-tokenizers
+                                     (inter-fn [s] [[s 0 0]])
+                                     (su/create-regexp-tokenizer #"[\s:/\.;,!=?\"'()\[\]{}|<>&@#^*\\~`\-]+"))
                          :token-filters [su/lower-case-token-filter]})]
     {:search-domains {"project-name" {:query-analyzer query-analyzer}
                       "namespace-name" {:query-analyzer query-analyzer}
