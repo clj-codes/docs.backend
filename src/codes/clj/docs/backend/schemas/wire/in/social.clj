@@ -1,7 +1,6 @@
 (ns codes.clj.docs.backend.schemas.wire.in.social
-  (:require [codes.clj.docs.backend.schemas.wire.social :refer [author
-                                                                example note
-                                                                see-also]]
+  (:require [codes.clj.docs.backend.schemas.wire.social :refer [author example
+                                                                note see-also]]
             [malli.util :as mu]))
 
 (def NewAuthorGithub

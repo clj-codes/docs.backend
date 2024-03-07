@@ -14,7 +14,7 @@
            :account-source "github"
            :avatar-url avatar_url})
 
-(defn jwt-author-wire-wire
+(defn jwt-author->wire
   {:malli/schema [:=> [:cat schemas.wire.in.social/JwtAuthor]
                   schemas.wire.social/Author]}
   [{:keys [author-id created-at login account-source avatar-url]}]

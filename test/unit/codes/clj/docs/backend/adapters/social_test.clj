@@ -17,9 +17,9 @@
   (properties/for-all [author (mg/generator schemas.wire.in.social/NewAuthorGithub)]
                       (m/validate schemas.model.social/NewAuthor (adapters.social/github-user-wire->model author))))
 
-(defspec jwt-author-wire-wire-test 50
+(defspec jwt-author->wire-test 50
   (properties/for-all [author (mg/generator schemas.wire.in.social/JwtAuthor)]
-                      (m/validate schemas.wire.social/Author (adapters.social/jwt-author-wire-wire author))))
+                      (m/validate schemas.wire.social/Author (adapters.social/jwt-author->wire author))))
 
 (defspec author->model->wire-test 50
   (properties/for-all [author (mg/generator schemas.model.social/Author)]

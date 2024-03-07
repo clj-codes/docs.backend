@@ -19,4 +19,4 @@
   (let [secret (-> config :config :jwt :secret hash/sha256)]
     (-> token
         (jwt/decrypt secret)
-        adapters.social/jwt-author-wire-wire)))
+        adapters.social/jwt-author->wire)))
