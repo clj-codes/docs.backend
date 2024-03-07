@@ -1,15 +1,20 @@
 (ns codes.clj.docs.backend.ports.http-in.social
   (:require [codes.clj.docs.backend.adapters.social :as adapters.social]
-            [codes.clj.docs.backend.controllers.social :as controllers.social]))
+            [codes.clj.docs.backend.controllers.social :as controllers.social]
+            [codes.clj.docs.backend.controllers.social.github :as controllers.social.github]
+            [codes.clj.docs.backend.ports.jwt :as ports.jwt]))
 
-(defn upsert-author
-  [{{author :body} :parameters
+(defn author-login-github
+  [{{github :body} :parameters
     components :components}]
-  {:status 201
-   :body (-> author
-             adapters.social/upsert-author-wire->model
-             (controllers.social/upsert-author components)
-             adapters.social/author->model->wire)})
+  (let [author (-> (:code github)
+                   (controllers.social.github/get-author components)
+                   (controllers.social/upsert-author components)
+                   adapters.social/author->model->wire)
+        access-token (ports.jwt/encrypt author (:config components))]
+    {:status 201
+     :body {:author author
+            :access-token access-token}}))
 
 (defn get-author
   [{{{:keys [login source]} :path} :parameters
@@ -19,6 +24,8 @@
      :body (adapters.social/author->model->wire author)}
     {:status 404
      :body "not found"}))
+
+; TODO interceptor for access-token & validate author V
 
 (defn insert-see-also
   [{{author :body} :parameters

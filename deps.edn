@@ -7,7 +7,8 @@
         metosin/reitit-swagger {:mvn/version "0.6.0"}
         org.postgresql/postgresql {:mvn/version "42.7.1"}
         com.taoensso/encore {:mvn/version "3.74.2"}
-        datalevin/datalevin {:mvn/version "0.8.26"}}
+        datalevin/datalevin {:mvn/version "0.8.26"}
+        buddy/buddy-sign {:mvn/version "3.5.351"}}
  :aliases
  {:dev {:extra-paths ["test" "dev" "test/resources"]
         :extra-deps  {org.clojars.bigsy/pg-embedded-clj {:mvn/version "1.0.1"}

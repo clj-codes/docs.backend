@@ -3,15 +3,26 @@
             [codes.clj.docs.backend.schemas.wire.in.social :as schemas.wire.in.social]
             [codes.clj.docs.backend.schemas.wire.out.social :as schemas.wire.out.social]
             [codes.clj.docs.backend.schemas.wire.social :as schemas.wire.social]
-            [taoensso.encore :as enc]))
+            [taoensso.encore :as enc])
+  (:import [java.time Instant]))
 
-(defn upsert-author-wire->model
-  {:malli/schema [:=> [:cat schemas.wire.in.social/NewAuthor]
+(defn github-user-wire->model
+  {:malli/schema [:=> [:cat schemas.wire.in.social/NewAuthorGithub]
                   schemas.model.social/NewAuthor]}
-  [{:keys [login account-source avatar-url]}]
+  [{:keys [login avatar_url]}]
   #:author{:login login
-           :account-source account-source
-           :avatar-url avatar-url})
+           :account-source "github"
+           :avatar-url avatar_url})
+
+(defn jwt-author-wire-wire
+  {:malli/schema [:=> [:cat schemas.wire.in.social/JwtAuthor]
+                  schemas.wire.social/Author]}
+  [{:keys [author-id created-at login account-source avatar-url]}]
+  {:author-id (parse-uuid author-id)
+   :created-at (Instant/ofEpochMilli created-at)
+   :login login
+   :account-source account-source
+   :avatar-url avatar-url})
 
 (defn author->model->wire
   {:malli/schema [:=> [:cat schemas.model.social/Author] schemas.wire.social/Author]}

@@ -15,4 +15,6 @@
            :file-name "docs-db.zip"}
 
  :github {:client {:id #or [#env GH_CLIENT_ID "app-client-id"]
-                   :secret #or [#env GH_CLIENT_SECRET "app-client-secret"]}}}
+                   :secret #or [#env GH_CLIENT_SECRET "app-client-secret"]}}
+
+ :jwt {:secret #or [#env JWT_SECRET "app-jwt-secret"]}}

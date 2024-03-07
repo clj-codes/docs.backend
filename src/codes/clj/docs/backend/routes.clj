@@ -16,19 +16,24 @@
 
    ["/api"
 
+    ["/login"
+     {:swagger {:tags ["login"]}}
+
+     ["/github"
+      {:post {:summary "author login with github"
+              :parameters {:body {:code :string}}
+              :responses {201 {:body {:author schemas.wire.social/Author
+                                      :access-token :string}}
+                          400 {:body :string}
+                          403 {:body :string}
+                          500 {:body :string}}
+              :handler ports.http-in.social/author-login-github}}]]
+
     ["/social"
      {:swagger {:tags ["social"]}}
 
      ["/author"
       {:swagger {:tags ["author"]}}
-      ["/"
-       {:post {:summary "create new author"
-               :parameters {:body schemas.wire.in.social/NewAuthor}
-               :responses {201 {:body schemas.wire.social/Author}
-                           400 {:body :string}
-                           403 {:body :string}
-                           500 {:body :string}}
-               :handler ports.http-in.social/upsert-author}}]
 
       ["/:login/:source"
        {:get {:summary "get author by login and source"

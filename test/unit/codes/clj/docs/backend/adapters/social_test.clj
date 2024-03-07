@@ -13,9 +13,13 @@
 
 (use-fixtures :once helpers.malli/with-intrumentation)
 
-(defspec upsert-author-wire->model-test 50
-  (properties/for-all [author (mg/generator schemas.wire.in.social/NewAuthor)]
-                      (m/validate schemas.model.social/NewAuthor (adapters.social/upsert-author-wire->model author))))
+(defspec github-user-wire->model-test 50
+  (properties/for-all [author (mg/generator schemas.wire.in.social/NewAuthorGithub)]
+                      (m/validate schemas.model.social/NewAuthor (adapters.social/github-user-wire->model author))))
+
+(defspec jwt-author-wire-wire-test 50
+  (properties/for-all [author (mg/generator schemas.wire.in.social/JwtAuthor)]
+                      (m/validate schemas.wire.social/Author (adapters.social/jwt-author-wire-wire author))))
 
 (defspec author->model->wire-test 50
   (properties/for-all [author (mg/generator schemas.model.social/Author)]

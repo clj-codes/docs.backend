@@ -1,12 +1,27 @@
 (ns integration.codes.clj.docs.backend.social-test
   (:require [clojure.test :refer [use-fixtures]]
+            [codes.clj.docs.backend.ports.jwt :as ports.jwt]
             [integration.codes.clj.docs.backend.util :as util]
             [parenthesin.helpers.malli :as helpers.malli]
+            [parenthesin.helpers.state-flow.http :as state-flow.http]
             [parenthesin.helpers.state-flow.server.pedestal :as state-flow.server]
             [state-flow.api :refer [defflow flow]]
             [state-flow.assertions.matcher-combinators :refer [match?]]))
 
 (use-fixtures :once helpers.malli/with-intrumentation)
+
+(def github-api-mocks
+  {"https://github.com/login/oauth/access_token" {:body {:access_token "gho_123456"}
+                                                  :status 200}
+   "https://api.github.com/user" {:body {:login "delboni"
+                                         :avatar_url "https://my.pic/me.jpg"}
+                                  :status 200}})
+
+(defn token? [config]
+  (fn [input]
+    (and (try (ports.jwt/decrypt input config)
+              (catch Exception _ false))
+         (string? input))))
 
 (defflow
   flow-integration-author-test
@@ -14,19 +29,19 @@
    :cleanup util/stop-system!
    :fail-fast? true}
   (flow "should interact with system"
-
+    (state-flow.http/set-http-out-responses! github-api-mocks)
     (flow "should create author"
+      [config (state-flow.api/get-state :config)]
       (match? {:status 201
-               :body  {:author-id string?
-                       :login "delboni"
-                       :account-source "github"
-                       :avatar-url "https://my.pic/me.jpg"
-                       :created-at string?}}
+               :body  {:author {:author-id string?
+                                :login "delboni"
+                                :account-source "github"
+                                :avatar-url "https://my.pic/me.jpg"
+                                :created-at string?}
+                       :access-token (token? config)}}
               (state-flow.server/request! {:method :post
-                                           :uri    "/api/social/author/"
-                                           :body   {:login "delboni"
-                                                    :account-source "github"
-                                                    :avatar-url "https://my.pic/me.jpg"}})))
+                                           :uri    "/api/login/github"
+                                           :body   {:code "agc622abb6135be5d1f2"}})))
 
     (flow "should return author"
       (match? {:status 200
@@ -44,12 +59,11 @@
    :cleanup util/stop-system!
    :fail-fast? true}
   (flow "should interact with system"
+    (state-flow.http/set-http-out-responses! github-api-mocks)
     [author-response (state-flow.server/request! {:method :post
-                                                  :uri    "/api/social/author/"
-                                                  :body   {:login "delboni"
-                                                           :account-source "github"
-                                                           :avatar-url "https://my.pic/me.jpg"}})
-     :let [author-id (-> author-response :body :author-id)]]
+                                                  :uri    "/api/login/github"
+                                                  :body   {:code "agc622abb6135be5d1f2"}})
+     :let [author-id (-> author-response :body :author :author-id)]]
 
     (flow "create & update note"
       [new-note-response (state-flow.server/request! {:method :post
@@ -106,12 +120,11 @@
    :cleanup util/stop-system!
    :fail-fast? true}
   (flow "should interact with system"
+    (state-flow.http/set-http-out-responses! github-api-mocks)
     [author-response (state-flow.server/request! {:method :post
-                                                  :uri    "/api/social/author/"
-                                                  :body   {:login "delboni"
-                                                           :account-source "github"
-                                                           :avatar-url "https://my.pic/me.jpg"}})
-     :let [author-id (-> author-response :body :author-id)]]
+                                                  :uri    "/api/login/github"
+                                                  :body   {:code "agc622abb6135be5d1f2"}})
+     :let [author-id (-> author-response :body :author :author-id)]]
 
     (flow "create & update see-also"
       [new-see-also-response (state-flow.server/request! {:method :post
@@ -145,12 +158,11 @@
    :cleanup util/stop-system!
    :fail-fast? true}
   (flow "should interact with system"
+    (state-flow.http/set-http-out-responses! github-api-mocks)
     [author-response (state-flow.server/request! {:method :post
-                                                  :uri    "/api/social/author/"
-                                                  :body   {:login "delboni"
-                                                           :account-source "github"
-                                                           :avatar-url "https://my.pic/me.jpg"}})
-     :let [author-id (-> author-response :body :author-id)]]
+                                                  :uri    "/api/login/github"
+                                                  :body   {:code "agc622abb6135be5d1f2"}})
+     :let [author-id (-> author-response :body :author :author-id)]]
 
     (flow "create & update example"
       [new-example-response (state-flow.server/request! {:method :post
