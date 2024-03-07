@@ -28,47 +28,52 @@
 ; TODO interceptor for access-token & validate author V
 
 (defn insert-see-also
-  [{{author :body} :parameters
-    components :components}]
+  [{{see-also :body} :parameters
+    components :components
+    auth :auth}]
   {:status 201
-   :body (-> author
-             adapters.social/new-see-also-wire->model
+   :body (-> see-also
+             (adapters.social/new-see-also-wire->model (:author-id auth))
              (controllers.social/insert-see-also components)
              adapters.social/see-also->model->wire)})
 
 (defn insert-example
-  [{{author :body} :parameters
-    components :components}]
+  [{{example :body} :parameters
+    components :components
+    auth :auth}]
   {:status 201
-   :body (-> author
-             adapters.social/new-example-wire->model
+   :body (-> example
+             (adapters.social/new-example-wire->model (:author-id auth))
              (controllers.social/insert-example components)
              adapters.social/example->model->wire)})
 
 (defn update-example
-  [{{author :body} :parameters
-    components :components}]
+  [{{example :body} :parameters
+    components :components
+    auth :auth}]
   {:status 201
-   :body (-> author
-             adapters.social/update-example-wire->model
+   :body (-> example
+             (adapters.social/update-example-wire->model (:author-id auth))
              (controllers.social/update-example components)
              adapters.social/example->model->wire)})
 
 (defn insert-note
-  [{{author :body} :parameters
-    components :components}]
+  [{{note :body} :parameters
+    components :components
+    auth :auth}]
   {:status 201
-   :body (-> author
-             adapters.social/new-note-wire->model
+   :body (-> note
+             (adapters.social/new-note-wire->model (:author-id auth))
              (controllers.social/insert-note components)
              adapters.social/note->model->wire)})
 
 (defn update-note
-  [{{author :body} :parameters
-    components :components}]
+  [{{note :body} :parameters
+    components :components
+    auth :auth}]
   {:status 201
-   :body (-> author
-             adapters.social/update-note-wire->model
+   :body (-> note
+             (adapters.social/update-note-wire->model (:author-id auth))
              (controllers.social/update-note components)
              adapters.social/note->model->wire)})
 

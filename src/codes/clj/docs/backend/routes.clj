@@ -1,5 +1,6 @@
 (ns codes.clj.docs.backend.routes
-  (:require [codes.clj.docs.backend.ports.http-in.document :as ports.http-in.document]
+  (:require [codes.clj.docs.backend.interceptors :as backend.interceptors]
+            [codes.clj.docs.backend.ports.http-in.document :as ports.http-in.document]
             [codes.clj.docs.backend.ports.http-in.social :as ports.http-in.social]
             [codes.clj.docs.backend.schemas.wire.in.social :as schemas.wire.in.social]
             [codes.clj.docs.backend.schemas.wire.out.document :as schemas.wire.out.document]
@@ -47,7 +48,10 @@
 
      ["/example"
       ["/"
-       {:post {:summary "create new example"
+       {:interceptors [(backend.interceptors/auth-validate-jwt-interceptor)]
+        :parameters {:header {:authorization :string}}
+
+        :post {:summary "create new example"
                :parameters {:body schemas.wire.in.social/NewExample}
                :responses {201 {:body schemas.wire.out.social/Example}
                            400 {:body :string}
@@ -64,7 +68,10 @@
 
      ["/note"
       ["/"
-       {:post {:summary "create new note"
+       {:interceptors [(backend.interceptors/auth-validate-jwt-interceptor)]
+        :parameters {:header {:authorization :string}}
+
+        :post {:summary "create new note"
                :parameters {:body schemas.wire.in.social/NewNote}
                :responses {201 {:body schemas.wire.out.social/Note}
                            400 {:body :string}
@@ -81,7 +88,10 @@
 
      ["/see-also"
       ["/"
-       {:post {:summary "create new see-also"
+       {:interceptors [(backend.interceptors/auth-validate-jwt-interceptor)]
+        :parameters {:header {:authorization :string}}
+
+        :post {:summary "create new see-also"
                :parameters {:body schemas.wire.in.social/NewSeeAlso}
                :responses {201 {:body schemas.wire.out.social/SeeAlso}
                            400 {:body :string}

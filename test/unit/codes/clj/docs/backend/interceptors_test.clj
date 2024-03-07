@@ -19,7 +19,7 @@
 (defn build-ctx [system jwt-token-request]
   {:response {:status 200}
    :request {:components system
-             :headers {"Authorization" jwt-token-request}}})
+             :headers {"authorization" jwt-token-request}}})
 
 (deftest verify-request-test
   (let [system (create-and-start-system!
@@ -31,9 +31,10 @@
                 :account-source "github",
                 :avatar-url "https://my.profile.pic/me.png",
                 :created-at #inst "1970-01-01T01:17:53.353-00:00"}
-        valid-jwt (ports.jwt/encrypt author config-component)]
+        valid-jwt (->> (ports.jwt/encrypt author config-component)
+                       (str "Bearer: "))]
 
-    (testing "interceptor should check jwt authorization token"
+    (testing "interceptor should check jwt auth token"
       (is (match? {:response {:status 200}}
                   (interceptor-fn
                    (build-ctx system valid-jwt))))

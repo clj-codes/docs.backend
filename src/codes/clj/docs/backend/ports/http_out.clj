@@ -26,7 +26,7 @@
   (->> {:url "https://api.github.com/user"
         :method :get
         :content-type :json
-        :headers {"Authorization" (str "Bearer: " access-token)}}
+        :headers {"authorization" (str "Bearer: " access-token)}}
        (components.http/request http)
        :body
        adapters.social/github-user-wire->model))

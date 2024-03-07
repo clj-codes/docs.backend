@@ -17,26 +17,21 @@
       (mu/assoc :created-at [:int {:min 1000}])))
 
 (def NewSeeAlso
-  (mu/select-keys see-also [:author-id
-                            :definition-id
+  (mu/select-keys see-also [:definition-id
                             :definition-id-to]))
 
 (def NewExample
-  (mu/select-keys example [:author-id
-                           :definition-id
+  (mu/select-keys example [:definition-id
                            :body]))
 
 (def UpdateExample
-  (mu/select-keys example [:author-id
-                           :example-id
+  (mu/select-keys example [:example-id
                            :body]))
 
 (def NewNote
-  (mu/select-keys note [:author-id
-                        :definition-id
+  (mu/select-keys note [:definition-id
                         :body]))
 (def UpdateNote
-  (mu/select-keys note [:author-id
-                        :note-id
+  (mu/select-keys note [:note-id
                         :definition-id
                         :body]))

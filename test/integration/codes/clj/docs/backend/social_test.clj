@@ -63,13 +63,13 @@
     [author-response (state-flow.server/request! {:method :post
                                                   :uri    "/api/login/github"
                                                   :body   {:code "agc622abb6135be5d1f2"}})
-     :let [author-id (-> author-response :body :author :author-id)]]
+     :let [token (->> author-response :body :access-token)]]
 
     (flow "create & update note"
       [new-note-response (state-flow.server/request! {:method :post
+                                                      :headers {"authorization" (str "Bearer: " token)}
                                                       :uri    "/api/social/note/"
-                                                      :body   {:author-id author-id
-                                                               :definition-id "clojure.core/disj"
+                                                      :body   {:definition-id "clojure.core/disj"
                                                                :body "my note about this function."}})
        :let [note-id (-> new-note-response :body :note-id)]]
 
@@ -98,9 +98,9 @@
                         :body "my edited note about this function."
                         :created-at string?}}
                 (state-flow.server/request! {:method :put
+                                             :headers {"authorization" (str "Bearer: " token)}
                                              :uri    "/api/social/note/"
-                                             :body   {:author-id author-id
-                                                      :note-id note-id
+                                             :body   {:note-id note-id
                                                       :definition-id "clojure.core/disj"
                                                       :body "my edited note about this function."}}))
 
@@ -124,13 +124,13 @@
     [author-response (state-flow.server/request! {:method :post
                                                   :uri    "/api/login/github"
                                                   :body   {:code "agc622abb6135be5d1f2"}})
-     :let [author-id (-> author-response :body :author :author-id)]]
+     :let [token (->> author-response :body :access-token)]]
 
     (flow "create & update see-also"
       [new-see-also-response (state-flow.server/request! {:method :post
+                                                          :headers {"authorization" (str "Bearer: " token)}
                                                           :uri    "/api/social/see-also/"
-                                                          :body   {:author-id author-id
-                                                                   :definition-id "clojure.core/disj"
+                                                          :body   {:definition-id "clojure.core/disj"
                                                                    :definition-id-to "clojure.core/dissoc"}})
        :let [see-also-id (-> new-see-also-response :body :see-also-id)]]
 
@@ -162,13 +162,13 @@
     [author-response (state-flow.server/request! {:method :post
                                                   :uri    "/api/login/github"
                                                   :body   {:code "agc622abb6135be5d1f2"}})
-     :let [author-id (-> author-response :body :author :author-id)]]
+     :let [token (->> author-response :body :access-token)]]
 
     (flow "create & update example"
       [new-example-response (state-flow.server/request! {:method :post
+                                                         :headers {"authorization" (str "Bearer: " token)}
                                                          :uri    "/api/social/example/"
-                                                         :body   {:author-id author-id
-                                                                  :definition-id "clojure.core/disj"
+                                                         :body   {:definition-id "clojure.core/disj"
                                                                   :body "my example about this function."}})
        :let [example-id (-> new-example-response :body :example-id)]]
 
@@ -197,9 +197,9 @@
                         :body "my edited example about this function."
                         :created-at string?}}
                 (state-flow.server/request! {:method :put
+                                             :headers {"authorization" (str "Bearer: " token)}
                                              :uri    "/api/social/example/"
-                                             :body   {:author-id author-id
-                                                      :example-id example-id
+                                             :body   {:example-id example-id
                                                       :definition-id "clojure.core/disj"
                                                       :body "my edited example about this function."}}))
 
