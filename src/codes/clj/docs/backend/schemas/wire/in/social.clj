@@ -27,8 +27,8 @@
                            :body]))
 
 (def UpdateExample
-  (mu/select-keys example [:example-id
-                           :author-id
+  (mu/select-keys example [:author-id
+                           :example-id
                            :body]))
 
 (def NewNote
@@ -36,7 +36,7 @@
                         :definition-id
                         :body]))
 (def UpdateNote
-  (mu/select-keys note [:note-id
-                        :author-id
+  (mu/select-keys note [:author-id
+                        :note-id
                         :definition-id
                         :body]))
