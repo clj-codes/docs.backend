@@ -53,6 +53,14 @@
          (db/insert-see-also see-also)
          state-flow.api/return)))
 
+(defn get-note
+  [note-id]
+  (flow "get note by id"
+    [database (state-flow.api/get-state :database)]
+    (->> database
+         (db/get-note note-id)
+         state-flow.api/return)))
+
 (defn get-by-definition
   [definition-id]
   (flow "get socials by definition id"

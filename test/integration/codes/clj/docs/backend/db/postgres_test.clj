@@ -94,10 +94,16 @@
                              :note/author author
                              :note/definition-id "clojure.core/disj"
                              :note/body "edited my note about this function."
-                             :note/created-at inst?
-                             ;todo: :note/updated-at inst?
-                             }]}
-            (util.db.postgres/get-by-definition "clojure.core/disj"))))
+                             :note/created-at inst?}]}
+            (util.db.postgres/get-by-definition "clojure.core/disj")))
+
+  (flow "check note using get-note fn"
+    (match? {:note/note-id uuid?
+             :note/author author
+             :note/definition-id "clojure.core/disj"
+             :note/body "edited my note about this function."
+             :note/created-at inst?}
+            (util.db.postgres/get-note (:note/note-id note)))))
 
 (defflow example-db-test
   {:init (util/start-system! create-and-start-components!)
