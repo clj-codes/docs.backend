@@ -17,6 +17,14 @@
                                          :avatar_url "https://my.pic/me.jpg"}
                                   :status 200}})
 
+(defn create-token [login config]
+  (ports.jwt/encrypt {:author-id (-> login .getBytes java.util.UUID/nameUUIDFromBytes)
+                      :login login
+                      :account-source "github"
+                      :avatar-url "https://my.pic/me.jpg"
+                      :created-at #inst "2024-03-09"}
+                     config))
+
 (defn token? [config]
   (fn [input]
     (and (try (ports.jwt/decrypt input config)
@@ -60,10 +68,12 @@
    :fail-fast? true}
   (flow "should interact with system"
     (state-flow.http/set-http-out-responses! github-api-mocks)
-    [author-response (state-flow.server/request! {:method :post
+    [config (state-flow.api/get-state :config)
+     author-response (state-flow.server/request! {:method :post
                                                   :uri    "/api/login/github"
                                                   :body   {:code "agc622abb6135be5d1f2"}})
-     :let [token (->> author-response :body :access-token)]]
+     :let [token (->> author-response :body :access-token)
+           fake-token (create-token "fake-delboni" config)]]
 
     (flow "create & update note"
       [new-note-response (state-flow.server/request! {:method :post
@@ -92,6 +102,16 @@
                                                :uri "/api/social/definition/clojure.core/disj"}))))
 
       (flow "check update note response"
+        (match? {:status 403
+                 :body "You not allowed to update this note."}
+                (state-flow.server/request! {:method :put
+                                             :headers {"authorization" (str "Bearer: " fake-token)}
+                                             :uri    "/api/social/note/"
+                                             :body   {:note-id note-id
+                                                      :definition-id "clojure.core/disj"
+                                                      :body "my edited note about this function."}})))
+
+      (flow "check update note response"
         (match? {:status 201
                  :body {:note-id note-id
                         :definition-id "clojure.core/disj"
@@ -112,7 +132,16 @@
                                    :body "my edited note about this function."
                                    :created-at string?}]}}
                   (state-flow.server/request! {:method :get
-                                               :uri "/api/social/definition/clojure.core/disj"})))))))
+                                               :uri "/api/social/definition/clojure.core/disj"})))
+
+        (flow "checks db for updated note using get-note api"
+          (match? {:status 200
+                   :body {:note-id note-id
+                          :definition-id "clojure.core/disj"
+                          :body "my edited note about this function."
+                          :created-at string?}}
+                  (state-flow.server/request! {:method :get
+                                               :uri (str "/api/social/note/" note-id)})))))))
 
 (defflow
   flow-integration-see-also-test
@@ -150,7 +179,16 @@
                                        :definition-id-to "clojure.core/dissoc"
                                        :created-at string?}]}}
                   (state-flow.server/request! {:method :get
-                                               :uri "/api/social/definition/clojure.core/disj"})))))))
+                                               :uri "/api/social/definition/clojure.core/disj"})))
+
+        (flow "checks db for updated see-also using get-see-also api"
+          (match? {:status 200
+                   :body {:see-also-id see-also-id
+                          :definition-id "clojure.core/disj"
+                          :definition-id-to "clojure.core/dissoc"
+                          :created-at string?}}
+                  (state-flow.server/request! {:method :get
+                                               :uri (str "/api/social/see-also/" see-also-id)})))))))
 
 (defflow
   flow-integration-example-test
@@ -211,7 +249,16 @@
                                       :body "my edited example about this function."
                                       :created-at string?}]}}
                   (state-flow.server/request! {:method :get
-                                               :uri "/api/social/definition/clojure.core/disj"})))))))
+                                               :uri "/api/social/definition/clojure.core/disj"})))
+
+        (flow "checks db for updated example using get-see-also api"
+          (match? {:status 200
+                   :body {:example-id example-id
+                          :definition-id "clojure.core/disj"
+                          :body "my edited example about this function."
+                          :created-at string?}}
+                  (state-flow.server/request! {:method :get
+                                               :uri (str "/api/social/example/" example-id)})))))))
 
 (defflow
   flow-integration-definition-test

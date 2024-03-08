@@ -47,6 +47,13 @@
               :handler ports.http-in.social/get-author}}]]
 
      ["/example"
+      ["/:example-id"
+       {:get {:summary "get example by id"
+              :parameters {:path {:example-id :uuid}}
+              :responses {201 {:body schemas.wire.out.social/Example}
+                          404 {:body :string}
+                          500 {:body :string}}
+              :handler ports.http-in.social/get-example}}]
       ["/"
        {:interceptors [(backend.interceptors/auth-validate-jwt-interceptor)]
         :parameters {:header {:authorization :string}}
@@ -67,6 +74,13 @@
               :handler ports.http-in.social/update-example}}]]
 
      ["/note"
+      ["/:note-id"
+       {:get {:summary "get note by id"
+              :parameters {:path {:note-id :uuid}}
+              :responses {201 {:body schemas.wire.out.social/Note}
+                          404 {:body :string}
+                          500 {:body :string}}
+              :handler ports.http-in.social/get-note}}]
       ["/"
        {:interceptors [(backend.interceptors/auth-validate-jwt-interceptor)]
         :parameters {:header {:authorization :string}}
@@ -87,6 +101,13 @@
               :handler ports.http-in.social/update-note}}]]
 
      ["/see-also"
+      ["/:see-also-id"
+       {:get {:summary "get see-also by id"
+              :parameters {:path {:see-also-id :uuid}}
+              :responses {201 {:body schemas.wire.out.social/SeeAlso}
+                          404 {:body :string}
+                          500 {:body :string}}
+              :handler ports.http-in.social/get-see-also}}]
       ["/"
        {:interceptors [(backend.interceptors/auth-validate-jwt-interceptor)]
         :parameters {:header {:authorization :string}}

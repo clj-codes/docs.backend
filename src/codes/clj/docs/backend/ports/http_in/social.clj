@@ -25,8 +25,6 @@
     {:status 404
      :body "not found"}))
 
-; TODO interceptor for access-token & validate author V
-
 (defn insert-see-also
   [{{see-also :body} :parameters
     components :components
@@ -36,6 +34,17 @@
              (adapters.social/new-see-also-wire->model (:author-id auth))
              (controllers.social/insert-see-also components)
              adapters.social/see-also->model->wire)})
+
+; TODO update-see-also
+
+(defn get-see-also
+  [{{{:keys [see-also-id]} :path} :parameters
+    components :components}]
+  (if-let [see-also (controllers.social/get-see-also see-also-id components)]
+    {:status 200
+     :body (adapters.social/see-also->model->wire see-also)}
+    {:status 404
+     :body "Not found."}))
 
 (defn insert-example
   [{{example :body} :parameters
@@ -57,6 +66,15 @@
              (controllers.social/update-example components)
              adapters.social/example->model->wire)})
 
+(defn get-example
+  [{{{:keys [example-id]} :path} :parameters
+    components :components}]
+  (if-let [example (controllers.social/get-example example-id components)]
+    {:status 200
+     :body (adapters.social/example->model->wire example)}
+    {:status 404
+     :body "Not found."}))
+
 (defn insert-note
   [{{note :body} :parameters
     components :components
@@ -71,11 +89,24 @@
   [{{note :body} :parameters
     components :components
     auth :auth}]
-  {:status 201
-   :body (-> note
-             (adapters.social/update-note-wire->model (:author-id auth))
-             (controllers.social/update-note components)
-             adapters.social/note->model->wire)})
+  (let [{author :note/author} (controllers.social/get-note (:note-id note) components)]
+    (if (= (:author/author-id author) (:author-id auth))
+      {:status 201
+       :body (-> note
+                 (adapters.social/update-note-wire->model (:author-id auth))
+                 (controllers.social/update-note components)
+                 adapters.social/note->model->wire)}
+      {:status 403
+       :body "You not allowed to update this note."})))
+
+(defn get-note
+  [{{{:keys [note-id]} :path} :parameters
+    components :components}]
+  (if-let [note (controllers.social/get-note note-id components)]
+    {:status 200
+     :body (adapters.social/note->model->wire note)}
+    {:status 404
+     :body "Not found."}))
 
 (defn get-by-definition
   [{{{:keys [definition-id]} :path} :parameters
