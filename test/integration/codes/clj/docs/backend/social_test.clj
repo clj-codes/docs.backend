@@ -77,7 +77,7 @@
 
     (flow "create & update note"
       [new-note-response (state-flow.server/request! {:method :post
-                                                      :headers {"authorization" (str "Bearer: " token)}
+                                                      :headers {"authorization" (str "Bearer " token)}
                                                       :uri    "/api/social/note/"
                                                       :body   {:definition-id "clojure.core/disj"
                                                                :body "my note about this function."}})
@@ -105,7 +105,7 @@
         (match? {:status 403
                  :body "You not allowed to update this note."}
                 (state-flow.server/request! {:method :put
-                                             :headers {"authorization" (str "Bearer: " fake-token)}
+                                             :headers {"authorization" (str "Bearer " fake-token)}
                                              :uri    "/api/social/note/"
                                              :body   {:note-id note-id
                                                       :definition-id "clojure.core/disj"
@@ -118,7 +118,7 @@
                         :body "my edited note about this function."
                         :created-at string?}}
                 (state-flow.server/request! {:method :put
-                                             :headers {"authorization" (str "Bearer: " token)}
+                                             :headers {"authorization" (str "Bearer " token)}
                                              :uri    "/api/social/note/"
                                              :body   {:note-id note-id
                                                       :definition-id "clojure.core/disj"
@@ -157,7 +157,7 @@
 
     (flow "create & update see-also"
       [new-see-also-response (state-flow.server/request! {:method :post
-                                                          :headers {"authorization" (str "Bearer: " token)}
+                                                          :headers {"authorization" (str "Bearer " token)}
                                                           :uri    "/api/social/see-also/"
                                                           :body   {:definition-id "clojure.core/disj"
                                                                    :definition-id-to "clojure.core/dissoc"}})
@@ -204,7 +204,7 @@
 
     (flow "create & update example"
       [new-example-response (state-flow.server/request! {:method :post
-                                                         :headers {"authorization" (str "Bearer: " token)}
+                                                         :headers {"authorization" (str "Bearer " token)}
                                                          :uri    "/api/social/example/"
                                                          :body   {:definition-id "clojure.core/disj"
                                                                   :body "my example about this function."}})
@@ -235,7 +235,7 @@
                         :body "my edited example about this function."
                         :created-at string?}}
                 (state-flow.server/request! {:method :put
-                                             :headers {"authorization" (str "Bearer: " token)}
+                                             :headers {"authorization" (str "Bearer " token)}
                                              :uri    "/api/social/example/"
                                              :body   {:example-id example-id
                                                       :definition-id "clojure.core/disj"

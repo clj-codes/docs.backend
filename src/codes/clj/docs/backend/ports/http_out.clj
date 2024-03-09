@@ -9,12 +9,12 @@
   [code {:keys [config http]}]
   (let [{:keys [id secret]} (-> config :config :github :client)]
     (->> {:url "https://github.com/login/oauth/access_token"
-          :as :json
           :method :post
-          :form-params {:code code
-                        :client_id id
-                        :client_secret secret}
-          :content-type :json}
+          :query-params {:code code
+                         :client_id id
+                         :client_secret secret}
+          :accept :json
+          :as :json}
          (components.http/request http)
          :body
          :access_token)))
@@ -26,7 +26,9 @@
   (->> {:url "https://api.github.com/user"
         :method :get
         :content-type :json
-        :headers {"authorization" (str "Bearer: " access-token)}}
+        :headers {"Authorization" (str "Bearer " access-token)}
+        :accept :json
+        :as :json}
        (components.http/request http)
        :body
        adapters.social/github-user-wire->model))

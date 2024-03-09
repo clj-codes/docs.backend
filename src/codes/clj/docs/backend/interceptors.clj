@@ -8,7 +8,7 @@
             (let [request (:request context)
                   {{:keys [config]} :components} request
                   token (-> (get-in context [:request :headers "authorization"])
-                            str (str/split #":") last str/trim)]
+                            str (str/split #" ") last str/trim)]
               (try
                 (assoc-in context
                           [:request :auth] (ports.jwt/decrypt token config))
