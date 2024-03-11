@@ -31,7 +31,7 @@
     :type-properties {:error/message "should satisfy com.stuartsierra.component/Lifecycle protocol."}}))
 
 (def TimeInstant
-  [inst? {:min #inst "2000-01-01"
+  [inst? {:min #inst "1970-01-01"
           :max #inst "2040-01-01"}])
 
 (def Components

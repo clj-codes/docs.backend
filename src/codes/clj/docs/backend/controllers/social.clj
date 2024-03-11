@@ -21,6 +21,12 @@
   [new-see-also {:keys [database]}]
   (db.postgres/insert-see-also new-see-also database))
 
+(defn get-see-also
+  {:malli/schema [:=> [:cat :uuid schemas.types/Components]
+                  [:maybe schemas.model.social/SeeAlso]]}
+  [see-also-id {:keys [database]}]
+  (db.postgres/get-see-also see-also-id database))
+
 (defn insert-example
   {:malli/schema [:=> [:cat schemas.model.social/NewExample schemas.types/Components]
                   schemas.model.social/Example]}
@@ -33,6 +39,12 @@
   [update-example {:keys [database]}]
   (db.postgres/update-example update-example database))
 
+(defn get-example
+  {:malli/schema [:=> [:cat :uuid schemas.types/Components]
+                  [:maybe schemas.model.social/Example]]}
+  [example-id {:keys [database]}]
+  (db.postgres/get-example example-id database))
+
 (defn insert-note
   {:malli/schema [:=> [:cat schemas.model.social/NewNote schemas.types/Components]
                   schemas.model.social/Note]}
@@ -44,6 +56,12 @@
                   schemas.model.social/Note]}
   [update-note {:keys [database]}]
   (db.postgres/update-note update-note database))
+
+(defn get-note
+  {:malli/schema [:=> [:cat :uuid schemas.types/Components]
+                  [:maybe schemas.model.social/Note]]}
+  [note-id {:keys [database]}]
+  (db.postgres/get-note note-id database))
 
 (defn get-by-definition
   {:malli/schema [:=> [:cat :string schemas.types/Components]

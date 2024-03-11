@@ -55,6 +55,29 @@
        first
        adapters/db->see-also))
 
+(def get-see-also-query
+  (-> (sql.helpers/select
+       [:see-also/see-also-id :id]
+       ["see-also" :type]
+       :see-also/definition-id
+       [:see-also/definition-id-to :body]
+       [:see-also/created-at :created]
+       :author-see-also/*)
+      (sql.helpers/from :see-also)
+      (sql.helpers/join [:author :author-see-also]
+                        [:= :see-also/author-id :author-see-also/author-id])))
+
+(defn get-see-also
+  {:malli/schema [:=> [:cat :uuid schemas.types/DatabaseComponent]
+                  [:maybe schemas.model.social/SeeAlso]]}
+  [see-also-id db]
+  (->> (-> get-see-also-query
+           (sql.helpers/where [:= :see-also/see-also-id see-also-id])
+           sql/format)
+       (execute! db)
+       first
+       adapters/db->see-also))
+
 (defn insert-example
   {:malli/schema [:=> [:cat schemas.model.social/NewExample schemas.types/DatabaseComponent]
                   schemas.model.social/Example]}
@@ -99,6 +122,31 @@
                      first)]
     (adapters/db->example example [])))
 
+(def get-example-query
+  (-> (sql.helpers/select
+       [:example/example-id :id]
+       ["example" :type]
+       :example/definition-id
+       :example-edit/body
+       [:example-edit/created-at :created]
+       :author-example-edit/*)
+      (sql.helpers/from :example)
+      (sql.helpers/join :example-edit
+                        [:= :example/example-id :example-edit/example-id])
+      (sql.helpers/join [:author :author-example-edit]
+                        [:= :example-edit/author-id :author-example-edit/author-id])))
+
+(defn get-example
+  {:malli/schema [:=> [:cat :uuid schemas.types/DatabaseComponent]
+                  [:maybe schemas.model.social/Example]]}
+  [example-id db]
+  (->> (-> get-example-query
+           (sql.helpers/where [:= :example/example-id example-id])
+           sql/format)
+       (execute! db)
+       adapters/db->examples
+       first))
+
 (defn insert-note
   {:malli/schema [:=> [:cat schemas.model.social/NewNote schemas.types/DatabaseComponent]
                   schemas.model.social/Note]}
@@ -130,47 +178,41 @@
        first
        adapters/db->note))
 
+(def get-note-query
+  (-> (sql.helpers/select
+       [:note/note-id :id]
+       ["note" :type]
+       :note/definition-id
+       :note/body
+       [:note/created-at :created]
+       :author-note/*)
+      (sql.helpers/from :note)
+      (sql.helpers/join [:author :author-note]
+                        [:= :note/author-id :author-note/author-id])))
+
+(defn get-note
+  {:malli/schema [:=> [:cat :uuid schemas.types/DatabaseComponent]
+                  [:maybe schemas.model.social/Note]]}
+  [note-id db]
+  (->> (-> get-note-query
+           (sql.helpers/where [:= :note/note-id note-id])
+           sql/format)
+       (execute! db)
+       first
+       adapters/db->note))
+
 (defn get-by-definition
   {:malli/schema [:=> [:cat :string schemas.types/DatabaseComponent]
                   [:maybe schemas.model.social/Social]]}
   [definition-id db]
   (->> (-> (sql.helpers/union-all
-            (-> (sql.helpers/select
-                 [:note/note-id :id]
-                 ["note" :type]
-                 :note/definition-id
-                 :note/body
-                 [:note/created-at :created]
-                 :author-note/*)
-                (sql.helpers/from :note)
-                (sql.helpers/join [:author :author-note]
-                                  [:= :note/author-id :author-note/author-id])
+            (-> get-note-query
                 (sql.helpers/where [:= :note/definition-id definition-id]))
 
-            (-> (sql.helpers/select
-                 [:example/example-id :id]
-                 ["example" :type]
-                 :example/definition-id
-                 :example-edit/body
-                 [:example-edit/created-at :created]
-                 :author-example-edit/*)
-                (sql.helpers/from :example)
-                (sql.helpers/join :example-edit
-                                  [:= :example/example-id :example-edit/example-id])
-                (sql.helpers/join [:author :author-example-edit]
-                                  [:= :example-edit/author-id :author-example-edit/author-id])
+            (-> get-example-query
                 (sql.helpers/where [:= :example/definition-id definition-id]))
 
-            (-> (sql.helpers/select
-                 [:see-also/see-also-id :id]
-                 ["see-also" :type]
-                 :see-also/definition-id
-                 [:see-also/definition-id-to :body]
-                 [:see-also/created-at :created]
-                 :author-see-also/*)
-                (sql.helpers/from :see-also)
-                (sql.helpers/join [:author :author-see-also]
-                                  [:= :see-also/author-id :author-see-also/author-id])
+            (-> get-see-also-query
                 (sql.helpers/where [:= :see-also/definition-id definition-id])))
            sql/format)
        (execute! db)

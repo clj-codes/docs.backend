@@ -51,11 +51,10 @@
    :fail-fast? true}
 
   [author (util.db.postgres/upsert-author "delboni" "github")
-   :let [author-id (:author/author-id author)]]
-
-  (util.db.postgres/create-see-also {:see-also/author-id author-id
-                                     :see-also/definition-id "clojure.core/disj"
-                                     :see-also/definition-id-to "clojure.core/dissoc"})
+   :let [author-id (:author/author-id author)]
+   see-also (util.db.postgres/create-see-also {:see-also/author-id author-id
+                                               :see-also/definition-id "clojure.core/disj"
+                                               :see-also/definition-id-to "clojure.core/dissoc"})]
 
   (flow "check transaction was inserted in db"
     (match? {:social/see-alsos [{:see-also/see-also-id uuid?
@@ -63,7 +62,15 @@
                                  :see-also/definition-id "clojure.core/disj"
                                  :see-also/definition-id-to "clojure.core/dissoc"
                                  :see-also/created-at inst?}]}
-            (util.db.postgres/get-by-definition "clojure.core/disj"))))
+            (util.db.postgres/get-by-definition "clojure.core/disj")))
+
+  (flow "check see-also using get-see-also fn"
+    (match? {:see-also/see-also-id uuid?
+             :see-also/author author
+             :see-also/definition-id "clojure.core/disj"
+             :see-also/definition-id-to "clojure.core/dissoc"
+             :see-also/created-at inst?}
+            (util.db.postgres/get-see-also (:see-also/see-also-id see-also)))))
 
 (defflow note-db-test
   {:init (util/start-system! create-and-start-components!)
@@ -94,10 +101,16 @@
                              :note/author author
                              :note/definition-id "clojure.core/disj"
                              :note/body "edited my note about this function."
-                             :note/created-at inst?
-                             ;todo: :note/updated-at inst?
-                             }]}
-            (util.db.postgres/get-by-definition "clojure.core/disj"))))
+                             :note/created-at inst?}]}
+            (util.db.postgres/get-by-definition "clojure.core/disj")))
+
+  (flow "check note using get-note fn"
+    (match? {:note/note-id uuid?
+             :note/author author
+             :note/definition-id "clojure.core/disj"
+             :note/body "edited my note about this function."
+             :note/created-at inst?}
+            (util.db.postgres/get-note (:note/note-id note)))))
 
 (defflow example-db-test
   {:init (util/start-system! create-and-start-components!)
@@ -137,7 +150,11 @@
                                       :example/body "my example about this function. edit 2"
                                       :example/created-at inst?)
                                example-full-2]}
-            (util.db.postgres/get-by-definition "clojure.core/disj"))))
+            (util.db.postgres/get-by-definition "clojure.core/disj")))
+
+  (flow "check example using get-example fn"
+    (match? example-full-2
+            (util.db.postgres/get-example (:example/example-id example-2)))))
 
 (defflow all-db-test
   {:init (util/start-system! create-and-start-components!)

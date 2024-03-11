@@ -13,46 +13,67 @@
 
 (use-fixtures :once helpers.malli/with-intrumentation)
 
-(defspec upsert-author-wire->model-test 50
-  (properties/for-all [author (mg/generator schemas.wire.in.social/NewAuthor)]
-                      (m/validate schemas.model.social/NewAuthor (adapters.social/upsert-author-wire->model author))))
+(defspec github-user-wire->model-test 50
+  (properties/for-all [author (mg/generator schemas.wire.in.social/NewAuthorGithub)]
+                      (m/validate schemas.model.social/NewAuthor
+                                  (adapters.social/github-user-wire->model author))))
+
+(defspec jwt-author->wire-test 50
+  (properties/for-all [author (mg/generator schemas.wire.in.social/JwtAuthor)]
+                      (m/validate schemas.wire.social/Author
+                                  (adapters.social/jwt-author->wire author))))
 
 (defspec author->model->wire-test 50
   (properties/for-all [author (mg/generator schemas.model.social/Author)]
-                      (m/validate schemas.wire.social/Author (adapters.social/author->model->wire author))))
+                      (m/validate schemas.wire.social/Author
+                                  (adapters.social/author->model->wire author))))
 
 (defspec new-example-wire->model-test 50
-  (properties/for-all [example (mg/generator schemas.wire.in.social/NewExample)]
-                      (m/validate schemas.model.social/NewExample (adapters.social/new-example-wire->model example))))
+  (properties/for-all [author-id (mg/generator :uuid)
+                       example (mg/generator schemas.wire.in.social/NewExample)]
+                      (m/validate schemas.model.social/NewExample
+                                  (adapters.social/new-example-wire->model example author-id))))
 
 (defspec update-example-wire->model-test 50
-  (properties/for-all [example (mg/generator schemas.wire.in.social/UpdateExample)]
-                      (m/validate schemas.model.social/UpdateExample (adapters.social/update-example-wire->model example))))
+  (properties/for-all [author-id (mg/generator :uuid)
+                       example (mg/generator schemas.wire.in.social/UpdateExample)]
+                      (m/validate schemas.model.social/UpdateExample
+                                  (adapters.social/update-example-wire->model example author-id))))
 
 (defspec example->model->wire-test 50
   (properties/for-all [example (mg/generator schemas.model.social/Example)]
-                      (m/validate schemas.wire.out.social/Example (adapters.social/example->model->wire example))))
+                      (m/validate schemas.wire.out.social/Example
+                                  (adapters.social/example->model->wire example))))
 
 (defspec new-see-also-wire->model-test 50
-  (properties/for-all [see-also (mg/generator schemas.wire.in.social/NewSeeAlso)]
-                      (m/validate schemas.model.social/NewSeeAlso (adapters.social/new-see-also-wire->model see-also))))
+  (properties/for-all [author-id (mg/generator :uuid)
+                       see-also (mg/generator schemas.wire.in.social/NewSeeAlso)]
+                      (m/validate schemas.model.social/NewSeeAlso
+                                  (adapters.social/new-see-also-wire->model see-also author-id))))
 
 (defspec see-also->model->wire-test 50
   (properties/for-all [see-also (mg/generator schemas.model.social/SeeAlso)]
-                      (m/validate schemas.wire.out.social/SeeAlso (adapters.social/see-also->model->wire see-also))))
+                      (m/validate schemas.wire.out.social/SeeAlso
+                                  (adapters.social/see-also->model->wire see-also))))
 
 (defspec upsert-note-wire->model-test 50
-  (properties/for-all [note (mg/generator schemas.wire.in.social/NewNote)]
-                      (m/validate schemas.model.social/NewNote (adapters.social/new-note-wire->model note))))
+  (properties/for-all [author-id (mg/generator :uuid)
+                       note (mg/generator schemas.wire.in.social/NewNote)]
+                      (m/validate schemas.model.social/NewNote
+                                  (adapters.social/new-note-wire->model note author-id))))
 
 (defspec update-note-wire->model-test 50
-  (properties/for-all [note (mg/generator schemas.wire.in.social/UpdateNote)]
-                      (m/validate schemas.model.social/UpdateNote (adapters.social/update-note-wire->model note))))
+  (properties/for-all [author-id (mg/generator :uuid)
+                       note (mg/generator schemas.wire.in.social/UpdateNote)]
+                      (m/validate schemas.model.social/UpdateNote
+                                  (adapters.social/update-note-wire->model note author-id))))
 
 (defspec note->model->wire-test 50
   (properties/for-all [note (mg/generator schemas.model.social/Note)]
-                      (m/validate schemas.wire.out.social/Note (adapters.social/note->model->wire note))))
+                      (m/validate schemas.wire.out.social/Note
+                                  (adapters.social/note->model->wire note))))
 
 (defspec social->model->wire-test 50
   (properties/for-all [definition (mg/generator schemas.model.social/Social)]
-                      (m/validate schemas.wire.out.social/Social (adapters.social/social->model->wire definition))))
+                      (m/validate schemas.wire.out.social/Social
+                                  (adapters.social/social->model->wire definition))))

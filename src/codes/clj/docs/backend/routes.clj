@@ -1,5 +1,6 @@
 (ns codes.clj.docs.backend.routes
-  (:require [codes.clj.docs.backend.ports.http-in.document :as ports.http-in.document]
+  (:require [codes.clj.docs.backend.interceptors :as backend.interceptors]
+            [codes.clj.docs.backend.ports.http-in.document :as ports.http-in.document]
             [codes.clj.docs.backend.ports.http-in.social :as ports.http-in.social]
             [codes.clj.docs.backend.schemas.wire.in.social :as schemas.wire.in.social]
             [codes.clj.docs.backend.schemas.wire.out.document :as schemas.wire.out.document]
@@ -16,19 +17,24 @@
 
    ["/api"
 
+    ["/login"
+     {:swagger {:tags ["login"]}}
+
+     ["/github"
+      {:post {:summary "author login with github"
+              :parameters {:body {:code :string}}
+              :responses {201 {:body {:author schemas.wire.social/Author
+                                      :access-token :string}}
+                          400 {:body :string}
+                          403 {:body :string}
+                          500 {:body :string}}
+              :handler ports.http-in.social/author-login-github}}]]
+
     ["/social"
      {:swagger {:tags ["social"]}}
 
      ["/author"
       {:swagger {:tags ["author"]}}
-      ["/"
-       {:post {:summary "create new author"
-               :parameters {:body schemas.wire.in.social/NewAuthor}
-               :responses {201 {:body schemas.wire.social/Author}
-                           400 {:body :string}
-                           403 {:body :string}
-                           500 {:body :string}}
-               :handler ports.http-in.social/upsert-author}}]
 
       ["/:login/:source"
        {:get {:summary "get author by login and source"
@@ -41,8 +47,18 @@
               :handler ports.http-in.social/get-author}}]]
 
      ["/example"
+      ["/:example-id"
+       {:get {:summary "get example by id"
+              :parameters {:path {:example-id :uuid}}
+              :responses {201 {:body schemas.wire.out.social/Example}
+                          404 {:body :string}
+                          500 {:body :string}}
+              :handler ports.http-in.social/get-example}}]
       ["/"
-       {:post {:summary "create new example"
+       {:interceptors [(backend.interceptors/auth-validate-jwt-interceptor)]
+        :parameters {:header {:authorization :string}}
+
+        :post {:summary "create new example"
                :parameters {:body schemas.wire.in.social/NewExample}
                :responses {201 {:body schemas.wire.out.social/Example}
                            400 {:body :string}
@@ -58,8 +74,18 @@
               :handler ports.http-in.social/update-example}}]]
 
      ["/note"
+      ["/:note-id"
+       {:get {:summary "get note by id"
+              :parameters {:path {:note-id :uuid}}
+              :responses {201 {:body schemas.wire.out.social/Note}
+                          404 {:body :string}
+                          500 {:body :string}}
+              :handler ports.http-in.social/get-note}}]
       ["/"
-       {:post {:summary "create new note"
+       {:interceptors [(backend.interceptors/auth-validate-jwt-interceptor)]
+        :parameters {:header {:authorization :string}}
+
+        :post {:summary "create new note"
                :parameters {:body schemas.wire.in.social/NewNote}
                :responses {201 {:body schemas.wire.out.social/Note}
                            400 {:body :string}
@@ -75,8 +101,18 @@
               :handler ports.http-in.social/update-note}}]]
 
      ["/see-also"
+      ["/:see-also-id"
+       {:get {:summary "get see-also by id"
+              :parameters {:path {:see-also-id :uuid}}
+              :responses {201 {:body schemas.wire.out.social/SeeAlso}
+                          404 {:body :string}
+                          500 {:body :string}}
+              :handler ports.http-in.social/get-see-also}}]
       ["/"
-       {:post {:summary "create new see-also"
+       {:interceptors [(backend.interceptors/auth-validate-jwt-interceptor)]
+        :parameters {:header {:authorization :string}}
+
+        :post {:summary "create new see-also"
                :parameters {:body schemas.wire.in.social/NewSeeAlso}
                :responses {201 {:body schemas.wire.out.social/SeeAlso}
                            400 {:body :string}

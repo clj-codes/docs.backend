@@ -1,12 +1,35 @@
 (ns integration.codes.clj.docs.backend.social-test
   (:require [clojure.test :refer [use-fixtures]]
+            [codes.clj.docs.backend.ports.jwt :as ports.jwt]
             [integration.codes.clj.docs.backend.util :as util]
             [parenthesin.helpers.malli :as helpers.malli]
+            [parenthesin.helpers.state-flow.http :as state-flow.http]
             [parenthesin.helpers.state-flow.server.pedestal :as state-flow.server]
             [state-flow.api :refer [defflow flow]]
             [state-flow.assertions.matcher-combinators :refer [match?]]))
 
 (use-fixtures :once helpers.malli/with-intrumentation)
+
+(def github-api-mocks
+  {"https://github.com/login/oauth/access_token" {:body {:access_token "gho_123456"}
+                                                  :status 200}
+   "https://api.github.com/user" {:body {:login "delboni"
+                                         :avatar_url "https://my.pic/me.jpg"}
+                                  :status 200}})
+
+(defn create-token [login config]
+  (ports.jwt/encrypt {:author-id (-> login .getBytes java.util.UUID/nameUUIDFromBytes)
+                      :login login
+                      :account-source "github"
+                      :avatar-url "https://my.pic/me.jpg"
+                      :created-at #inst "2024-03-09"}
+                     config))
+
+(defn token? [config]
+  (fn [input]
+    (and (try (ports.jwt/decrypt input config)
+              (catch Exception _ false))
+         (string? input))))
 
 (defflow
   flow-integration-author-test
@@ -14,19 +37,19 @@
    :cleanup util/stop-system!
    :fail-fast? true}
   (flow "should interact with system"
-
+    (state-flow.http/set-http-out-responses! github-api-mocks)
     (flow "should create author"
+      [config (state-flow.api/get-state :config)]
       (match? {:status 201
-               :body  {:author-id string?
-                       :login "delboni"
-                       :account-source "github"
-                       :avatar-url "https://my.pic/me.jpg"
-                       :created-at string?}}
+               :body  {:author {:author-id string?
+                                :login "delboni"
+                                :account-source "github"
+                                :avatar-url "https://my.pic/me.jpg"
+                                :created-at string?}
+                       :access-token (token? config)}}
               (state-flow.server/request! {:method :post
-                                           :uri    "/api/social/author/"
-                                           :body   {:login "delboni"
-                                                    :account-source "github"
-                                                    :avatar-url "https://my.pic/me.jpg"}})))
+                                           :uri    "/api/login/github"
+                                           :body   {:code "agc622abb6135be5d1f2"}})))
 
     (flow "should return author"
       (match? {:status 200
@@ -44,18 +67,19 @@
    :cleanup util/stop-system!
    :fail-fast? true}
   (flow "should interact with system"
-    [author-response (state-flow.server/request! {:method :post
-                                                  :uri    "/api/social/author/"
-                                                  :body   {:login "delboni"
-                                                           :account-source "github"
-                                                           :avatar-url "https://my.pic/me.jpg"}})
-     :let [author-id (-> author-response :body :author-id)]]
+    (state-flow.http/set-http-out-responses! github-api-mocks)
+    [config (state-flow.api/get-state :config)
+     author-response (state-flow.server/request! {:method :post
+                                                  :uri    "/api/login/github"
+                                                  :body   {:code "agc622abb6135be5d1f2"}})
+     :let [token (->> author-response :body :access-token)
+           fake-token (create-token "fake-delboni" config)]]
 
     (flow "create & update note"
       [new-note-response (state-flow.server/request! {:method :post
+                                                      :headers {"authorization" (str "Bearer " token)}
                                                       :uri    "/api/social/note/"
-                                                      :body   {:author-id author-id
-                                                               :definition-id "clojure.core/disj"
+                                                      :body   {:definition-id "clojure.core/disj"
                                                                :body "my note about this function."}})
        :let [note-id (-> new-note-response :body :note-id)]]
 
@@ -78,15 +102,25 @@
                                                :uri "/api/social/definition/clojure.core/disj"}))))
 
       (flow "check update note response"
+        (match? {:status 403
+                 :body "You not allowed to update this note."}
+                (state-flow.server/request! {:method :put
+                                             :headers {"authorization" (str "Bearer " fake-token)}
+                                             :uri    "/api/social/note/"
+                                             :body   {:note-id note-id
+                                                      :definition-id "clojure.core/disj"
+                                                      :body "my edited note about this function."}})))
+
+      (flow "check update note response"
         (match? {:status 201
                  :body {:note-id note-id
                         :definition-id "clojure.core/disj"
                         :body "my edited note about this function."
                         :created-at string?}}
                 (state-flow.server/request! {:method :put
+                                             :headers {"authorization" (str "Bearer " token)}
                                              :uri    "/api/social/note/"
-                                             :body   {:author-id author-id
-                                                      :note-id note-id
+                                             :body   {:note-id note-id
                                                       :definition-id "clojure.core/disj"
                                                       :body "my edited note about this function."}}))
 
@@ -98,7 +132,16 @@
                                    :body "my edited note about this function."
                                    :created-at string?}]}}
                   (state-flow.server/request! {:method :get
-                                               :uri "/api/social/definition/clojure.core/disj"})))))))
+                                               :uri "/api/social/definition/clojure.core/disj"})))
+
+        (flow "checks db for updated note using get-note api"
+          (match? {:status 200
+                   :body {:note-id note-id
+                          :definition-id "clojure.core/disj"
+                          :body "my edited note about this function."
+                          :created-at string?}}
+                  (state-flow.server/request! {:method :get
+                                               :uri (str "/api/social/note/" note-id)})))))))
 
 (defflow
   flow-integration-see-also-test
@@ -106,18 +149,17 @@
    :cleanup util/stop-system!
    :fail-fast? true}
   (flow "should interact with system"
+    (state-flow.http/set-http-out-responses! github-api-mocks)
     [author-response (state-flow.server/request! {:method :post
-                                                  :uri    "/api/social/author/"
-                                                  :body   {:login "delboni"
-                                                           :account-source "github"
-                                                           :avatar-url "https://my.pic/me.jpg"}})
-     :let [author-id (-> author-response :body :author-id)]]
+                                                  :uri    "/api/login/github"
+                                                  :body   {:code "agc622abb6135be5d1f2"}})
+     :let [token (->> author-response :body :access-token)]]
 
     (flow "create & update see-also"
       [new-see-also-response (state-flow.server/request! {:method :post
+                                                          :headers {"authorization" (str "Bearer " token)}
                                                           :uri    "/api/social/see-also/"
-                                                          :body   {:author-id author-id
-                                                                   :definition-id "clojure.core/disj"
+                                                          :body   {:definition-id "clojure.core/disj"
                                                                    :definition-id-to "clojure.core/dissoc"}})
        :let [see-also-id (-> new-see-also-response :body :see-also-id)]]
 
@@ -137,7 +179,16 @@
                                        :definition-id-to "clojure.core/dissoc"
                                        :created-at string?}]}}
                   (state-flow.server/request! {:method :get
-                                               :uri "/api/social/definition/clojure.core/disj"})))))))
+                                               :uri "/api/social/definition/clojure.core/disj"})))
+
+        (flow "checks db for updated see-also using get-see-also api"
+          (match? {:status 200
+                   :body {:see-also-id see-also-id
+                          :definition-id "clojure.core/disj"
+                          :definition-id-to "clojure.core/dissoc"
+                          :created-at string?}}
+                  (state-flow.server/request! {:method :get
+                                               :uri (str "/api/social/see-also/" see-also-id)})))))))
 
 (defflow
   flow-integration-example-test
@@ -145,18 +196,17 @@
    :cleanup util/stop-system!
    :fail-fast? true}
   (flow "should interact with system"
+    (state-flow.http/set-http-out-responses! github-api-mocks)
     [author-response (state-flow.server/request! {:method :post
-                                                  :uri    "/api/social/author/"
-                                                  :body   {:login "delboni"
-                                                           :account-source "github"
-                                                           :avatar-url "https://my.pic/me.jpg"}})
-     :let [author-id (-> author-response :body :author-id)]]
+                                                  :uri    "/api/login/github"
+                                                  :body   {:code "agc622abb6135be5d1f2"}})
+     :let [token (->> author-response :body :access-token)]]
 
     (flow "create & update example"
       [new-example-response (state-flow.server/request! {:method :post
+                                                         :headers {"authorization" (str "Bearer " token)}
                                                          :uri    "/api/social/example/"
-                                                         :body   {:author-id author-id
-                                                                  :definition-id "clojure.core/disj"
+                                                         :body   {:definition-id "clojure.core/disj"
                                                                   :body "my example about this function."}})
        :let [example-id (-> new-example-response :body :example-id)]]
 
@@ -185,9 +235,9 @@
                         :body "my edited example about this function."
                         :created-at string?}}
                 (state-flow.server/request! {:method :put
+                                             :headers {"authorization" (str "Bearer " token)}
                                              :uri    "/api/social/example/"
-                                             :body   {:author-id author-id
-                                                      :example-id example-id
+                                             :body   {:example-id example-id
                                                       :definition-id "clojure.core/disj"
                                                       :body "my edited example about this function."}}))
 
@@ -199,7 +249,16 @@
                                       :body "my edited example about this function."
                                       :created-at string?}]}}
                   (state-flow.server/request! {:method :get
-                                               :uri "/api/social/definition/clojure.core/disj"})))))))
+                                               :uri "/api/social/definition/clojure.core/disj"})))
+
+        (flow "checks db for updated example using get-see-also api"
+          (match? {:status 200
+                   :body {:example-id example-id
+                          :definition-id "clojure.core/disj"
+                          :body "my edited example about this function."
+                          :created-at string?}}
+                  (state-flow.server/request! {:method :get
+                                               :uri (str "/api/social/example/" example-id)})))))))
 
 (defflow
   flow-integration-definition-test

@@ -3,15 +3,26 @@
             [codes.clj.docs.backend.schemas.wire.in.social :as schemas.wire.in.social]
             [codes.clj.docs.backend.schemas.wire.out.social :as schemas.wire.out.social]
             [codes.clj.docs.backend.schemas.wire.social :as schemas.wire.social]
-            [taoensso.encore :as enc]))
+            [taoensso.encore :as enc])
+  (:import [java.time Instant]))
 
-(defn upsert-author-wire->model
-  {:malli/schema [:=> [:cat schemas.wire.in.social/NewAuthor]
+(defn github-user-wire->model
+  {:malli/schema [:=> [:cat schemas.wire.in.social/NewAuthorGithub]
                   schemas.model.social/NewAuthor]}
-  [{:keys [login account-source avatar-url]}]
+  [{:keys [login avatar_url]}]
   #:author{:login login
-           :account-source account-source
-           :avatar-url avatar-url})
+           :account-source "github"
+           :avatar-url avatar_url})
+
+(defn jwt-author->wire
+  {:malli/schema [:=> [:cat schemas.wire.in.social/JwtAuthor]
+                  schemas.wire.social/Author]}
+  [{:keys [author-id created-at login account-source avatar-url]}]
+  {:author-id (parse-uuid author-id)
+   :created-at (Instant/ofEpochMilli created-at)
+   :login login
+   :account-source account-source
+   :avatar-url avatar-url})
 
 (defn author->model->wire
   {:malli/schema [:=> [:cat schemas.model.social/Author] schemas.wire.social/Author]}
@@ -23,17 +34,17 @@
    :created-at created-at})
 
 (defn new-example-wire->model
-  {:malli/schema [:=> [:cat schemas.wire.in.social/NewExample]
+  {:malli/schema [:=> [:cat schemas.wire.in.social/NewExample :uuid]
                   schemas.model.social/NewExample]}
-  [{:keys [author-id definition-id body]}]
+  [{:keys [definition-id body]} author-id]
   #:example{:author-id author-id
             :definition-id definition-id
             :body body})
 
 (defn update-example-wire->model
-  {:malli/schema [:=> [:cat schemas.wire.in.social/UpdateExample]
+  {:malli/schema [:=> [:cat schemas.wire.in.social/UpdateExample :uuid]
                   schemas.model.social/UpdateExample]}
-  [{:keys [example-id author-id body]}]
+  [{:keys [example-id body]} author-id]
   #:example{:example-id example-id
             :author-id author-id
             :body body})
@@ -51,9 +62,9 @@
                              (map author->model->wire editors))))
 
 (defn new-see-also-wire->model
-  {:malli/schema [:=> [:cat schemas.wire.in.social/NewSeeAlso]
+  {:malli/schema [:=> [:cat schemas.wire.in.social/NewSeeAlso :uuid]
                   schemas.model.social/NewSeeAlso]}
-  [{:keys [author-id definition-id definition-id-to]}]
+  [{:keys [definition-id definition-id-to]} author-id]
   #:see-also{:author-id author-id
              :definition-id definition-id
              :definition-id-to definition-id-to})
@@ -69,17 +80,17 @@
                   :author (when author (author->model->wire author))))
 
 (defn new-note-wire->model
-  {:malli/schema [:=> [:cat schemas.wire.in.social/NewNote]
+  {:malli/schema [:=> [:cat schemas.wire.in.social/NewNote :uuid]
                   schemas.model.social/NewNote]}
-  [{:keys [author-id definition-id body]}]
+  [{:keys [definition-id body]} author-id]
   #:note{:author-id author-id
          :definition-id definition-id
          :body body})
 
 (defn update-note-wire->model
-  {:malli/schema [:=> [:cat schemas.wire.in.social/UpdateNote]
+  {:malli/schema [:=> [:cat schemas.wire.in.social/UpdateNote :uuid]
                   schemas.model.social/UpdateNote]}
-  [{:keys [note-id author-id definition-id body]}]
+  [{:keys [note-id definition-id body]} author-id]
   #:note{:note-id note-id
          :author-id author-id
          :definition-id definition-id
