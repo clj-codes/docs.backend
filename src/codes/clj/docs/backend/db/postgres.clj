@@ -55,6 +55,18 @@
        first
        adapters/db->see-also))
 
+(defn delete-see-also
+  {:malli/schema [:=> [:cat :uuid schemas.types/DatabaseComponent]
+                  :uuid]}
+  [see-also-id db]
+  (->> (-> (sql.helpers/delete-from :see-also)
+           (sql.helpers/where [:= :see-also-id see-also-id])
+           (sql.helpers/returning [:see-also-id :id])
+           sql/format)
+       (execute! db)
+       first
+       :id))
+
 (def get-see-also-query
   (-> (sql.helpers/select
        [:see-also/see-also-id :id]
@@ -177,6 +189,18 @@
        (execute! db)
        first
        adapters/db->note))
+
+(defn delete-note
+  {:malli/schema [:=> [:cat :uuid schemas.types/DatabaseComponent]
+                  :uuid]}
+  [note-id db]
+  (->> (-> (sql.helpers/delete-from :note)
+           (sql.helpers/where [:= :note-id note-id])
+           (sql.helpers/returning [:note-id :id])
+           sql/format)
+       (execute! db)
+       first
+       :id))
 
 (def get-note-query
   (-> (sql.helpers/select

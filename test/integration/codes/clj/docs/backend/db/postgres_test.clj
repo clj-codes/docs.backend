@@ -70,6 +70,14 @@
              :see-also/definition-id "clojure.core/disj"
              :see-also/definition-id-to "clojure.core/dissoc"
              :see-also/created-at inst?}
+            (util.db.postgres/get-see-also (:see-also/see-also-id see-also))))
+
+  (flow "delete see-also in db"
+    (match? (:see-also/see-also-id see-also)
+            (util.db.postgres/delete-see-also (:see-also/see-also-id see-also))))
+
+  (flow "check see-also using get-see-also fn"
+    (match? nil
             (util.db.postgres/get-see-also (:see-also/see-also-id see-also)))))
 
 (defflow note-db-test
@@ -110,6 +118,14 @@
              :note/definition-id "clojure.core/disj"
              :note/body "edited my note about this function."
              :note/created-at inst?}
+            (util.db.postgres/get-note (:note/note-id note))))
+
+  (flow "delete note in db"
+    (match? (:note/note-id note)
+            (util.db.postgres/delete-note (:note/note-id note))))
+
+  (flow "check note using get-note fn"
+    (match? nil
             (util.db.postgres/get-note (:note/note-id note)))))
 
 (defflow example-db-test

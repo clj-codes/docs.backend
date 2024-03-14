@@ -35,7 +35,17 @@
              (controllers.social/insert-see-also components)
              adapters.social/see-also->model->wire)})
 
-; TODO update-see-also
+;; TODO delete-see-also, routes & integration tests
+(defn delete-see-also
+  [{{{:keys [see-also-id]} :path} :parameters
+    components :components
+    auth :auth}]
+  (let [{author :note/author} (controllers.social/get-see-also see-also-id components)]
+    (if (= (:author/author-id author) (:author-id auth))
+      {:status 202
+       :body {:see-also-id (controllers.social/delete-see-also see-also-id components)}}
+      {:status 403
+       :body "You not allowed to delete this see also."})))
 
 (defn get-see-also
   [{{{:keys [see-also-id]} :path} :parameters
@@ -99,6 +109,18 @@
       {:status 403
        :body "You not allowed to update this note."})))
 
+;; TODO delete-note, routes & integration tests
+(defn delete-note
+  [{{{:keys [note-id]} :path} :parameters
+    components :components
+    auth :auth}]
+  (let [{author :note/author} (controllers.social/get-note note-id components)]
+    (if (= (:author/author-id author) (:author-id auth))
+      {:status 202
+       :body {:note-id (controllers.social/delete-note note-id components)}}
+      {:status 403
+       :body "You not allowed to delete this see also."})))
+
 (defn get-note
   [{{{:keys [note-id]} :path} :parameters
     components :components}]
@@ -111,8 +133,10 @@
 (defn get-by-definition
   [{{{:keys [definition-id]} :path} :parameters
     components :components}]
-  (if-let [definition (controllers.social/get-by-definition definition-id components)]
-    {:status 200
-     :body (adapters.social/social->model->wire definition)}
-    {:status 404
-     :body "not found"}))
+  {:status 200
+   :body (if-let [definition (controllers.social/get-by-definition definition-id components)]
+           (adapters.social/social->model->wire definition)
+           {:definition-id definition-id
+            :notes []
+            :examples []
+            :see-alsos []})})

@@ -108,7 +108,6 @@
                                              :headers {"authorization" (str "Bearer " fake-token)}
                                              :uri    "/api/social/note/"
                                              :body   {:note-id note-id
-                                                      :definition-id "clojure.core/disj"
                                                       :body "my edited note about this function."}})))
 
       (flow "check update note response"
@@ -121,7 +120,6 @@
                                              :headers {"authorization" (str "Bearer " token)}
                                              :uri    "/api/social/note/"
                                              :body   {:note-id note-id
-                                                      :definition-id "clojure.core/disj"
                                                       :body "my edited note about this function."}}))
 
         (flow "checks db for updated note"
@@ -268,7 +266,10 @@
   (flow "should interact with system"
 
     (flow "should not return definition"
-      (match? {:status 404
-               :body "not found"}
+      (match? {:status 200
+               :body {:definition-id "golang/go/math/abs/0"
+                      :notes []
+                      :examples []
+                      :see-alsos []}}
               (state-flow.server/request! {:method :get
                                            :uri    "/api/social/definition/golang/go/math/abs/0"})))))
