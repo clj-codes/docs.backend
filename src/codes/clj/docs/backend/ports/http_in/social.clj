@@ -43,7 +43,9 @@
   (let [{author :note/author} (controllers.social/get-see-also see-also-id components)]
     (if (= (:author/author-id author) (:author-id auth))
       {:status 202
-       :body {:see-also-id (controllers.social/delete-see-also see-also-id components)}}
+       :body (-> see-also-id
+                 (controllers.social/delete-see-also components)
+                 adapters.social/see-also->model->wire)}
       {:status 403
        :body "You not allowed to delete this see also."})))
 
@@ -117,7 +119,9 @@
   (let [{author :note/author} (controllers.social/get-note note-id components)]
     (if (= (:author/author-id author) (:author-id auth))
       {:status 202
-       :body {:note-id (controllers.social/delete-note note-id components)}}
+       :body (-> note-id
+                 (controllers.social/delete-note components)
+                 adapters.social/note->model->wire)}
       {:status 403
        :body "You not allowed to delete this see also."})))
 

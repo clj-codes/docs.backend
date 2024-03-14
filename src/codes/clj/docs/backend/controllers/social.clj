@@ -23,7 +23,7 @@
 
 (defn delete-see-also
   {:malli/schema [:=> [:cat :uuid schemas.types/Components]
-                  :uuid]}
+                  [:maybe schemas.model.social/SeeAlso]]}
   [see-also-id {:keys [database]}]
   (db.postgres/delete-see-also see-also-id database))
 
@@ -65,7 +65,7 @@
 
 (defn delete-note
   {:malli/schema [:=> [:cat :uuid schemas.types/Components]
-                  :uuid]}
+                  [:maybe schemas.model.social/Note]]}
   [note-id {:keys [database]}]
   (db.postgres/delete-note note-id database))
 
