@@ -35,12 +35,11 @@
              (controllers.social/insert-see-also components)
              adapters.social/see-also->model->wire)})
 
-;; TODO delete-see-also, routes & integration tests
 (defn delete-see-also
   [{{{:keys [see-also-id]} :path} :parameters
     components :components
     auth :auth}]
-  (let [{author :note/author} (controllers.social/get-see-also see-also-id components)]
+  (let [{author :see-also/author} (controllers.social/get-see-also see-also-id components)]
     (if (= (:author/author-id author) (:author-id auth))
       {:status 202
        :body (-> see-also-id
@@ -111,7 +110,6 @@
       {:status 403
        :body "You not allowed to update this note."})))
 
-;; TODO delete-note, routes & integration tests
 (defn delete-note
   [{{{:keys [note-id]} :path} :parameters
     components :components
@@ -123,7 +121,7 @@
                  (controllers.social/delete-note components)
                  adapters.social/note->model->wire)}
       {:status 403
-       :body "You not allowed to delete this see also."})))
+       :body "You not allowed to delete this note."})))
 
 (defn get-note
   [{{{:keys [note-id]} :path} :parameters

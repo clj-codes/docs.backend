@@ -101,7 +101,7 @@
                   (state-flow.server/request! {:method :get
                                                :uri "/api/social/definition/clojure.core/disj"}))))
 
-      (flow "check update note response"
+      (flow "should not be able to update if not allowed"
         (match? {:status 403
                  :body "You not allowed to update this note."}
                 (state-flow.server/request! {:method :put
@@ -110,7 +110,7 @@
                                              :body   {:note-id note-id
                                                       :body "my edited note about this function."}})))
 
-      (flow "check update note response"
+      (flow "update and check note response"
         (match? {:status 201
                  :body {:note-id note-id
                         :definition-id "clojure.core/disj"
@@ -120,26 +120,49 @@
                                              :headers {"authorization" (str "Bearer " token)}
                                              :uri    "/api/social/note/"
                                              :body   {:note-id note-id
-                                                      :body "my edited note about this function."}}))
+                                                      :body "my edited note about this function."}})))
 
-        (flow "checks db for updated note"
-          (match? {:status 200
-                   :body {:definition-id "clojure.core/disj"
-                          :notes [{:note-id note-id
-                                   :definition-id "clojure.core/disj"
-                                   :body "my edited note about this function."
-                                   :created-at string?}]}}
-                  (state-flow.server/request! {:method :get
-                                               :uri "/api/social/definition/clojure.core/disj"})))
+      (flow "checks db for updated note"
+        (match? {:status 200
+                 :body {:definition-id "clojure.core/disj"
+                        :notes [{:note-id note-id
+                                 :definition-id "clojure.core/disj"
+                                 :body "my edited note about this function."
+                                 :created-at string?}]}}
+                (state-flow.server/request! {:method :get
+                                             :uri "/api/social/definition/clojure.core/disj"})))
 
-        (flow "checks db for updated note using get-note api"
-          (match? {:status 200
-                   :body {:note-id note-id
-                          :definition-id "clojure.core/disj"
-                          :body "my edited note about this function."
-                          :created-at string?}}
-                  (state-flow.server/request! {:method :get
-                                               :uri (str "/api/social/note/" note-id)})))))))
+      (flow "checks db for updated note using get-note api"
+        (match? {:status 200
+                 :body {:note-id note-id
+                        :definition-id "clojure.core/disj"
+                        :body "my edited note about this function."
+                        :created-at string?}}
+                (state-flow.server/request! {:method :get
+                                             :uri (str "/api/social/note/" note-id)})))
+
+      (flow "should not be able to delete if not allowed"
+        (match? {:status 403
+                 :body "You not allowed to delete this note."}
+                (state-flow.server/request! {:method :delete
+                                             :headers {"authorization" (str "Bearer " fake-token)}
+                                             :uri    (str "/api/social/note/" note-id)})))
+
+      (flow "delete and check note response"
+        (match? {:status 202
+                 :body {:note-id note-id
+                        :definition-id "clojure.core/disj"
+                        :body "my edited note about this function."
+                        :created-at string?}}
+                (state-flow.server/request! {:method :delete
+                                             :headers {"authorization" (str "Bearer " token)}
+                                             :uri    (str "/api/social/note/" note-id)})))
+
+      (flow "get-note api should return 404 for the deleted note"
+        (match? {:status 404
+                 :body "Not found."}
+                (state-flow.server/request! {:method :get
+                                             :uri (str "/api/social/note/" note-id)}))))))
 
 (defflow
   flow-integration-see-also-test
@@ -148,10 +171,12 @@
    :fail-fast? true}
   (flow "should interact with system"
     (state-flow.http/set-http-out-responses! github-api-mocks)
-    [author-response (state-flow.server/request! {:method :post
+    [config (state-flow.api/get-state :config)
+     author-response (state-flow.server/request! {:method :post
                                                   :uri    "/api/login/github"
                                                   :body   {:code "agc622abb6135be5d1f2"}})
-     :let [token (->> author-response :body :access-token)]]
+     :let [token (->> author-response :body :access-token)
+           fake-token (create-token "fake-delboni" config)]]
 
     (flow "create & update see-also"
       [new-see-also-response (state-flow.server/request! {:method :post
@@ -179,12 +204,35 @@
                   (state-flow.server/request! {:method :get
                                                :uri "/api/social/definition/clojure.core/disj"})))
 
-        (flow "checks db for updated see-also using get-see-also api"
+        (flow "checks db for created see-also using get-see-also api"
           (match? {:status 200
                    :body {:see-also-id see-also-id
                           :definition-id "clojure.core/disj"
                           :definition-id-to "clojure.core/dissoc"
                           :created-at string?}}
+                  (state-flow.server/request! {:method :get
+                                               :uri (str "/api/social/see-also/" see-also-id)})))
+
+        (flow "should not be able to delete if not allowed"
+          (match? {:status 403
+                   :body "You not allowed to delete this see also."}
+                  (state-flow.server/request! {:method :delete
+                                               :headers {"authorization" (str "Bearer " fake-token)}
+                                               :uri    (str "/api/social/see-also/" see-also-id)})))
+
+        (flow "delete and check see-also response"
+          (match? {:status 202
+                   :body {:see-also-id see-also-id
+                          :definition-id "clojure.core/disj"
+                          :definition-id-to "clojure.core/dissoc"
+                          :created-at string?}}
+                  (state-flow.server/request! {:method :delete
+                                               :headers {"authorization" (str "Bearer " token)}
+                                               :uri    (str "/api/social/see-also/" see-also-id)})))
+
+        (flow "get-see-also api should return 404 for the deleted see-also"
+          (match? {:status 404
+                   :body "Not found."}
                   (state-flow.server/request! {:method :get
                                                :uri (str "/api/social/see-also/" see-also-id)})))))))
 

@@ -34,8 +34,6 @@
      {:swagger {:tags ["social"]}}
 
      ["/author"
-      {:swagger {:tags ["author"]}}
-
       ["/:login/:source"
        {:get {:summary "get author by login and source"
               :parameters {:path {:login :string
@@ -80,7 +78,16 @@
               :responses {201 {:body schemas.wire.out.social/Note}
                           404 {:body :string}
                           500 {:body :string}}
-              :handler ports.http-in.social/get-note}}]
+              :handler ports.http-in.social/get-note}
+
+        :delete {:summary "delete note by id"
+                 :interceptors [(backend.interceptors/auth-validate-jwt-interceptor)]
+                 :parameters {:header {:authorization :string}
+                              :path {:note-id :uuid}}
+                 :responses {202 {:body schemas.wire.out.social/Note}
+                             403 {:body :string}
+                             500 {:body :string}}
+                 :handler ports.http-in.social/delete-note}}]
       ["/"
        {:interceptors [(backend.interceptors/auth-validate-jwt-interceptor)]
         :parameters {:header {:authorization :string}}
@@ -107,7 +114,16 @@
               :responses {201 {:body schemas.wire.out.social/SeeAlso}
                           404 {:body :string}
                           500 {:body :string}}
-              :handler ports.http-in.social/get-see-also}}]
+              :handler ports.http-in.social/get-see-also}
+
+        :delete {:summary "delete see-also by id"
+                 :interceptors [(backend.interceptors/auth-validate-jwt-interceptor)]
+                 :parameters {:header {:authorization :string}
+                              :path {:see-also-id :uuid}}
+                 :responses {202 {:body schemas.wire.out.social/SeeAlso}
+                             403 {:body :string}
+                             500 {:body :string}}
+                 :handler ports.http-in.social/delete-see-also}}]
       ["/"
        {:interceptors [(backend.interceptors/auth-validate-jwt-interceptor)]
         :parameters {:header {:authorization :string}}
