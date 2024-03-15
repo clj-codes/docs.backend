@@ -21,6 +21,12 @@
   [new-see-also {:keys [database]}]
   (db.postgres/insert-see-also new-see-also database))
 
+(defn delete-see-also
+  {:malli/schema [:=> [:cat :uuid schemas.types/Components]
+                  [:maybe schemas.model.social/SeeAlso]]}
+  [see-also-id {:keys [database]}]
+  (db.postgres/delete-see-also see-also-id database))
+
 (defn get-see-also
   {:malli/schema [:=> [:cat :uuid schemas.types/Components]
                   [:maybe schemas.model.social/SeeAlso]]}
@@ -56,6 +62,12 @@
                   schemas.model.social/Note]}
   [update-note {:keys [database]}]
   (db.postgres/update-note update-note database))
+
+(defn delete-note
+  {:malli/schema [:=> [:cat :uuid schemas.types/Components]
+                  [:maybe schemas.model.social/Note]]}
+  [note-id {:keys [database]}]
+  (db.postgres/delete-note note-id database))
 
 (defn get-note
   {:malli/schema [:=> [:cat :uuid schemas.types/Components]

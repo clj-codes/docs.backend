@@ -90,10 +90,9 @@
 (defn update-note-wire->model
   {:malli/schema [:=> [:cat schemas.wire.in.social/UpdateNote :uuid]
                   schemas.model.social/UpdateNote]}
-  [{:keys [note-id definition-id body]} author-id]
+  [{:keys [note-id body]} author-id]
   #:note{:note-id note-id
          :author-id author-id
-         :definition-id definition-id
          :body body})
 
 (defn note->model->wire

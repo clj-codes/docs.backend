@@ -55,6 +55,21 @@
        first
        adapters/db->see-also))
 
+(defn delete-see-also
+  {:malli/schema [:=> [:cat :uuid schemas.types/DatabaseComponent]
+                  schemas.model.social/SeeAlso]}
+  [see-also-id db]
+  (->> (-> (sql.helpers/delete-from :see-also)
+           (sql.helpers/where [:= :see-also-id see-also-id])
+           (sql.helpers/returning [:see-also-id :id]
+                                  :definition-id
+                                  [:definition-id-to :body]
+                                  [:created-at :created])
+           sql/format)
+       (execute! db)
+       first
+       adapters/db->see-also))
+
 (def get-see-also-query
   (-> (sql.helpers/select
        [:see-also/see-also-id :id]
@@ -169,6 +184,21 @@
   (->> (-> (sql.helpers/update :note)
            (sql.helpers/set transaction)
            (sql.helpers/where [:= :note-id (:note/note-id transaction)])
+           (sql.helpers/returning [:note-id :id]
+                                  :definition-id
+                                  :body
+                                  [:created-at :created])
+           sql/format)
+       (execute! db)
+       first
+       adapters/db->note))
+
+(defn delete-note
+  {:malli/schema [:=> [:cat :uuid schemas.types/DatabaseComponent]
+                  schemas.model.social/Note]}
+  [note-id db]
+  (->> (-> (sql.helpers/delete-from :note)
+           (sql.helpers/where [:= :note-id note-id])
            (sql.helpers/returning [:note-id :id]
                                   :definition-id
                                   :body

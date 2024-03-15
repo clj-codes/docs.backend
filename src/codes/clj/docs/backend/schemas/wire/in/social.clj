@@ -33,5 +33,4 @@
                         :body]))
 (def UpdateNote
   (mu/select-keys note [:note-id
-                        :definition-id
                         :body]))

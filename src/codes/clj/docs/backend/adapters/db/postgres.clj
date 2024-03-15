@@ -13,13 +13,14 @@
    :author/created-at created-at})
 
 (defn db->note
-  {:malli/schema [:=> [:cat schemas.db/Row] schemas.model.social/Note]}
+  {:malli/schema [:=> [:cat [:maybe schemas.db/Row]] [:maybe schemas.model.social/Note]]}
   [{:keys [id definition-id body created author-id] :as note}]
-  (enc/assoc-some {:note/note-id id
-                   :note/definition-id definition-id
-                   :note/body body
-                   :note/created-at created}
-                  :note/author (when author-id (db->author note))))
+  (when note
+    (enc/assoc-some {:note/note-id id
+                     :note/definition-id definition-id
+                     :note/body body
+                     :note/created-at created}
+                    :note/author (when author-id (db->author note)))))
 
 (defn db->notes
   {:malli/schema [:=> [:cat [:sequential schemas.db/Row]]
@@ -55,14 +56,15 @@
                 (db->example example editors))))))
 
 (defn db->see-also
-  {:malli/schema [:=> [:cat schemas.db/Row] schemas.model.social/SeeAlso]}
+  {:malli/schema [:=> [:cat [:maybe schemas.db/Row]] [:maybe schemas.model.social/SeeAlso]]}
   [{:keys [id definition-id body created author-id] :as see-also}]
-  (enc/assoc-some {:see-also/see-also-id id
-                   :see-also/definition-id definition-id
-                   :see-also/definition-id-to body
-                   :see-also/created-at created}
-                  :see-also/author (when author-id
-                                     (db->author see-also))))
+  (when see-also
+    (enc/assoc-some {:see-also/see-also-id id
+                     :see-also/definition-id definition-id
+                     :see-also/definition-id-to body
+                     :see-also/created-at created}
+                    :see-also/author (when author-id
+                                       (db->author see-also)))))
 
 (defn db->see-alsos
   {:malli/schema [:=> [:cat [:sequential schemas.db/Row]]

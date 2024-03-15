@@ -45,12 +45,28 @@
          (db/update-note note)
          state-flow.api/return)))
 
+(defn delete-note
+  [note-id]
+  (flow "delete note"
+    [database (state-flow.api/get-state :database)]
+    (->> database
+         (db/delete-note note-id)
+         state-flow.api/return)))
+
 (defn create-see-also
   [see-also]
   (flow "insert new see-also"
     [database (state-flow.api/get-state :database)]
     (->> database
          (db/insert-see-also see-also)
+         state-flow.api/return)))
+
+(defn delete-see-also
+  [see-also-id]
+  (flow "delete see-also"
+    [database (state-flow.api/get-state :database)]
+    (->> database
+         (db/delete-see-also see-also-id)
          state-flow.api/return)))
 
 (defn get-note

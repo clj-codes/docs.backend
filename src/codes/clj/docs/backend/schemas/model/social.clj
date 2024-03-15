@@ -90,7 +90,6 @@
 (def UpdateNote
   (mu/select-keys note [:note/note-id
                         :note/author-id
-                        :note/definition-id
                         :note/body]))
 
 (def Note
