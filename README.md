@@ -1,19 +1,8 @@
 # codes.clj.docs.backend-malli
 Backend Service for [docs.clj.codes](https://docs.clj.codes).
 
-## TODO
-
- - [x] Social Database (postgres & basic api)
- - [x] Document Database (datalevin & merge with social db on get api)
-    - [x] Malli schema & adapters for datalevin data
-    - [x] List all available project
-    - [x] List all namespaces by project
-    - [x] List all definitions by namespaces
-    - [x] Get definition docs & social by definition id
- - [ ] Auth using Github
-    - [ ] Create author and login by github
-    - [ ] Interceptor to check if author can update its own notes
-    - [ ] Admin, Moderator and basic user. (optional)
+## Project
+[Check the project backlog, issues and ongoing tasks](https://github.com/orgs/clj-codes/projects/2)
 
 ## Repl
 To open a nrepl
