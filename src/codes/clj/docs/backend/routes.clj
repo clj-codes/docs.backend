@@ -60,6 +60,7 @@
                :parameters {:body schemas.wire.in.social/NewExample}
                :responses {201 {:body schemas.wire.out.social/Example}
                            400 {:body :string}
+                           401 {:body :string}
                            500 {:body :string}}
                :handler ports.http-in.social/insert-example}
 
@@ -67,6 +68,7 @@
               :parameters {:body schemas.wire.in.social/UpdateExample}
               :responses {201 {:body schemas.wire.out.social/Example}
                           400 {:body :string}
+                          401 {:body :string}
                           403 {:body :string}
                           500 {:body :string}}
               :handler ports.http-in.social/update-example}}]]
@@ -85,6 +87,7 @@
                  :parameters {:header {:authorization :string}
                               :path {:note-id :uuid}}
                  :responses {202 {:body schemas.wire.out.social/Note}
+                             401 {:body :string}
                              403 {:body :string}
                              500 {:body :string}}
                  :handler ports.http-in.social/delete-note}}]
@@ -96,6 +99,7 @@
                :parameters {:body schemas.wire.in.social/NewNote}
                :responses {201 {:body schemas.wire.out.social/Note}
                            400 {:body :string}
+                           401 {:body :string}
                            500 {:body :string}}
                :handler ports.http-in.social/insert-note}
 
@@ -103,6 +107,7 @@
               :parameters {:body schemas.wire.in.social/UpdateNote}
               :responses {201 {:body schemas.wire.out.social/Note}
                           400 {:body :string}
+                          401 {:body :string}
                           403 {:body :string}
                           500 {:body :string}}
               :handler ports.http-in.social/update-note}}]]
@@ -121,6 +126,7 @@
                  :parameters {:header {:authorization :string}
                               :path {:see-also-id :uuid}}
                  :responses {202 {:body schemas.wire.out.social/SeeAlso}
+                             401 {:body :string}
                              403 {:body :string}
                              500 {:body :string}}
                  :handler ports.http-in.social/delete-see-also}}]
@@ -132,6 +138,7 @@
                :parameters {:body schemas.wire.in.social/NewSeeAlso}
                :responses {201 {:body schemas.wire.out.social/SeeAlso}
                            400 {:body :string}
+                           401 {:body :string}
                            500 {:body :string}}
                :handler ports.http-in.social/insert-see-also}}]]
 
@@ -140,7 +147,8 @@
        {:get {:summary "get definition socials list by id"
               :parameters {:path {:definition-id :string}}
               :responses {200 {:body schemas.wire.out.social/Social}
-                          404 {:body :string}}
+                          404 {:body :string}
+                          500 {:body :string}}
               :handler ports.http-in.social/get-by-definition}}]]]
 
     ["/document"
@@ -149,7 +157,8 @@
      ["/projects"
       ["/"
        {:get {:summary "get project list"
-              :responses {200 {:body schemas.wire.out.document/Projects}}
+              :responses {200 {:body schemas.wire.out.document/Projects}
+                          500 {:body :string}}
               :handler ports.http-in.document/get-projects}}]]
 
      ["/namespaces"
@@ -157,7 +166,8 @@
        {:get {:summary "get namespace list by project id"
               :parameters {:path {:project-id :string}}
               :responses {200 {:body schemas.wire.out.document/ProjectNamespaces}
-                          404 {:body :string}}
+                          404 {:body :string}
+                          500 {:body :string}}
               :handler ports.http-in.document/get-namespaces-by-project}}]]
 
      ["/definitions"
@@ -165,7 +175,8 @@
        {:get {:summary "get definitions list by namespace id"
               :parameters {:path {:namespace-id :string}}
               :responses {200 {:body schemas.wire.out.document/ProjectNamespaceDefinitions}
-                          404 {:body :string}}
+                          404 {:body :string}
+                          500 {:body :string}}
               :handler ports.http-in.document/get-definitions-by-namespace}}]]
 
      ["/definition"
@@ -173,7 +184,8 @@
        {:get {:summary "get definition by id"
               :parameters {:path {:definition-id :string}}
               :responses {200 {:body schemas.wire.out.document/ProjectNamespaceDefinition}
-                          404 {:body :string}}
+                          404 {:body :string}
+                          500 {:body :string}}
               :handler ports.http-in.document/get-definition-by-id}}]]
 
      ["/search"
@@ -183,5 +195,6 @@
                                    [:q :string]
                                    [:top {:optional true} :int]]}
               :responses {200 {:body schemas.wire.out.document/SearchResults}
-                          404 {:body :string}}
+                          404 {:body :string}
+                          500 {:body :string}}
               :handler ports.http-in.document/search-by-fulltext}}]]]]])
