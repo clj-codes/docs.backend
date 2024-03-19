@@ -29,6 +29,14 @@
          (db/update-example example)
          state-flow.api/return)))
 
+(defn delete-example
+  [example-id author-id]
+  (flow "delete example"
+    [database (state-flow.api/get-state :database)]
+    (->> database
+         (db/delete-example example-id author-id)
+         state-flow.api/return)))
+
 (defn create-note
   [note]
   (flow "insert new note"

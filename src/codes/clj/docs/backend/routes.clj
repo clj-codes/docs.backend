@@ -51,7 +51,17 @@
               :responses {201 {:body schemas.wire.out.social/Example}
                           404 {:body :string}
                           500 {:body :string}}
-              :handler ports.http-in.social/get-example}}]
+              :handler ports.http-in.social/get-example}
+
+        :delete {:summary "delete example by id"
+                 :interceptors [(backend.interceptors/auth-validate-jwt-interceptor)]
+                 :parameters {:header {:authorization :string}
+                              :path {:example-id :uuid}}
+                 :responses {202 {:body schemas.wire.out.social/Example}
+                             401 {:body :string}
+                             403 {:body :string}
+                             500 {:body :string}}
+                 :handler ports.http-in.social/delete-example}}]
       ["/"
        {:interceptors [(backend.interceptors/auth-validate-jwt-interceptor)]
         :parameters {:header {:authorization :string}}

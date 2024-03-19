@@ -28,6 +28,11 @@
                       (m/validate schemas.wire.social/Author
                                   (adapters.social/author->model->wire author))))
 
+(defspec editor->model->wire-test 50
+  (properties/for-all [editor (mg/generator schemas.model.social/Editor)]
+                      (m/validate schemas.wire.social/Editor
+                                  (adapters.social/editor->model->wire editor))))
+
 (defspec new-example-wire->model-test 50
   (properties/for-all [author-id (mg/generator :uuid)
                        example (mg/generator schemas.wire.in.social/NewExample)]

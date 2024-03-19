@@ -51,7 +51,10 @@
        (group-by :id)
        (map (fn [[_ examples]]
               (let [sorted-examples (sort-by :created examples)
-                    editors (map db->author sorted-examples)
+                    editors (->> sorted-examples
+                                 (map #(-> %
+                                           db->author
+                                           (assoc :editor/edited-at (:created %)))))
                     example (last sorted-examples)]
                 (db->example example editors))))))
 

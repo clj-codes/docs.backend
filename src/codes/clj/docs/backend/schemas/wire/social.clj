@@ -18,6 +18,10 @@
                           :avatar-url
                           :created-at]))
 
+(def Editor
+  (mu/assoc Author
+            :edited-at TimeInstant))
+
 (def see-also
   [:map
    [:see-also-id :uuid]
@@ -34,7 +38,8 @@
    [:author {:optional true} Author]
    [:definition-id :string]
    [:body :string]
-   [:created-at TimeInstant]])
+   [:created-at TimeInstant]
+   [:editors {:optional true} [:sequential Editor]]])
 
 (def note
   [:map

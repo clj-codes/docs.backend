@@ -77,6 +77,19 @@
              (controllers.social/update-example components)
              adapters.social/example->model->wire)})
 
+(defn delete-example
+  [{{{:keys [example-id]} :path} :parameters
+    components :components
+    auth :auth}]
+  (let [{author :example/author} (controllers.social/get-example example-id components)]
+    (if (= (:author/author-id author) (:author-id auth))
+      {:status 202
+       :body (-> example-id
+                 (controllers.social/delete-example (:author-id auth) components)
+                 adapters.social/example->model->wire)}
+      {:status 403
+       :body "You not allowed to delete this example."})))
+
 (defn get-example
   [{{{:keys [example-id]} :path} :parameters
     components :components}]
