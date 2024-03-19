@@ -117,26 +117,6 @@
            (execute-tx! datasource))
       example)))
 
-(defn update-example
-  {:malli/schema [:=> [:cat schemas.model.social/UpdateExample schemas.types/DatabaseComponent]
-                  schemas.model.social/Example]}
-  [transaction db]
-  (let [example (->> (->  (sql.helpers/with
-                           [:example-edited (-> (sql.helpers/insert-into :example-edit)
-                                                (sql.helpers/values [transaction])
-                                                (sql.helpers/returning :*))])
-                          (sql.helpers/select [:example/example-id :id]
-                                              :definition-id
-                                              :body
-                                              [:example-edited/created-at :created])
-                          (sql.helpers/from :example-edited)
-                          (sql.helpers/join :example
-                                            [:= :example/example-id :example-edited/example-id])
-                          sql/format)
-                     (execute! db)
-                     first)]
-    (adapters/db->example example [])))
-
 (def get-example-query
   (-> (sql.helpers/select
        [:example/example-id :id]
@@ -161,6 +141,18 @@
        (execute! db)
        adapters/db->examples
        first))
+
+(defn update-example
+  {:malli/schema [:=> [:cat schemas.model.social/UpdateExample schemas.types/DatabaseComponent]
+                  schemas.model.social/Example]}
+  [transaction db]
+  (let [edited-example (->> (-> (sql.helpers/insert-into :example-edit)
+                                (sql.helpers/values [transaction])
+                                (sql.helpers/returning :*)
+                                sql/format)
+                            (execute! db)
+                            first)]
+    (get-example (:example-id edited-example) db)))
 
 (defn insert-note
   {:malli/schema [:=> [:cat schemas.model.social/NewNote schemas.types/DatabaseComponent]

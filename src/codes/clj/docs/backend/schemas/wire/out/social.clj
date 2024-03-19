@@ -15,7 +15,8 @@
                            :author
                            :definition-id
                            :body
-                           :created-at]))
+                           :created-at
+                           :editors]))
 
 (def Note
   (mu/select-keys note [:note-id

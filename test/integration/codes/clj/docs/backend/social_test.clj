@@ -259,8 +259,8 @@
       (flow "check new example response"
         (match? {:status 201
                  :body {:example-id string?
-                        :definition-id "clojure.core/disj",
-                        :body "my example about this function.",
+                        :definition-id "clojure.core/disj"
+                        :body "my example about this function."
                         :created-at string?}}
                 new-example-response)
 
@@ -270,7 +270,13 @@
                           :examples [{:example-id example-id
                                       :definition-id "clojure.core/disj"
                                       :body "my example about this function."
-                                      :created-at string?}]}}
+                                      :created-at string?
+                                      :editors [{:author-id string?
+                                                 :login "delboni"
+                                                 :account-source "github"
+                                                 :avatar-url "https://my.pic/me.jpg"
+                                                 :created-at string?
+                                                 :edited-at string?}]}]}}
                   (state-flow.server/request! {:method :get
                                                :uri "/api/social/definition/clojure.core/disj"}))))
 
@@ -302,7 +308,19 @@
                    :body {:example-id example-id
                           :definition-id "clojure.core/disj"
                           :body "my edited example about this function."
-                          :created-at string?}}
+                          :created-at string?
+                          :editors [{:author-id string?
+                                     :login "delboni"
+                                     :account-source "github"
+                                     :avatar-url "https://my.pic/me.jpg"
+                                     :created-at string?
+                                     :edited-at string?}
+                                    {:author-id string?
+                                     :login "delboni"
+                                     :account-source "github"
+                                     :avatar-url "https://my.pic/me.jpg"
+                                     :created-at string?
+                                     :edited-at string?}]}}
                   (state-flow.server/request! {:method :get
                                                :uri (str "/api/social/example/" example-id)})))))))
 

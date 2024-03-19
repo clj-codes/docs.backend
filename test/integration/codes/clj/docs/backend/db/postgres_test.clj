@@ -140,7 +140,9 @@
    :fail-fast? true}
 
   [author (util.db.postgres/upsert-author "delboni" "github")
-   :let [author-id (:author/author-id author)]
+   author-2 (util.db.postgres/upsert-author "ricardorico" "github")
+   :let [author-id (:author/author-id author)
+         author-2-id (:author/author-id author-2)]
    example-1 (util.db.postgres/create-example {:example/author-id author-id
                                                :example/definition-id "clojure.core/disj"
                                                :example/body "my example about this function."})
@@ -159,18 +161,67 @@
                                example-full-2]}
             (util.db.postgres/get-by-definition "clojure.core/disj")))
 
-  (util.db.postgres/update-example {:example/example-id (:example/example-id example-1)
-                                    :example/author-id author-id
-                                    :example/body "my example about this function. edit 1"})
+  (flow "check transaction was updated in db part 1"
+    (match? #:example{:example-id uuid?
+                      :definition-id "clojure.core/disj"
+                      :body "my example about this function. edit 1"
+                      :created-at inst?
+                      :author #:author{:author-id uuid?
+                                       :login "delboni"
+                                       :account-source "github"
+                                       :avatar-url "https://my.pic.com/me.jpg"
+                                       :created-at inst?}
+                      :editors [{:author/author-id uuid?
+                                 :author/login "delboni"
+                                 :author/account-source "github"
+                                 :author/avatar-url "https://my.pic.com/me.jpg"
+                                 :author/created-at inst?
+                                 :editor/edited-at inst?}
+                                {:author/author-id uuid?
+                                 :author/login "delboni"
+                                 :author/account-source "github"
+                                 :author/avatar-url "https://my.pic.com/me.jpg"
+                                 :author/created-at inst?
+                                 :editor/edited-at inst?}]}
+            (util.db.postgres/update-example {:example/example-id (:example/example-id example-1)
+                                              :example/author-id author-id
+                                              :example/body "my example about this function. edit 1"})))
 
-  (util.db.postgres/update-example {:example/example-id (:example/example-id example-1)
-                                    :example/author-id author-id
-                                    :example/body "my example about this function. edit 2"})
+  [edited-example-full-1 (util.db.postgres/update-example {:example/example-id (:example/example-id example-1)
+                                                           :example/author-id author-2-id
+                                                           :example/body "my example about this function. edit 2"})]
+  (flow "check transaction was updated in db part 2"
+    (match? #:example{:example-id uuid?
+                      :definition-id "clojure.core/disj"
+                      :body "my example about this function. edit 2"
+                      :created-at inst?
+                      :author #:author{:author-id uuid?
+                                       :login "ricardorico"
+                                       :account-source "github"
+                                       :avatar-url "https://my.pic.com/me.jpg"
+                                       :created-at inst?}
+                      :editors [{:author/author-id uuid?
+                                 :author/login "delboni"
+                                 :author/account-source "github"
+                                 :author/avatar-url "https://my.pic.com/me.jpg"
+                                 :author/created-at inst?
+                                 :editor/edited-at inst?}
+                                {:author/author-id uuid?
+                                 :author/login "delboni"
+                                 :author/account-source "github"
+                                 :author/avatar-url "https://my.pic.com/me.jpg"
+                                 :author/created-at inst?
+                                 :editor/edited-at inst?}
+                                {:author/author-id uuid?
+                                 :author/login "ricardorico"
+                                 :author/account-source "github"
+                                 :author/avatar-url "https://my.pic.com/me.jpg"
+                                 :author/created-at inst?
+                                 :editor/edited-at inst?}]}
+            edited-example-full-1))
 
   (flow "check transaction was inserted in db"
-    (match? {:social/examples [(assoc example-full-1
-                                      :example/body "my example about this function. edit 2"
-                                      :example/created-at inst?)
+    (match? {:social/examples [edited-example-full-1
                                example-full-2]}
             (util.db.postgres/get-by-definition "clojure.core/disj")))
 

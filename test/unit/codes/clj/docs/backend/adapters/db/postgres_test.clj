@@ -31,7 +31,7 @@
 
 (defspec db->example-test 50
   (properties/for-all [row (mg/generator (mu/assoc schemas.db.postgres/FullRow :type [:enum "example"]))
-                       editors (mg/generator [:sequential schemas.model.social/Author])]
+                       editors (mg/generator [:sequential schemas.model.social/Editor])]
                       (m/validate schemas.model.social/Example (adapters/db->example row editors))))
 
 (defspec db->example-base-test 50
@@ -157,21 +157,24 @@
                                                               :account-source "github"
                                                               :avatar-url "https://my.pic.com/me.jpg"
                                                               :created-at #inst "2020-10-23T00:00:00.000-00:00"}
-                                             :editors [#:author{:author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
-                                                                :login "delboni"
-                                                                :account-source "github"
-                                                                :avatar-url "https://my.pic.com/me.jpg"
-                                                                :created-at #inst "2020-10-23T00:00:00.000-00:00"}
-                                                       #:author{:author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
-                                                                :login "delboni"
-                                                                :account-source "github"
-                                                                :avatar-url "https://my.pic.com/me.jpg"
-                                                                :created-at #inst "2020-10-23T00:00:00.000-00:00"}
-                                                       #:author{:author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
-                                                                :login "delboni"
-                                                                :account-source "github"
-                                                                :avatar-url "https://my.pic.com/me.jpg"
-                                                                :created-at #inst "2020-10-23T00:00:00.000-00:00"}]}
+                                             :editors [{:author/author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
+                                                        :author/login "delboni"
+                                                        :author/account-source "github"
+                                                        :author/avatar-url "https://my.pic.com/me.jpg"
+                                                        :author/created-at #inst "2020-10-23T00:00:00.000-00:00"
+                                                        :editor/edited-at #inst "2020-10-23T01:00:00.000-00:00"}
+                                                       {:author/author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
+                                                        :author/login "delboni"
+                                                        :author/account-source "github"
+                                                        :author/avatar-url "https://my.pic.com/me.jpg"
+                                                        :author/created-at #inst "2020-10-23T00:00:00.000-00:00"
+                                                        :editor/edited-at #inst "2020-10-23T02:00:00.000-00:00"}
+                                                       {:author/author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
+                                                        :author/login "delboni"
+                                                        :author/account-source "github"
+                                                        :author/avatar-url "https://my.pic.com/me.jpg"
+                                                        :author/created-at #inst "2020-10-23T00:00:00.000-00:00"
+                                                        :editor/edited-at #inst "2020-10-23T03:00:00.000-00:00"}]}
                                    #:example{:example-id #uuid "c9df4a18-ec91-4d3f-9cb2-d65d48db88eb"
                                              :definition-id "clojure.core/disj"
                                              :body "another example about this function."
@@ -181,11 +184,12 @@
                                                               :account-source "github"
                                                               :avatar-url "https://my.pic.com/me.jpg"
                                                               :created-at #inst "2020-10-23T00:00:00.000-00:00"}
-                                             :editors [#:author{:author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
-                                                                :login "delboni"
-                                                                :account-source "github"
-                                                                :avatar-url "https://my.pic.com/me.jpg"
-                                                                :created-at #inst "2020-10-23T00:00:00.000-00:00"}]}]
+                                             :editors [{:author/author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
+                                                        :author/login "delboni"
+                                                        :author/account-source "github"
+                                                        :author/avatar-url "https://my.pic.com/me.jpg"
+                                                        :author/created-at #inst "2020-10-23T00:00:00.000-00:00"
+                                                        :editor/edited-at #inst "2020-10-23T00:00:00.000-00:00"}]}]
                  :social/see-alsos [#:see-also{:see-also-id #uuid "b8a824b9-6a3a-4a10-a318-58313637ecb6"
                                                :definition-id "clojure.core/disj"
                                                :definition-id-to "clojure.core/dissoc"

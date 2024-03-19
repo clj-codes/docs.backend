@@ -33,6 +33,13 @@
    :avatar-url avatar-url
    :created-at created-at})
 
+(defn editor->model->wire
+  {:malli/schema [:=> [:cat schemas.model.social/Editor] schemas.wire.social/Editor]}
+  [{:editor/keys [edited-at] :as author}]
+  (-> author
+      author->model->wire
+      (assoc :edited-at edited-at)))
+
 (defn new-example-wire->model
   {:malli/schema [:=> [:cat schemas.wire.in.social/NewExample :uuid]
                   schemas.model.social/NewExample]}
@@ -59,7 +66,7 @@
                    :created-at created-at}
                   :author (when author (author->model->wire author))
                   :editors (when (seq editors)
-                             (map author->model->wire editors))))
+                             (map editor->model->wire editors))))
 
 (defn new-see-also-wire->model
   {:malli/schema [:=> [:cat schemas.wire.in.social/NewSeeAlso :uuid]

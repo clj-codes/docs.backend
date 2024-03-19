@@ -24,6 +24,15 @@
                           :author/avatar-url
                           :author/created-at]))
 
+(def Editor
+  (-> author
+      (mu/select-keys [:author/author-id
+                       :author/login
+                       :author/account-source
+                       :author/avatar-url
+                       :author/created-at])
+      (mu/assoc :editor/edited-at TimeInstant)))
+
 (def see-also
   [:map
    [:see-also/see-also-id :uuid]
@@ -50,7 +59,7 @@
    [:example/example-id :uuid]
    [:example/author-id :uuid]
    [:example/author {:optional true} Author]
-   [:example/editors {:optional true} [:sequential Author]]
+   [:example/editors {:optional true} [:sequential Editor]]
    [:example/definition-id :string]
    [:example/body :string]
    [:example/created-at TimeInstant]])

@@ -18,6 +18,15 @@
                           :avatar-url
                           :created-at]))
 
+(def Editor
+  (-> author
+      (mu/select-keys [:author-id
+                       :login
+                       :account-source
+                       :avatar-url
+                       :created-at])
+      (mu/assoc :edited-at TimeInstant)))
+
 (def see-also
   [:map
    [:see-also-id :uuid]
@@ -34,7 +43,8 @@
    [:author {:optional true} Author]
    [:definition-id :string]
    [:body :string]
-   [:created-at TimeInstant]])
+   [:created-at TimeInstant]
+   [:editors {:optional true} [:sequential Editor]]])
 
 (def note
   [:map
