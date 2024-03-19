@@ -154,6 +154,43 @@
                             first)]
     (get-example (:example-id edited-example) db)))
 
+(defn delete-example
+  {:malli/schema [:=> [:cat :uuid :uuid schemas.types/DatabaseComponent]
+                  schemas.model.social/Example]}
+  [example-id author-id db]
+  (let [query (-> (sql.helpers/with
+                   [:example-deleted (-> (sql.helpers/delete-from :example-edit)
+                                         (sql.helpers/where :in [:composite :example-id :author-id :created-at]
+                                                            (-> (sql.helpers/select :example-id
+                                                                                    :author-id
+                                                                                    :created-at)
+                                                                (sql.helpers/from :example-edit)
+                                                                (sql.helpers/where :and
+                                                                                   [:= :example-id example-id]
+                                                                                   [:= :author-id author-id])
+                                                                (sql.helpers/order-by [:created-at :desc])
+                                                                (sql.helpers/limit 1)))
+                                         (sql.helpers/returning :*))])
+                  (sql.helpers/select [:example/example-id :id]
+                                      :definition-id
+                                      :body
+                                      [:example-deleted/created-at :created])
+                  (sql.helpers/from :example-deleted)
+                  (sql.helpers/join :example
+                                    [:= :example/example-id :example-deleted/example-id])
+                  sql/format)
+        example-before-delete (-> (execute! db query)
+                                  first
+                                  (adapters/db->example []))
+        example-after-delete (get-example example-id db)]
+    (when-not example-after-delete
+      (execute! (-> (sql.helpers/delete-from :example)
+                    (sql.helpers/where [:= :example-id example-id])
+                    sql/format)
+                db))
+    (or example-after-delete
+        example-before-delete)))
+
 (defn insert-note
   {:malli/schema [:=> [:cat schemas.model.social/NewNote schemas.types/DatabaseComponent]
                   schemas.model.social/Note]}

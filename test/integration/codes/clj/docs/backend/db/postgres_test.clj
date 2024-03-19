@@ -227,7 +227,63 @@
 
   (flow "check example using get-example fn"
     (match? example-full-2
-            (util.db.postgres/get-example (:example/example-id example-2)))))
+            (util.db.postgres/get-example (:example/example-id example-2))))
+
+  (flow "delete latest revision for current author part 1"
+    (util.db.postgres/delete-example (:example/example-id example-1) author-2-id)
+
+    (match? #:example{:example-id uuid?
+                      :definition-id "clojure.core/disj"
+                      :body "my example about this function. edit 1"
+                      :created-at inst?
+                      :author #:author{:author-id uuid?
+                                       :login "delboni"
+                                       :account-source "github"
+                                       :avatar-url "https://my.pic.com/me.jpg"
+                                       :created-at inst?}
+                      :editors [{:author/author-id uuid?
+                                 :author/login "delboni"
+                                 :author/account-source "github"
+                                 :author/avatar-url "https://my.pic.com/me.jpg"
+                                 :author/created-at inst?
+                                 :editor/edited-at inst?}
+                                {:author/author-id uuid?
+                                 :author/login "delboni"
+                                 :author/account-source "github"
+                                 :author/avatar-url "https://my.pic.com/me.jpg"
+                                 :author/created-at inst?
+                                 :editor/edited-at inst?}]}
+            (util.db.postgres/get-example (:example/example-id example-1))))
+
+  (flow "delete latest revision for current author part 2"
+    (util.db.postgres/delete-example (:example/example-id example-1) author-id)
+
+    (match? #:example{:example-id uuid?
+                      :definition-id "clojure.core/disj"
+                      :body "my example about this function."
+                      :created-at inst?
+                      :author #:author{:author-id uuid?
+                                       :login "delboni"
+                                       :account-source "github"
+                                       :avatar-url "https://my.pic.com/me.jpg"
+                                       :created-at inst?}
+                      :editors [{:author/author-id uuid?
+                                 :author/login "delboni"
+                                 :author/account-source "github"
+                                 :author/avatar-url "https://my.pic.com/me.jpg"
+                                 :author/created-at inst?
+                                 :editor/edited-at inst?}]}
+            (util.db.postgres/get-example (:example/example-id example-1))))
+
+  (flow "delete latest revision for current author part 3"
+    (match? #:example{:example-id uuid?
+                      :definition-id "clojure.core/disj"
+                      :body "my example about this function."
+                      :created-at inst?}
+            (util.db.postgres/delete-example (:example/example-id example-1) author-id))
+
+    (match? nil
+            (util.db.postgres/get-example (:example/example-id example-1)))))
 
 (defflow all-db-test
   {:init (util/start-system! create-and-start-components!)
