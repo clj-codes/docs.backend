@@ -45,6 +45,12 @@
   [update-example {:keys [database]}]
   (db.postgres/update-example update-example database))
 
+(defn delete-example
+  {:malli/schema [:=> [:cat :uuid :uuid schemas.types/Components]
+                  schemas.model.social/Example]}
+  [example-id author-id {:keys [database]}]
+  (db.postgres/delete-example example-id author-id database))
+
 (defn get-example
   {:malli/schema [:=> [:cat :uuid schemas.types/Components]
                   [:maybe schemas.model.social/Example]]}
