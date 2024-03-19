@@ -184,10 +184,9 @@
                                   (adapters/db->example []))
         example-after-delete (get-example example-id db)]
     (when-not example-after-delete
-      (execute! (-> (sql.helpers/delete-from :example)
-                    (sql.helpers/where [:= :example-id example-id])
-                    sql/format)
-                db))
+      (execute! db (-> (sql.helpers/delete-from :example)
+                       (sql.helpers/where [:= :example-id example-id])
+                       sql/format)))
     (or example-after-delete
         example-before-delete)))
 
