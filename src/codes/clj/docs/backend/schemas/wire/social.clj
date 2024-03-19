@@ -19,13 +19,8 @@
                           :created-at]))
 
 (def Editor
-  (-> author
-      (mu/select-keys [:author-id
-                       :login
-                       :account-source
-                       :avatar-url
-                       :created-at])
-      (mu/assoc :edited-at TimeInstant)))
+  (mu/assoc Author
+            :edited-at TimeInstant))
 
 (def see-also
   [:map
