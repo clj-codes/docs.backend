@@ -303,7 +303,7 @@
                   (state-flow.server/request! {:method :get
                                                :uri "/api/social/definition/clojure.core/disj"})))
 
-        (flow "checks db for updated example using get-see-also api"
+        (flow "checks db for updated example using get-example api"
           (match? {:status 200
                    :body {:example-id example-id
                           :definition-id "clojure.core/disj"
@@ -321,6 +321,38 @@
                                      :avatar-url "https://my.pic/me.jpg"
                                      :created-at string?
                                      :edited-at string?}]}}
+                  (state-flow.server/request! {:method :get
+                                               :uri (str "/api/social/example/" example-id)})))
+
+        (flow "delete example revision part 1"
+          (state-flow.server/request! {:method :delete
+                                       :headers {"authorization" (str "Bearer " token)}
+                                       :uri (str "/api/social/example/" example-id)})
+          (match? {:status 200
+                   :body {:example-id example-id
+                          :definition-id "clojure.core/disj"
+                          :body "my example about this function."
+                          :created-at string?
+                          :editors [{:author-id string?
+                                     :login "delboni"
+                                     :account-source "github"
+                                     :avatar-url "https://my.pic/me.jpg"
+                                     :created-at string?
+                                     :edited-at string?}]}}
+                  (state-flow.server/request! {:method :get
+                                               :uri (str "/api/social/example/" example-id)})))
+
+        (flow "delete example revision part 2"
+          (match? {:status 202
+                   :body {:example-id example-id
+                          :definition-id "clojure.core/disj"
+                          :body "my example about this function."
+                          :created-at string?}}
+                  (state-flow.server/request! {:method :delete
+                                               :headers {"authorization" (str "Bearer " token)}
+                                               :uri (str "/api/social/example/" example-id)}))
+          (match? {:status 404
+                   :body "Not found."}
                   (state-flow.server/request! {:method :get
                                                :uri (str "/api/social/example/" example-id)})))))))
 
