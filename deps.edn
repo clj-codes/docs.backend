@@ -1,13 +1,13 @@
 {:paths ["src" "resources"]
- :deps {org.clojure/clojure {:mvn/version "1.11.1"}
+ :deps {org.clojure/clojure {:mvn/version "1.11.2"}
         com.github.parenthesin/components {:mvn/version "0.2.4"
                                            :exclusions  [prismatic/schema]}
-        com.github.seancorfield/honeysql {:mvn/version "2.5.1103"}
-        metosin/malli {:mvn/version "0.14.0"}
+        com.github.seancorfield/honeysql {:mvn/version "2.6.1126"}
+        metosin/malli {:mvn/version "0.15.0"}
         metosin/reitit-swagger {:mvn/version "0.6.0"}
-        org.postgresql/postgresql {:mvn/version "42.7.1"}
-        com.taoensso/encore {:mvn/version "3.74.2"}
-        datalevin/datalevin {:mvn/version "0.8.26"}
+        org.postgresql/postgresql {:mvn/version "42.7.3"}
+        com.taoensso/encore {:mvn/version "3.97.0"}
+        datalevin/datalevin {:mvn/version "0.9.3"}
         buddy/buddy-sign {:mvn/version "3.5.351"}}
  :aliases
  {:dev {:extra-paths ["test" "dev" "test/resources"]
@@ -22,14 +22,14 @@
   :test {:main-opts ["-m" "kaocha.runner"]
          :jvm-opts  ["-Xms3g" "-Xmx3g"]}
 
-  :clojure-lsp {:replace-deps {com.github.clojure-lsp/clojure-lsp-standalone {:mvn/version "2024.02.01-11.01.59"}}
+  :clojure-lsp {:replace-deps {com.github.clojure-lsp/clojure-lsp-standalone {:mvn/version "2024.03.13-13.11.00"}}
                 :main-opts ["-m" "clojure-lsp.main"]}
 
-  :nrepl {:extra-deps {cider/cider-nrepl {:mvn/version "0.45.0"}}
+  :nrepl {:extra-deps {cider/cider-nrepl {:mvn/version "0.47.0"}}
           :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
 
   :migratus {:main-opts ["-m" "parenthesin.helpers.migrations"]}
 
-  :build {:deps {io.github.clojure/tools.build {:mvn/version "0.9.6"}}
+  :build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.0"}}
           :ns-default build
           :exec-args {:uber-file "target/service.jar"}}}}
