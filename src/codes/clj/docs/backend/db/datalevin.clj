@@ -4,8 +4,7 @@
             [codes.clj.docs.backend.schemas.types :as schemas.types]
             [datalevin.core :as d]
             [datalevin.interpret :refer [inter-fn]]
-            [datalevin.search-utils :as su]
-            [malli.core :as m]))
+            [datalevin.search-utils :as su]))
 
 (defn merge-tokenizers
   "Merges the results of tokenizer a and b into one sequence."
