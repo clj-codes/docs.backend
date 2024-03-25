@@ -11,7 +11,7 @@
 
  :db-docs {:dir "target"
            :url "https://github.com/clj-codes/docs.extractor/releases/download"
-           :version "v0.3.2"
+           :version "v0.3.3"
            :file-name "docs-db.zip"}
 
  :github {:client {:id #or [#env GH_CLIENT_ID "app-client-id"]
