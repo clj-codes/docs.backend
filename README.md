@@ -1,6 +1,26 @@
 # codes.clj.docs.backend-malli
 Backend Service for [docs.clj.codes](https://docs.clj.codes).
 
+## Config `resources/config.edn`
+This file has all the backend configurations:
+- `:webserver/port` or PORT env var which port the webserver will open and expose
+- `:webserver/allowed-origins` an array with allowed base domains for cors
+- `:database` config to build the postgres connection string:
+  - `:dbname` or DB_NAME env var
+  - `:username` or DB_USER env var
+  - `:password` or DB_PASS env var
+  - `:host` or DB_HOST env var
+  - `:port` or DB_PORT env var
+- `:db-docs` coordinates to [db-docs component](src/codes/clj/docs/backend/components/db_docs.clj) downloads the latest extracted db
+  - `:dir` where it will download and extract the database zip
+  - `:url` base github releases url to build the download url
+  - `:version` used to build the download url and set where inside `:dir` the database will be saved
+  - `:file-name` used to build the download url
+  - Note: Before downloading the component checks if the path `:dir`/`:version` exists and has the database,
+    so you could manually copy your database files and start the server it will use this instead downloading a new one.
+- `:github` where to set client-id (or GH_CLIENT_ID) and client-secret (or GH_CLIENT_SECRET) for login with github
+- `:jwt` jwt encryption secret used to encrypt and decrypt the jwt returned to the frontend after login
+
 ## Project
 [Check the project backlog, issues and ongoing tasks](https://github.com/orgs/clj-codes/projects/2)
 
