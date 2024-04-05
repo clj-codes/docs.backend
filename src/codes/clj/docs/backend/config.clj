@@ -14,8 +14,10 @@
   (let [target-config (get-in config nested-keys)]
     (if (string? target-config)
       (let [split-configs (-> target-config
-                              (string/split  #", "))
-            env-config (map string/trim split-configs)]
+                              (string/split  #","))
+            env-config (->> split-configs
+                            (map string/trim)
+                            (remove empty?))]
         (assoc-in config nested-keys env-config))
       config)))
 
