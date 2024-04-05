@@ -59,15 +59,13 @@
 
       (testing "all defined vector-env-vars should be processed"
         (is (match? {:config (embeds converted-configs)}
-                    (#'backend.config/resolved-envs-config config-component
-                                                           vector-env-vars))))
+                    (backend.config/config config-component vector-env-vars))))
 
       (testing "when vector-env-vars is empty, the config should be left unaltered"
         (is (match? {:config (embeds unaltered-configs)}
-                    (#'backend.config/resolved-envs-config config-component
-                                                           []))))
+                    (backend.config/config config-component []))))
 
       (testing "when vector-env-vars has no matches, the config should be left unaltered"
         (is (match? {:config (embeds unaltered-configs)}
-                    (#'backend.config/resolved-envs-config config-component
-                                                           no-matching-env-vars)))))))
+                    (backend.config/config config-component
+                                           no-matching-env-vars)))))))

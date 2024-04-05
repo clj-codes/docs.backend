@@ -21,10 +21,8 @@
         (assoc-in config nested-keys env-config))
       config)))
 
-(defn- resolved-envs-config
-  [config str-envs]
-  (reduce str-var->vector-var config str-envs))
-
 (defn config
-  [config]
-  (resolved-envs-config config vector-env-vars))
+  ([config]
+   (reduce str-var->vector-var config vector-env-vars))
+  ([config vector-envs]
+   (reduce str-var->vector-var config vector-envs)))
