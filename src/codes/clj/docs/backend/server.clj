@@ -1,5 +1,6 @@
 (ns codes.clj.docs.backend.server
   (:require [codes.clj.docs.backend.components.db-docs :as components.db-docs]
+            [codes.clj.docs.backend.config :as backend.config]
             [codes.clj.docs.backend.db.datalevin :refer [read-conn-opts]]
             [codes.clj.docs.backend.routes :as routes]
             [com.stuartsierra.component :as component]
@@ -16,7 +17,7 @@
 
 (defn base-system-map []
   (component/system-map
-   :config (config/new-config)
+   :config (backend.config/config (config/new-config))
    :http (http/new-http)
    :router (router/new-router routes/routes)
    :database (component/using (database/new-database) [:config])
