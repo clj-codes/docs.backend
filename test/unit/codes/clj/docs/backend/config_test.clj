@@ -16,49 +16,49 @@
 
 (deftest str-var->vector-var-test
   (let [system (create-and-start-system!
-                {:config (config.aero/new-config {:some-config "value1, value2" 
-                                                  :another-config 
+                {:config (config.aero/new-config {:some-config "value1, value2"
+                                                  :another-config
                                                   {:nested-config "value3, value4"}
                                                   :malformed-config "value5,   value6, "})})
         config-component (:config system)]
 
-       (testing "root-level configs should be converted to vectors"
-                (is (match? {:config {:some-config ["value1" "value2"]}}
-                            (#'backend.config/str-var->vector-var
-                             config-component [:config :some-config]))))
+    (testing "root-level configs should be converted to vectors"
+      (is (match? {:config {:some-config ["value1" "value2"]}}
+                  (#'backend.config/str-var->vector-var
+                   config-component [:config :some-config]))))
 
-       (testing "nested configs should be converted to vectors"
-                (is (match? {:config {:another-config {:nested-config ["value3" "value4"]}}}
-                            (#'backend.config/str-var->vector-var
-                             config-component [:config :another-config :nested-config]))))
+    (testing "nested configs should be converted to vectors"
+      (is (match? {:config {:another-config {:nested-config ["value3" "value4"]}}}
+                  (#'backend.config/str-var->vector-var
+                   config-component [:config :another-config :nested-config]))))
 
-       (testing "trailing commas and extra whitespaces are ignored"
-                (is (match? {:config {:malformed-config ["value5" "value6"]}}
-                            (#'backend.config/str-var->vector-var
-                             config-component [:config :malformed-config]))))
+    (testing "trailing commas and extra whitespaces are ignored"
+      (is (match? {:config {:malformed-config ["value5" "value6"]}}
+                  (#'backend.config/str-var->vector-var
+                   config-component [:config :malformed-config]))))
 
-       (let [vector-env-vars [[:config :some-config]
-                              [:config :another-config :nested-config]
-                              [:config :malformed-config]]
-             no-matching-env-vars [[:config :non-existent-config]]
-             converted-configs {:some-config ["value1" "value2"],
-                                :another-config {:nested-config ["value3" "value4"]}
-                                :malformed-config ["value5" "value6"]}
-             unaltered-configs {:some-config "value1, value2",
-                                :another-config {:nested-config "value3, value4"}
-                                :malformed-config "value5,   value6, "}]
+    (let [vector-env-vars [[:config :some-config]
+                           [:config :another-config :nested-config]
+                           [:config :malformed-config]]
+          no-matching-env-vars [[:config :non-existent-config]]
+          converted-configs {:some-config ["value1" "value2"],
+                             :another-config {:nested-config ["value3" "value4"]}
+                             :malformed-config ["value5" "value6"]}
+          unaltered-configs {:some-config "value1, value2",
+                             :another-config {:nested-config "value3, value4"}
+                             :malformed-config "value5,   value6, "}]
 
-            (testing "all defined vector-env-vars should be processed"
-                     (is (match? {:config (embeds converted-configs)}
-                                 (#'backend.config/resolved-envs-config config-component
-                                                                        vector-env-vars))))
+      (testing "all defined vector-env-vars should be processed"
+        (is (match? {:config (embeds converted-configs)}
+                    (#'backend.config/resolved-envs-config config-component
+                                                           vector-env-vars))))
 
-            (testing "when vector-env-vars is empty, the config should be left unaltered"
-                     (is (match? {:config (embeds unaltered-configs)}
-                                 (#'backend.config/resolved-envs-config config-component
-                                                                        []))))
+      (testing "when vector-env-vars is empty, the config should be left unaltered"
+        (is (match? {:config (embeds unaltered-configs)}
+                    (#'backend.config/resolved-envs-config config-component
+                                                           []))))
 
-            (testing "when vector-env-vars has no matches, the config should be left unaltered"
-                     (is (match? {:config (embeds unaltered-configs)}
-                                 (#'backend.config/resolved-envs-config config-component
-                                                                        no-matching-env-vars)))))))
+      (testing "when vector-env-vars has no matches, the config should be left unaltered"
+        (is (match? {:config (embeds unaltered-configs)}
+                    (#'backend.config/resolved-envs-config config-component
+                                                           no-matching-env-vars)))))))
