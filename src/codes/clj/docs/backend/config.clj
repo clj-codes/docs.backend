@@ -10,12 +10,14 @@
 (defn- str-var->vector-var
   "Converts a string config variable to a vector of strings, when applicable.
        Environment variables are expected to be set as comma-separated values."
-  [config nested-keys]
-  (let [target-config (get-in config nested-keys)]
-    (if (string? target-config)
-      (let [env-config (clojure.string/split target-config  #", ")]
-        (assoc-in config nested-keys env-config))
-      config)))
+       [config nested-keys]
+       (let [target-config (get-in config nested-keys)]
+            (if (string? target-config)
+                (let [split-configs (-> target-config
+                                        (string/split  #", "))
+                      env-config (map string/trim split-configs)]
+                     (assoc-in config nested-keys env-config))
+                config)))
 
 (defn- resolved-envs-config
   [config str-envs]
