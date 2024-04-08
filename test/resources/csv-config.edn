@@ -1,0 +1,3 @@
+{:some-config #csv #or [#env SOME "value1, value2"]
+ :malformed-config #csv #or [#env MALFORMED "value3,   value4,value5, "]
+ :trailing-comma-config #csv #or [#env TRAILING_COMMA "value6, value7,"]}

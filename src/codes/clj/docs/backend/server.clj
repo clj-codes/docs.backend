@@ -1,5 +1,6 @@
 (ns codes.clj.docs.backend.server
   (:require [codes.clj.docs.backend.components.db-docs :as components.db-docs]
+            [codes.clj.docs.backend.config]
             [codes.clj.docs.backend.db.datalevin :refer [read-conn-opts]]
             [codes.clj.docs.backend.routes :as routes]
             [com.stuartsierra.component :as component]
