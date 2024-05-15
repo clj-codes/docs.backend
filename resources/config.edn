@@ -10,10 +10,10 @@
             :host #or [#env DB_HOST "localhost"]
             :port #or [#env DB_PORT 5432]}
 
- :db-docs {:dir "target"
-           :url "https://github.com/clj-codes/docs.extractor/releases/download"
-           :version "v0.3.4"
-           :file-name "docs-db.zip"}
+ :db-docs {:dir #or [#env DB_DOCS_DIR "target"]
+           :url #or [#env DB_DOCS_URL "https://github.com/clj-codes/docs.extractor/releases/download"]
+           :version #or [#env DB_DOCS_VERSION "v0.3.4"]
+           :file-name #or [#env DB_DOCS_FILE_NAME "docs-db.zip"]}
 
  :github {:client {:id #or [#env GH_CLIENT_ID "app-client-id"]
                    :secret #or [#env GH_CLIENT_SECRET "app-client-secret"]}}
