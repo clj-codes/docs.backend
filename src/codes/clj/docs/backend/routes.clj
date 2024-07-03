@@ -1,6 +1,7 @@
 (ns codes.clj.docs.backend.routes
   (:require [codes.clj.docs.backend.interceptors :as backend.interceptors]
             [codes.clj.docs.backend.ports.http-in.document :as ports.http-in.document]
+            [codes.clj.docs.backend.ports.http-in.ops :as ports.http-in.ops]
             [codes.clj.docs.backend.ports.http-in.social :as ports.http-in.social]
             [codes.clj.docs.backend.schemas.wire.in.social :as schemas.wire.in.social]
             [codes.clj.docs.backend.schemas.wire.out.document :as schemas.wire.out.document]
@@ -14,6 +15,15 @@
            :swagger {:info {:title "clj.docs"
                             :description "codes.clj.docs.backend"}}
            :handler (swagger/create-swagger-handler)}}]
+
+   ["/ops"
+    {:swagger {:tags ["ops"]}}
+
+    ["/health"
+     {:get {:summary "health check"
+            :responses {200 {:body :string}
+                        500 {:body :string}}
+            :handler ports.http-in.ops/health}}]]
 
    ["/api"
 
