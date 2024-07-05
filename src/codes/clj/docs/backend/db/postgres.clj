@@ -5,40 +5,13 @@
             [honey.sql :as sql]
             [honey.sql.helpers :as sql.helpers]
             [next.jdbc :as jdbc]
-            [parenthesin.components.db.jdbc-hikari :as components.database]))
+            [parenthesin.components.db.jdbc-hikari :as components.database]
+            [taoensso.encore :as enc]))
 
 (defn ^:private execute!
   {:malli/schema [:=> [:cat schemas.types/DatabaseComponent :any] :any]}
   [db sql-params]
   (components.database/execute db sql-params jdbc/unqualified-snake-kebab-opts))
-
-(defn upsert-author
-  {:malli/schema [:=> [:cat schemas.model.social/NewAuthor schemas.types/DatabaseComponent]
-                  schemas.model.social/Author]}
-  [transaction db]
-  (->> (-> (sql.helpers/insert-into :author)
-           (sql.helpers/values [transaction])
-           (sql.helpers/upsert (-> (sql.helpers/on-conflict :login :account_source)
-                                   (sql.helpers/do-update-set :avatar_url)))
-           (sql.helpers/returning :*)
-           sql/format)
-       (execute! db)
-       first
-       adapters/db->author))
-
-(defn get-author
-  {:malli/schema [:=> [:cat :string schemas.model.social/account-source schemas.types/DatabaseComponent]
-                  [:maybe schemas.model.social/Author]]}
-  [login source db]
-  (when-let [author (->> (-> (sql.helpers/select :*)
-                             (sql.helpers/from :author)
-                             (sql.helpers/where :and
-                                                [:= :login login]
-                                                [:= :account_source source])
-                             sql/format)
-                         (execute! db)
-                         first)]
-    (adapters/db->author author)))
 
 (defn insert-see-also
   {:malli/schema [:=> [:cat schemas.model.social/NewSeeAlso schemas.types/DatabaseComponent]
@@ -259,6 +232,51 @@
        first
        adapters/db->note))
 
+(defn upsert-author
+  {:malli/schema [:=> [:cat schemas.model.social/NewAuthor schemas.types/DatabaseComponent]
+                  schemas.model.social/Author]}
+  [transaction db]
+  (->> (-> (sql.helpers/insert-into :author)
+           (sql.helpers/values [transaction])
+           (sql.helpers/upsert (-> (sql.helpers/on-conflict :login :account_source)
+                                   (sql.helpers/do-update-set :avatar_url)))
+           (sql.helpers/returning :*)
+           sql/format)
+       (execute! db)
+       first
+       adapters/db->author))
+
+(defn get-author
+  {:malli/schema [:=> [:cat :string schemas.model.social/account-source schemas.types/DatabaseComponent]
+                  [:maybe schemas.model.social/Author+Socials]]}
+  [login source db]
+  (when-let [author (->> (-> (sql.helpers/select :*)
+                             (sql.helpers/from :author)
+                             (sql.helpers/where :and
+                                                [:= :login login]
+                                                [:= :account_source source])
+                             sql/format)
+                         (execute! db)
+                         first)]
+    (let [author-id (:author-id author)
+          socials (->> (-> (sql.helpers/union-all
+                            (-> get-note-query
+                                (sql.helpers/where [:= :note/author-id author-id]))
+
+                            (-> get-example-query
+                                (sql.helpers/where [:= :example-edit/author-id author-id]))
+
+                            (-> get-see-also-query
+                                (sql.helpers/where [:= :see-also/author-id author-id])))
+                           sql/format)
+                       (execute! db)
+                       adapters/db->socials
+                       seq)]
+
+      (enc/assoc-some
+       (adapters/db->author author)
+       :author/socials socials))))
+
 (defn get-by-definition
   {:malli/schema [:=> [:cat :string schemas.types/DatabaseComponent]
                   [:maybe schemas.model.social/Social]]}
@@ -274,4 +292,4 @@
                 (sql.helpers/where [:= :see-also/definition-id definition-id])))
            sql/format)
        (execute! db)
-       adapters/db->social))
+       adapters/db->social-definition))

@@ -200,4 +200,59 @@
                                                                 :avatar-url "https://my.pic.com/me.jpg"
                                                                 :created-at
                                                                 #inst "2020-10-23T00:00:00.000-00:00"}}]}
-                (adapters/db->social db-rows)))))
+                (adapters/db->social-definition db-rows)))))
+
+(deftest db->author-social-test
+  (testing "should map and get author social data for multiple definitions"
+    (is (match? [#:social{:definition-id "clojure.core/disj"
+                          :notes [#:note{:note-id #uuid "d9564b50-98f8-4c04-a668-bd24c1241e34"
+                                         :definition-id "clojure.core/disj"
+                                         :body "my note about this function."
+                                         :created-at #inst "2020-10-23T00:00:00.000-00:00"
+                                         :author
+                                         #:author{:author-id
+                                                  #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
+                                                  :login "delboni"
+                                                  :account-source "github"
+                                                  :avatar-url "https://my.pic.com/me.jpg"
+                                                  :created-at
+                                                  #inst "2020-10-23T00:00:00.000-00:00"}}]
+                          :examples []
+                          :see-alsos []}
+                 #:social{:definition-id "clojure.core/disj2"
+                          :notes [#:note{:note-id #uuid "d9564b50-98f8-4c04-a668-bd24c1241e34"
+                                         :definition-id "clojure.core/disj2"
+                                         :body "my note about this function 2."
+                                         :created-at #inst "2020-10-23T00:00:00.000-00:00"
+                                         :author
+                                         #:author{:author-id
+                                                  #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
+                                                  :login "delboni"
+                                                  :account-source "github"
+                                                  :avatar-url "https://my.pic.com/me.jpg"
+                                                  :created-at
+                                                  #inst "2020-10-23T00:00:00.000-00:00"}}]
+                          :examples []
+                          :see-alsos []}]
+                (adapters/db->socials [{:account-source "github"
+                                        :avatar-url "https://my.pic.com/me.jpg"
+                                        :type "note"
+                                        :created #inst "2020-10-23T00:00:00.000-00:00"
+                                        :login "delboni"
+                                        :id #uuid "d9564b50-98f8-4c04-a668-bd24c1241e34"
+                                        :author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
+                                        :body "my note about this function."
+                                        :created-at #inst "2020-10-23T00:00:00.000-00:00"
+                                        :definition-id "clojure.core/disj"}
+                                       {:account-source "github"
+                                        :avatar-url "https://my.pic.com/me.jpg"
+                                        :type "note"
+                                        :created #inst "2020-10-23T00:00:00.000-00:00"
+                                        :login "delboni"
+                                        :id #uuid "d9564b50-98f8-4c04-a668-bd24c1241e34"
+                                        :author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
+                                        :body "my note about this function 2."
+                                        :created-at #inst "2020-10-23T00:00:00.000-00:00"
+                                        :definition-id "clojure.core/disj2"}])))))
+
+

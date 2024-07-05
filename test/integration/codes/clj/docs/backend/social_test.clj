@@ -324,6 +324,16 @@
                   (state-flow.server/request! {:method :get
                                                :uri (str "/api/social/example/" example-id)})))
 
+        (flow "should return author"
+          (match? {:status 200
+                   :body {:author-id string?
+                          :login "delboni",
+                          :account-source "github",
+                          :avatar-url "https://my.pic/me.jpg",
+                          :created-at string?}}
+                  (state-flow.server/request! {:method :get
+                                               :uri    "/api/social/author/delboni/github"})))
+
         (flow "delete example revision part 1"
           (state-flow.server/request! {:method :delete
                                        :headers {"authorization" (str "Bearer " token)}

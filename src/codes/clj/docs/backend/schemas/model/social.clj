@@ -110,3 +110,6 @@
    [:social/notes [:sequential Note]]
    [:social/examples [:sequential Example]]
    [:social/see-alsos [:sequential SeeAlso]]])
+
+(def Author+Socials
+  (mu/assoc Author [:author/socials {:optional true}] [:sequential Social]))
