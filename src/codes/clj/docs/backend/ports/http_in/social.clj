@@ -16,12 +16,12 @@
      :body {:author author
             :access-token access-token}}))
 
-(defn get-author
+(defn get-author+socials
   [{{{:keys [login source]} :path} :parameters
     components :components}]
-  (if-let [author (controllers.social/get-author login source components)]
+  (if-let [author (controllers.social/get-author+socials login source components)]
     {:status 200
-     :body (adapters.social/author->model->wire author)}
+     :body (adapters.social/author+socials->model->wire author)}
     {:status 404
      :body "not found"}))
 

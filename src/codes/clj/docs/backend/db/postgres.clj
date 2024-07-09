@@ -246,7 +246,7 @@
        first
        adapters/db->author))
 
-(defn get-author
+(defn get-author+socials
   {:malli/schema [:=> [:cat :string schemas.model.social/account-source schemas.types/DatabaseComponent]
                   [:maybe schemas.model.social/Author+Socials]]}
   [login source db]

@@ -45,14 +45,14 @@
 
      ["/author"
       ["/:login/:source"
-       {:get {:summary "get author by login and source"
+       {:get {:summary "get author and social interactions (if any) by login and source"
               :parameters {:path {:login :string
                                   :source :string}}
-              :responses {200 {:body schemas.wire.social/Author}
+              :responses {200 {:body schemas.wire.out.social/Author+Socials}
                           400 {:body :string}
                           404 {:body :string}
                           500 {:body :string}}
-              :handler ports.http-in.social/get-author}}]]
+              :handler ports.http-in.social/get-author+socials}}]]
 
      ["/example"
       ["/:example-id"

@@ -141,6 +141,23 @@
                 (state-flow.server/request! {:method :get
                                              :uri (str "/api/social/note/" note-id)})))
 
+      (flow "should return author + socials"
+        (match? {:status 200
+                 :body {:author-id string?
+                        :login "delboni",
+                        :account-source "github",
+                        :avatar-url "https://my.pic/me.jpg",
+                        :created-at string?
+                        :socials [{:definition-id "clojure.core/disj"
+                                   :notes [{:note-id note-id
+                                            :definition-id "clojure.core/disj"
+                                            :body "my edited note about this function."
+                                            :created-at string?}]
+                                   :examples []
+                                   :see-alsos []}]}}
+                (state-flow.server/request! {:method :get
+                                             :uri    "/api/social/author/delboni/github"})))
+
       (flow "should not be able to delete if not allowed"
         (match? {:status 403
                  :body "You not allowed to delete this note."}
@@ -212,6 +229,22 @@
                           :created-at string?}}
                   (state-flow.server/request! {:method :get
                                                :uri (str "/api/social/see-also/" see-also-id)})))
+        (flow "should return author + socials"
+          (match? {:status 200
+                   :body {:author-id string?
+                          :login "delboni",
+                          :account-source "github",
+                          :avatar-url "https://my.pic/me.jpg",
+                          :created-at string?
+                          :socials [{:definition-id "clojure.core/disj"
+                                     :notes []
+                                     :examples []
+                                     :see-alsos [{:see-also-id see-also-id
+                                                  :definition-id "clojure.core/disj"
+                                                  :definition-id-to "clojure.core/dissoc"
+                                                  :created-at string?}]}]}}
+                  (state-flow.server/request! {:method :get
+                                               :uri    "/api/social/author/delboni/github"})))
 
         (flow "should not be able to delete if not allowed"
           (match? {:status 403
@@ -330,7 +363,26 @@
                           :login "delboni",
                           :account-source "github",
                           :avatar-url "https://my.pic/me.jpg",
-                          :created-at string?}}
+                          :created-at string?
+                          :socials [{:definition-id "clojure.core/disj"
+                                     :notes []
+                                     :see-alsos []
+                                     :examples [{:example-id example-id
+                                                 :definition-id "clojure.core/disj"
+                                                 :body "my edited example about this function."
+                                                 :created-at string?
+                                                 :editors [{:author-id string?
+                                                            :login "delboni"
+                                                            :account-source "github"
+                                                            :avatar-url "https://my.pic/me.jpg"
+                                                            :created-at string?
+                                                            :edited-at string?}
+                                                           {:author-id string?
+                                                            :login "delboni"
+                                                            :account-source "github"
+                                                            :avatar-url "https://my.pic/me.jpg"
+                                                            :created-at string?
+                                                            :edited-at string?}]}]}]}}
                   (state-flow.server/request! {:method :get
                                                :uri    "/api/social/author/delboni/github"})))
 

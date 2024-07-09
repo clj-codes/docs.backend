@@ -71,7 +71,7 @@
                                                          :example/author-id)]
                                :social/see-alsos [see-also-1]}]}
 
-            (db/get-author "delboni" "github" database))))
+            (db/get-author+socials "delboni" "github" database))))
 
 (defflow see-also-db-test
   {:init (util/start-system! create-and-start-components!)
