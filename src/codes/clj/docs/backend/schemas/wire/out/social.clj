@@ -1,6 +1,6 @@
 (ns codes.clj.docs.backend.schemas.wire.out.social
-  (:require [codes.clj.docs.backend.schemas.wire.social :refer [example note
-                                                                see-also]]
+  (:require [codes.clj.docs.backend.schemas.wire.social :refer [Author example
+                                                                note see-also]]
             [malli.util :as mu]))
 
 (def SeeAlso
@@ -32,3 +32,6 @@
    [:notes [:sequential Note]]
    [:examples [:sequential Example]]
    [:see-alsos [:sequential SeeAlso]]])
+
+(def Author+Socials
+  (mu/assoc Author [:socials {:optional true}] [:sequential Social]))

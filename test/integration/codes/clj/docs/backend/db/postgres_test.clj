@@ -26,9 +26,31 @@
    :cleanup util/stop-system!
    :fail-fast? true}
 
-  [database (state-flow.api/get-state :database)]
+  [database (state-flow.api/get-state :database)
 
-  (util.db.postgres/upsert-author "delboni" "github")
+  ; prepare db authors
+   author-1 (util.db.postgres/upsert-author "delboni" "github")
+   author-2 (util.db.postgres/upsert-author "not-delboni" "github")
+
+  ; prepare socials
+   see-also-1 (util.db.postgres/create-see-also {:see-also/author-id (:author/author-id author-1)
+                                                 :see-also/definition-id "clojure.core/disj"
+                                                 :see-also/definition-id-to "clojure.core/dissoc"})
+   _see-also-2 (util.db.postgres/create-see-also {:see-also/author-id (:author/author-id author-2)
+                                                  :see-also/definition-id "clojure.core/disj"
+                                                  :see-also/definition-id-to "clojure.core/dissoc2"})
+   note-1 (util.db.postgres/create-note {:note/author-id (:author/author-id author-1)
+                                         :note/definition-id "clojure.core/disj"
+                                         :note/body "author 1 note about this function."})
+   _note-2 (util.db.postgres/create-note {:note/author-id (:author/author-id author-2)
+                                          :note/definition-id "clojure.core/disj"
+                                          :note/body "author 2 note about this function."})
+   example-1 (util.db.postgres/create-example {:example/author-id (:author/author-id author-1)
+                                               :example/definition-id "clojure.core/disj"
+                                               :example/body "author 1 example about this function."})
+   _example-2 (util.db.postgres/create-example {:example/author-id (:author/author-id author-2)
+                                                :example/definition-id "clojure.core/disj"
+                                                :example/body "author 2 example about this function."})]
 
   (flow "upsert author with new url"
     (state/invoke
@@ -42,8 +64,14 @@
              :author/login "delboni"
              :author/account-source "github"
              :author/avatar-url "https://my.pic.com/me2.jpg"
-             :author/created-at inst?}
-            (db/get-author "delboni" "github" database))))
+             :author/created-at inst?
+             :author/socials [{:social/definition-id "clojure.core/disj"
+                               :social/notes [note-1]
+                               :social/examples [(dissoc example-1
+                                                         :example/author-id)]
+                               :social/see-alsos [see-also-1]}]}
+
+            (db/get-author+socials "delboni" "github" database))))
 
 (defflow see-also-db-test
   {:init (util/start-system! create-and-start-components!)

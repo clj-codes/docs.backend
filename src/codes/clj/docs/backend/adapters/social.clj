@@ -121,3 +121,11 @@
    :notes (map note->model->wire notes)
    :examples (map example->model->wire examples)
    :see-alsos (map see-also->model->wire see-alsos)})
+
+(defn author+socials->model->wire
+  {:malli/schema [:=> [:cat schemas.model.social/Author+Socials]
+                  schemas.wire.out.social/Author+Socials]}
+  [{:author/keys [socials] :as author}]
+  (enc/assoc-some
+   (author->model->wire author)
+   :socials (map social->model->wire socials)))

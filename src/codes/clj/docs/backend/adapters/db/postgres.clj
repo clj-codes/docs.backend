@@ -77,9 +77,9 @@
        (filter #(= (:type %) "see-also"))
        (map db->see-also)))
 
-(defn db->social
+(defn db->socials
   {:malli/schema [:=> [:cat [:sequential schemas.db/Row]]
-                  [:maybe schemas.model.social/Social]]}
+                  [:maybe [:sequential schemas.model.social/Social]]]}
   [db-rows]
   (->> db-rows
        (group-by :definition-id)
@@ -90,5 +90,10 @@
                 {:social/definition-id definition-id
                  :social/notes notes
                  :social/examples examples
-                 :social/see-alsos see-alsos})))
-       first))
+                 :social/see-alsos see-alsos})))))
+
+(defn db->social-definition
+  {:malli/schema [:=> [:cat [:sequential schemas.db/Row]]
+                  [:maybe schemas.model.social/Social]]}
+  [db-rows]
+  (first (db->socials db-rows)))

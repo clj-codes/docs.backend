@@ -9,11 +9,11 @@
   [new-author {:keys [database]}]
   (db.postgres/upsert-author new-author database))
 
-(defn get-author
+(defn get-author+socials
   {:malli/schema [:=> [:cat :string schemas.model.social/account-source schemas.types/Components]
-                  [:maybe schemas.model.social/Author]]}
+                  [:maybe schemas.model.social/Author+Socials]]}
   [login source {:keys [database]}]
-  (db.postgres/get-author login source database))
+  (db.postgres/get-author+socials login source database))
 
 (defn insert-see-also
   {:malli/schema [:=> [:cat schemas.model.social/NewSeeAlso schemas.types/Components]

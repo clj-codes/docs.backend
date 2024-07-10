@@ -82,3 +82,8 @@
   (properties/for-all [definition (mg/generator schemas.model.social/Social)]
                       (m/validate schemas.wire.out.social/Social
                                   (adapters.social/social->model->wire definition))))
+
+(defspec author+socials->model->wire-test 50
+  (properties/for-all [author+socials (mg/generator schemas.model.social/Author+Socials)]
+                      (m/validate schemas.wire.out.social/Author+Socials
+                                  (adapters.social/author+socials->model->wire author+socials))))
