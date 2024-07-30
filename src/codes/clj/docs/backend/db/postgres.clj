@@ -296,7 +296,7 @@
 
 (defn get-top-authors
   {:malli/schema [:=> [:cat :int schemas.types/DatabaseComponent]
-                  [:maybe [:sequential schemas.model.social/Author+Interactions]]]} ; todo out schema
+                  [:maybe [:sequential schemas.model.social/Author+Interactions]]]}
   [limit db]
   (->> (-> (sql.helpers/select
             :author/*
@@ -317,6 +317,7 @@
            (sql.helpers/join :author
                              [:= :social/author-id :author/author-id])
            (sql.helpers/group-by :author/author-id)
+           (sql.helpers/order-by [:interactions :desc])
            (sql.helpers/limit limit)
            sql/format)
        (execute! db)
@@ -330,7 +331,7 @@
             get-note-query
             get-example-query
             get-see-also-query)
-           (sql.helpers/order-by :created)
+           (sql.helpers/order-by [:created :desc])
            (sql.helpers/limit limit)
            sql/format)
        (execute! db)
