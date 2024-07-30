@@ -17,6 +17,10 @@
   (properties/for-all [row (mg/generator schemas.db.postgres/AuthorRow)]
                       (m/validate schemas.model.social/Author (adapters/db->author row))))
 
+(defspec db->author+interaction-test 50
+  (properties/for-all [row (mg/generator [:sequential schemas.db.postgres/Author+InteractionsRow])]
+                      (m/validate [:sequential schemas.model.social/Author+Interactions] (adapters/db->author+interaction row))))
+
 (defspec db->note-test 50
   (properties/for-all [row (mg/generator (mu/assoc schemas.db.postgres/FullRow :type [:enum "note"]))]
                       (m/validate schemas.model.social/Note (adapters/db->note row))))
@@ -255,4 +259,78 @@
                                         :created-at #inst "2020-10-23T00:00:00.000-00:00"
                                         :definition-id "clojure.core/disj2"}])))))
 
-
+(deftest db->any-socials-test
+  (testing "should list of any social parsed in db-rows"
+    (is (match? [#:note{:note-id #uuid "d9564b50-98f8-4c04-a668-bd24c1241e34"
+                        :definition-id "clojure.core/disj"
+                        :body "my note about this function."
+                        :created-at #inst "2020-10-23T00:00:00.000-00:00"
+                        :author #:author{:author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
+                                         :login "delboni"
+                                         :account-source "github"
+                                         :avatar-url "https://my.pic.com/me.jpg"
+                                         :created-at #inst "2020-10-23T00:00:00.000-00:00"}}
+                 #:note{:note-id #uuid "7aac759f-35dc-456c-9611-44589336560c"
+                        :definition-id "clojure.core/disj"
+                        :body "my second note about this function."
+                        :created-at #inst "2020-10-23T00:00:00.000-00:00"
+                        :author #:author{:author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
+                                         :login "delboni"
+                                         :account-source "github"
+                                         :avatar-url "https://my.pic.com/me.jpg"
+                                         :created-at #inst "2020-10-23T00:00:00.000-00:00"}}
+                 #:example{:example-id #uuid "0f0a0fe8-7147-4d45-b212-3a32bc37d07a"
+                           :definition-id "clojure.core/disj"
+                           :body "my example about this function. edited again"
+                           :created-at #inst "2020-10-23T03:00:00.000-00:00"
+                           :author #:author{:author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
+                                            :login "delboni"
+                                            :account-source "github"
+                                            :avatar-url "https://my.pic.com/me.jpg"
+                                            :created-at #inst "2020-10-23T00:00:00.000-00:00"}
+                           :editors
+                           [{:author/author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
+                             :author/login "delboni"
+                             :author/account-source "github"
+                             :author/avatar-url "https://my.pic.com/me.jpg"
+                             :author/created-at #inst "2020-10-23T00:00:00.000-00:00"
+                             :editor/edited-at #inst "2020-10-23T01:00:00.000-00:00"}
+                            {:author/author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
+                             :author/login "delboni"
+                             :author/account-source "github"
+                             :author/avatar-url "https://my.pic.com/me.jpg"
+                             :author/created-at #inst "2020-10-23T00:00:00.000-00:00"
+                             :editor/edited-at #inst "2020-10-23T02:00:00.000-00:00"}
+                            {:author/author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
+                             :author/login "delboni"
+                             :author/account-source "github"
+                             :author/avatar-url "https://my.pic.com/me.jpg"
+                             :author/created-at #inst "2020-10-23T00:00:00.000-00:00"
+                             :editor/edited-at #inst "2020-10-23T03:00:00.000-00:00"}]}
+                 #:example{:example-id #uuid "c9df4a18-ec91-4d3f-9cb2-d65d48db88eb"
+                           :definition-id "clojure.core/disj"
+                           :body "another example about this function."
+                           :created-at #inst "2020-10-23T00:00:00.000-00:00"
+                           :author #:author{:author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
+                                            :login "delboni"
+                                            :account-source "github"
+                                            :avatar-url "https://my.pic.com/me.jpg"
+                                            :created-at #inst "2020-10-23T00:00:00.000-00:00"}
+                           :editors
+                           [{:author/author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
+                             :author/login "delboni"
+                             :author/account-source "github"
+                             :author/avatar-url "https://my.pic.com/me.jpg"
+                             :author/created-at #inst "2020-10-23T00:00:00.000-00:00"
+                             :editor/edited-at #inst "2020-10-23T00:00:00.000-00:00"}]}
+                 #:see-also{:see-also-id #uuid "b8a824b9-6a3a-4a10-a318-58313637ecb6"
+                            :definition-id "clojure.core/disj"
+                            :definition-id-to "clojure.core/dissoc"
+                            :created-at #inst "2020-10-23T00:00:00.000-00:00"
+                            :author #:author{:author-id #uuid "387863e6-e32b-4d4b-8ec5-8cf4dab7e048"
+                                             :login "delboni"
+                                             :account-source "github"
+                                             :avatar-url "https://my.pic.com/me.jpg"
+                                             :created-at
+                                             #inst "2020-10-23T00:00:00.000-00:00"}}]
+                (adapters/db->any-socials db-rows)))))

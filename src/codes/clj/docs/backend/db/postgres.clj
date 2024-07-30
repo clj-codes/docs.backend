@@ -293,3 +293,45 @@
            sql/format)
        (execute! db)
        adapters/db->social-definition))
+
+(defn get-top-authors
+  {:malli/schema [:=> [:cat :int schemas.types/DatabaseComponent]
+                  [:maybe [:sequential schemas.model.social/Author+Interactions]]]} ; todo out schema
+  [limit db]
+  (->> (-> (sql.helpers/select
+            :author/*
+            [[:count :social/id] :interactions])
+           (sql.helpers/from [(sql.helpers/union-all
+                               (-> (sql.helpers/select
+                                    [:note/note-id :id]
+                                    [:note/author-id :author-id])
+                                   (sql.helpers/from :note))
+                               (-> (sql.helpers/select
+                                    [:example-edit/example-edit-id :id]
+                                    [:example-edit/author-id :author-id])
+                                   (sql.helpers/from :example-edit))
+                               (-> (sql.helpers/select
+                                    [:see-also/see-also-id :id]
+                                    [:see-also/author-id :author-id])
+                                   (sql.helpers/from :see-also))) :social])
+           (sql.helpers/join :author
+                             [:= :social/author-id :author/author-id])
+           (sql.helpers/group-by :author/author-id)
+           (sql.helpers/limit limit)
+           sql/format)
+       (execute! db)
+       adapters/db->author+interaction))
+
+(defn get-latest-interactions
+  {:malli/schema [:=> [:cat :int schemas.types/DatabaseComponent]
+                  [:maybe [:sequential schemas.model.social/AnySocial]]]}
+  [limit db]
+  (->> (-> (sql.helpers/union-all
+            get-note-query
+            get-example-query
+            get-see-also-query)
+           (sql.helpers/order-by :created)
+           (sql.helpers/limit limit)
+           sql/format)
+       (execute! db)
+       adapters/db->any-socials))

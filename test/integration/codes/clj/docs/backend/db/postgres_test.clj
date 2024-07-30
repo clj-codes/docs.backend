@@ -4,6 +4,7 @@
             [com.stuartsierra.component :as component]
             [integration.codes.clj.docs.backend.util :as util]
             [integration.codes.clj.docs.backend.util.db.postgres :as util.db.postgres]
+            [matcher-combinators.matchers :as m]
             [parenthesin.components.config.aero :as components.config]
             [parenthesin.components.db.jdbc-hikari :as components.database]
             [parenthesin.helpers.malli :as helpers.malli]
@@ -71,7 +72,33 @@
                                                          :example/author-id)]
                                :social/see-alsos [see-also-1]}]}
 
-            (db/get-author+socials "delboni" "github" database))))
+            (db/get-author+socials "delboni" "github" database)))
+
+  (flow "check latest top authors in db"
+    (match? (m/in-any-order
+             [#:author{:author-id uuid?
+                       :login "not-delboni"
+                       :account-source "github"
+                       :avatar-url "https://my.pic.com/me.jpg"
+                       :created-at inst?
+                       :interactions 3}
+              #:author{:author-id uuid?
+                       :login "delboni"
+                       :account-source "github"
+                       :avatar-url "https://my.pic.com/me2.jpg"
+                       :created-at inst?
+                       :interactions 3}])
+            (util.db.postgres/get-top-authors 10)))
+
+  (flow "check latest social interactions in db"
+    (match? (m/in-any-order
+             [#:note{:note-id uuid?}
+              #:note{:note-id uuid?}
+              #:example{:example-id uuid?}
+              #:example{:example-id uuid?}
+              #:see-also{:see-also-id uuid?}
+              #:see-also{:see-also-id uuid?}])
+            (util.db.postgres/get-latest-interactions 10))))
 
 (defflow see-also-db-test
   {:init (util/start-system! create-and-start-components!)

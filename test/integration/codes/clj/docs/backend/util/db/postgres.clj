@@ -108,3 +108,19 @@
     (->> database
          (db/get-by-definition definition-id)
          state-flow.api/return)))
+
+(defn get-top-authors
+  [limit]
+  (flow "get top authors with their interactions sum"
+    [database (state-flow.api/get-state :database)]
+    (->> database
+         (db/get-top-authors limit)
+         state-flow.api/return)))
+
+(defn get-latest-interactions
+  [limit]
+  (flow "get latest social interactions"
+    [database (state-flow.api/get-state :database)]
+    (->> database
+         (db/get-latest-interactions limit)
+         state-flow.api/return)))

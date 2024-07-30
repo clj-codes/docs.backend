@@ -111,5 +111,11 @@
    [:social/examples [:sequential Example]]
    [:social/see-alsos [:sequential SeeAlso]]])
 
+(def AnySocial
+  [:or Example Note SeeAlso])
+
 (def Author+Socials
   (mu/assoc Author [:author/socials {:optional true}] [:sequential Social]))
+
+(def Author+Interactions
+  (mu/assoc Author [:author/interactions {:optional true}] :int))
