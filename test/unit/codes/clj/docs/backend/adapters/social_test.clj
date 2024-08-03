@@ -28,6 +28,11 @@
                       (m/validate schemas.wire.social/Author
                                   (adapters.social/author->model->wire author))))
 
+(defspec author-interaction->model->wire-test 50
+  (properties/for-all [author+interaction (mg/generator schemas.model.social/Author+Interactions)]
+                      (m/validate [:sequential schemas.wire.out.social/Author+Interactions]
+                                  (adapters.social/author-interaction->model->wire [author+interaction]))))
+
 (defspec editor->model->wire-test 50
   (properties/for-all [editor (mg/generator schemas.model.social/Editor)]
                       (m/validate schemas.wire.social/Editor
@@ -87,3 +92,8 @@
   (properties/for-all [author+socials (mg/generator schemas.model.social/Author+Socials)]
                       (m/validate schemas.wire.out.social/Author+Socials
                                   (adapters.social/author+socials->model->wire author+socials))))
+
+(defspec any-social->model->wire-test 50
+  (properties/for-all [any-social (mg/generator schemas.model.social/AnySocial)]
+                      (m/validate [:sequential schemas.wire.out.social/AnySocial]
+                                  (adapters.social/any-social->model->wire [any-social]))))

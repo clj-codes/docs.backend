@@ -169,7 +169,24 @@
               :responses {200 {:body schemas.wire.out.social/Social}
                           404 {:body :string}
                           500 {:body :string}}
-              :handler ports.http-in.social/get-by-definition}}]]]
+              :handler ports.http-in.social/get-by-definition}}]]
+
+     ["/query"
+      ["/top-authors"
+       {:get {:summary "get top contributing author list"
+              :parameters {:query [:map [:limit {:optional true} :int]]}
+              :responses {200 {:body [:sequential schemas.wire.out.social/Author+Interactions]}
+                          404 {:body :string}
+                          500 {:body :string}}
+              :handler ports.http-in.social/get-top-authors}}]
+
+      ["/latest-interactions"
+       {:get {:summary "get latest social interactions list"
+              :parameters {:query [:map [:limit {:optional true} :int]]}
+              :responses {200 {:body [:sequential schemas.wire.out.social/AnySocial]}
+                          404 {:body :string}
+                          500 {:body :string}}
+              :handler ports.http-in.social/get-latest-interactions}}]]]
 
     ["/document"
      {:swagger {:tags ["document"]}}

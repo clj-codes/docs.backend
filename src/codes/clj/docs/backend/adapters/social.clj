@@ -33,6 +33,16 @@
    :avatar-url avatar-url
    :created-at created-at})
 
+(defn author-interaction->model->wire
+  {:malli/schema [:=> [:cat [:sequential schemas.model.social/Author+Interactions]]
+                  [:sequential schemas.wire.out.social/Author+Interactions]]}
+  [author+interactions]
+  (->> author+interactions
+       (map (fn [{:author/keys [interactions] :as author}]
+              (assoc (author->model->wire author)
+                     :interactions interactions)))
+       (sort-by :interactions #(compare %2 %1))))
+
 (defn editor->model->wire
   {:malli/schema [:=> [:cat schemas.model.social/Editor] schemas.wire.social/Editor]}
   [{:editor/keys [edited-at] :as author}]
@@ -129,3 +139,22 @@
   (enc/assoc-some
    (author->model->wire author)
    :socials (map social->model->wire socials)))
+
+(defn any-social->model->wire
+  {:malli/schema [:=> [:cat [:sequential schemas.model.social/AnySocial]]
+                  [:maybe [:sequential schemas.wire.out.social/AnySocial]]]}
+  [any-socials]
+  (let [notes (->> any-socials
+                   (filter #(:note/note-id %))
+                   (map note->model->wire))
+        examples (->> any-socials
+                      (filter #(:example/example-id %))
+                      (map example->model->wire))
+        see-alsos (->> any-socials
+                       (filter #(:see-also/see-also-id %))
+                       (map see-also->model->wire))]
+    (->> (concat
+          (seq notes)
+          (seq examples)
+          (seq see-alsos))
+         (sort-by :created-at #(compare %2 %1)))))

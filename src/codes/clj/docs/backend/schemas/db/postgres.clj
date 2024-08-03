@@ -44,3 +44,6 @@
                        :account-source
                        :avatar-url
                        :created-at]))
+
+(def Author+InteractionsRow
+  (mu/assoc AuthorRow :interactions :int))

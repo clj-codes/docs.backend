@@ -86,3 +86,15 @@
                   [:maybe schemas.model.social/Social]]}
   [definition-id {:keys [database]}]
   (db.postgres/get-by-definition definition-id database))
+
+(defn get-top-authors
+  {:malli/schema [:=> [:cat :int schemas.types/Components]
+                  [:maybe [:sequential schemas.model.social/Author+Interactions]]]}
+  [limit {:keys [database]}]
+  (db.postgres/get-top-authors limit database))
+
+(defn get-latest-interactions
+  {:malli/schema [:=> [:cat :int schemas.types/Components]
+                  [:maybe [:sequential schemas.model.social/AnySocial]]]}
+  [limit {:keys [database]}]
+  (db.postgres/get-latest-interactions limit database))

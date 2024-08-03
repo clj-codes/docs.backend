@@ -12,6 +12,15 @@
    :author/avatar-url avatar-url
    :author/created-at created-at})
 
+(defn db->author+interaction
+  {:malli/schema [:=> [:cat [:sequential schemas.db/Author+InteractionsRow]]
+                  [:sequential schemas.model.social/Author+Interactions]]}
+  [db-rows]
+  (map (fn [{:keys [interactions] :as author}]
+         (assoc (db->author author)
+                :author/interactions interactions))
+       db-rows))
+
 (defn db->note
   {:malli/schema [:=> [:cat [:maybe schemas.db/Row]] [:maybe schemas.model.social/Note]]}
   [{:keys [id definition-id body created author-id] :as note}]
@@ -97,3 +106,15 @@
                   [:maybe schemas.model.social/Social]]}
   [db-rows]
   (first (db->socials db-rows)))
+
+(defn db->any-socials
+  {:malli/schema [:=> [:cat [:sequential schemas.db/Row]]
+                  [:maybe [:sequential schemas.model.social/AnySocial]]]}
+  [db-rows]
+  (let [notes (db->notes db-rows)
+        examples (db->examples db-rows)
+        see-alsos (db->see-alsos db-rows)]
+    (concat
+     (seq notes)
+     (seq examples)
+     (seq see-alsos))))
