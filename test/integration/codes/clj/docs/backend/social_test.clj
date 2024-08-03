@@ -158,6 +158,31 @@
                 (state-flow.server/request! {:method :get
                                              :uri    "/api/social/author/delboni/github"})))
 
+      (flow "should return top authors"
+        (match? {:status 200
+                 :body [{:author-id string?
+                         :login "delboni"
+                         :account-source "github"
+                         :avatar-url "https://my.pic/me.jpg"
+                         :created-at string?
+                         :interactions 1}]}
+                (state-flow.server/request! {:method :get
+                                             :uri    "/api/social/query/top-authors"})))
+
+      (flow "should return latest interactions"
+        (match? {:status 200
+                 :body [{:note-id string?
+                         :definition-id "clojure.core/disj"
+                         :body "my edited note about this function."
+                         :created-at string?
+                         :author {:author-id string?
+                                  :login "delboni"
+                                  :account-source "github"
+                                  :avatar-url "https://my.pic/me.jpg"
+                                  :created-at string?}}]}
+                (state-flow.server/request! {:method :get
+                                             :uri    "/api/social/query/latest-interactions"})))
+
       (flow "should not be able to delete if not allowed"
         (match? {:status 403
                  :body "You not allowed to delete this note."}
@@ -245,6 +270,26 @@
                                                   :created-at string?}]}]}}
                   (state-flow.server/request! {:method :get
                                                :uri    "/api/social/author/delboni/github"})))
+
+        (flow "should return top authors"
+          (match? {:status 200
+                   :body [{:author-id string?
+                           :login "delboni"
+                           :account-source "github"
+                           :avatar-url "https://my.pic/me.jpg"
+                           :created-at string?
+                           :interactions 1}]}
+                  (state-flow.server/request! {:method :get
+                                               :uri    "/api/social/query/top-authors"})))
+
+        (flow "should return latest interactions"
+          (match? {:status 200
+                   :body [{:see-also-id see-also-id
+                           :definition-id "clojure.core/disj"
+                           :definition-id-to "clojure.core/dissoc"
+                           :created-at string?}]}
+                  (state-flow.server/request! {:method :get
+                                               :uri    "/api/social/query/latest-interactions"})))
 
         (flow "should not be able to delete if not allowed"
           (match? {:status 403
@@ -385,6 +430,38 @@
                                                             :edited-at string?}]}]}]}}
                   (state-flow.server/request! {:method :get
                                                :uri    "/api/social/author/delboni/github"})))
+
+        (flow "should return top authors"
+          (match? {:status 200
+                   :body [{:author-id string?
+                           :login "delboni"
+                           :account-source "github"
+                           :avatar-url "https://my.pic/me.jpg"
+                           :created-at string?
+                           :interactions 2}]}
+                  (state-flow.server/request! {:method :get
+                                               :uri    "/api/social/query/top-authors"})))
+
+        (flow "should return latest interactions"
+          (match? {:status 200
+                   :body [{:example-id example-id
+                           :definition-id "clojure.core/disj"
+                           :body "my edited example about this function."
+                           :created-at string?
+                           :editors [{:author-id string?
+                                      :login "delboni"
+                                      :account-source "github"
+                                      :avatar-url "https://my.pic/me.jpg"
+                                      :created-at string?
+                                      :edited-at string?}
+                                     {:author-id string?
+                                      :login "delboni"
+                                      :account-source "github"
+                                      :avatar-url "https://my.pic/me.jpg"
+                                      :created-at string?
+                                      :edited-at string?}]}]}
+                  (state-flow.server/request! {:method :get
+                                               :uri    "/api/social/query/latest-interactions"})))
 
         (flow "delete example revision part 1"
           (state-flow.server/request! {:method :delete

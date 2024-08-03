@@ -155,3 +155,19 @@
             :notes []
             :examples []
             :see-alsos []})})
+
+(defn get-top-authors
+  [{{{:keys [limit]} :query} :parameters
+    components :components}]
+  {:status 200
+   :body (-> (or limit 10)
+             (controllers.social/get-top-authors components)
+             adapters.social/author-interaction->model->wire)})
+
+(defn get-latest-interactions
+  [{{{:keys [limit]} :query} :parameters
+    components :components}]
+  {:status 200
+   :body (-> (or limit 10)
+             (controllers.social/get-latest-interactions components)
+             adapters.social/any-social->model->wire)})

@@ -118,4 +118,4 @@
   (mu/assoc Author [:author/socials {:optional true}] [:sequential Social]))
 
 (def Author+Interactions
-  (mu/assoc Author [:author/interactions {:optional true}] :int))
+  (mu/assoc Author :author/interactions :int))
