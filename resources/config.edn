@@ -9,7 +9,7 @@
             :password #or [#env DB_PASS "postgres"]
             :host #or [#env DB_HOST "localhost"]
             :port #or [#env DB_PORT 5432]
-            :useSSL false}
+            :useSSL true}
 
  :db-docs {:dir #or [#env DB_DOCS_DIR "target"]
            :url #or [#env DB_DOCS_URL "https://github.com/clj-codes/docs.extractor/releases/download"]
